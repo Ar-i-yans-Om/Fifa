@@ -366,21 +366,42 @@ def match_block(m):
                     unsafe_allow_html=True,
                 )
             with cols[2]:
-                conf = f"{max(pa, pd, pb)}%" if None not in (pa, pd, pb) else "—"
+                bo = m.get("top_outcome")
+                bo_val = f"{bo['team']} {bo['score']} · {bo['prob']}%" if bo else "—"
                 st.markdown(
                     f"<div class='detail-block'><div class='h'>Top Outcome</div>"
-                    f"<div class='v'>{conf}</div></div>",
+                    f"<div class='v'>{bo_val}</div></div>",
                     unsafe_allow_html=True,
                 )
 
-            if tops:
-                pills = "".join(
-                    f"<span class='scoreline-pill'>{t.get('score')} · {t.get('prob')}%</span>"
-                    for t in tops
-                )
+            st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
+            cols2 = st.columns(3)
+            with cols2[0]:
                 st.markdown(
-                    f"<div style='margin-top:12px'><div class='detail-block'>"
-                    f"<div class='h'>Most Likely Scorelines</div>{pills}</div></div>",
+                    f"<div class='detail-block'><div class='h'>Actual Scoreline</div>"
+                    f"<div class='v'>{m.get('actual_score', '—')}</div></div>",
+                    unsafe_allow_html=True,
+                )
+            with cols2[1]:
+                ps = m.get("prediction_score")
+                ps_val = f"{ps}%" if ps is not None else "—"
+                st.markdown(
+                    f"<div class='detail-block'><div class='h'>Prediction Score</div>"
+                    f"<div class='v'>{ps_val}</div></div>",
+                    unsafe_allow_html=True,
+                )
+            with cols2[2]:
+                if tops:
+                    pills = "".join(
+                        f"<span class='scoreline-pill'>{t.get('score')} · {t.get('prob')}%</span>"
+                        for t in tops
+                    )
+                else:
+                    pills = "<div class='v'>—</div>"
+                st.markdown(
+                    f"<div class='detail-block'><div class='h'>Most Likely Scorelines</div>"
+                    f"{pills}</div>",
                     unsafe_allow_html=True,
                 )
 
@@ -390,7 +411,7 @@ def match_block(m):
 def render_group(letter):
     cur = D.current_standings(fixtures, results, letter)
     pred = D.predicted_standings(fixtures, results, predictions, letter)
-    matches = D.match_predictions(fixtures, predictions, letter)
+    matches = D.match_predictions(fixtures, predictions, results, letter)
     status = D.group_prediction_status(fixtures, results, predictions, letter)
 
     # focus state
