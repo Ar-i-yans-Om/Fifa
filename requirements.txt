@@ -1,10 +1,6 @@
-# Schemas / validation
-pydantic>=2.7
-
 # Real public-data scrapers (optional structured path; web_search works without these)
 requests>=2.31
-pandas>=2.0          # used by the optional FBref scraper (pandas.read_html)
-lxml>=5.0            # html parser backend for pandas.read_html
+pandas>=2.0         
 
 # Convenience
 streamlit
