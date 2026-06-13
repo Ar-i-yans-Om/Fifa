@@ -305,21 +305,52 @@ def _is_populated(p: dict) -> bool:
     return bool(p.get("top_scorelines"))
 
 
+def prediction_score(grid, actual_score):
+    """
+    0–100: how close reality was to the model's best guess, on the model's own
+    probability scale. score = 100 * sqrt(p_actual / p_top) — non-linear, so an
+    actual that matched a near-tied 2nd-most-likely cell still scores high, while
+    the tail drops off smoothly. grid[i][j] = P(home i, away j) as a fraction.
+    Returns None if the grid or actual score is unavailable.
+    """
+    if not grid or not actual_score or "-" not in actual_score:
+        return None
+    try:
+        ah, aa = (int(x) for x in actual_score.split("-", 1))
+    except ValueError:
+        return None
+    flat = [p for row in grid for p in row]
+    p_top = max(flat) if flat else 0
+    if p_top <= 0:
+        return None
+    p_actual = grid[ah][aa] if ah < len(grid) and aa < len(grid[ah]) else 0.0
+    return round(100 * (p_actual / p_top) ** 0.5)
+
+
 def match_predictions(fixtures: list[dict], predictions: dict,
-                      group: str) -> list[dict]:
+                      results: dict, group: str) -> list[dict]:
     """
     Per-fixture prediction rows for the probability bars + detail dropdowns.
     Always returns a row per group fixture; fixtures whose prediction entry is
     still all-null (skeleton, not yet run) render as 'pending'.
 
-    `predicted_scoreline` is passed through verbatim from predictions.json —
-    the scoreline (a bare score like "2-0") is computed by match_runner when it
-    writes the file. The UI does not derive or override it.
+    `predicted_scoreline` and `top_outcome` are passed through verbatim from
+    predictions.json — both are computed by match_runner when it writes the file.
+    `actual_score` comes from results.json ("—" until the match is played), and
+    `prediction_score` grades the prediction against that actual once known.
     """
     out = []
     for f in fixtures_in_group(fixtures, group):
         fid = f.get("id")
         p = predictions.get(fid, {})
+        grid = p.get("scoreline_grid")
+
+        res = results.get(fid, {})
+        actual = None
+        if res.get("played") and res.get("home_score") is not None \
+                and res.get("away_score") is not None:
+            actual = f"{res['home_score']}-{res['away_score']}"
+
         out.append({
             "fixture_id": fid,
             "home": f.get("home"),
@@ -331,6 +362,9 @@ def match_predictions(fixtures: list[dict], predictions: dict,
             "expected_goals": p.get("expected_goals"),
             "predicted_scoreline": p.get("predicted_scoreline"),
             "top_scorelines": p.get("top_scorelines"),
+            "top_outcome": p.get("top_outcome"),                   # req 1 (from file)
+            "actual_score": actual or "—",                          # req 2
+            "prediction_score": prediction_score(grid, actual),     # req 3
             "has_prediction": _is_populated(p),
         })
     return out
