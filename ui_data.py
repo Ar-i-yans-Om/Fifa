@@ -308,41 +308,26 @@ def _is_populated(p: dict) -> bool:
     return bool(p.get("top_scorelines"))
 
 
-def _evaluation_metrics(pred: dict, actual_score):
+def prediction_score(grid, actual_score):
     """
-    Three binary accuracy checks comparing the prediction to the actual result.
-    Each is True/False once the match is played, or None while it isn't (or when
-    the needed inputs are missing):
-
-      scoreline_match : predicted scoreline == actual scoreline (exact).
-      result_match    : the model's most-likely outcome (argmax of the home/draw/
-                        away win probabilities) == the actual outcome.
-      gd_match        : predicted goal difference (home-away, from the predicted
-                        scoreline) == actual goal difference.
+    0–100: how close reality was to the model's best guess, on the model's own
+    probability scale. score = 100 * sqrt(p_actual / p_top) — non-linear, so an
+    actual that matched a near-tied 2nd-most-likely cell still scores high, while
+    the tail drops off smoothly. grid[i][j] = P(home i, away j) as a fraction.
+    Returns None if the grid or actual score is unavailable.
     """
-    out = {"scoreline_match": None, "result_match": None, "gd_match": None}
-    if not actual_score or "-" not in str(actual_score):
-        return out
+    if not grid or not actual_score or "-" not in str(actual_score):
+        return None
     try:
         ah, aa = (int(x) for x in str(actual_score).split("-", 1))
     except ValueError:
-        return out
-
-    phg, pag = _parse_scoreline(pred.get("predicted_scoreline"))
-
-    if phg is not None and pag is not None:
-        out["scoreline_match"] = (phg == ah and pag == aa)
-        out["gd_match"] = ((phg - pag) == (ah - aa))
-
-    ph = pred.get("prob_home_win")
-    pd = pred.get("prob_draw")
-    pa = pred.get("prob_away_win")
-    if None not in (ph, pd, pa):
-        pred_outcome = max(((ph, "H"), (pd, "D"), (pa, "A")))[1]
-        actual_outcome = "H" if ah > aa else "A" if aa > ah else "D"
-        out["result_match"] = (pred_outcome == actual_outcome)
-
-    return out
+        return None
+    flat = [p for row in grid for p in row]
+    p_top = max(flat) if flat else 0
+    if p_top <= 0:
+        return None
+    p_actual = grid[ah][aa] if ah < len(grid) and aa < len(grid[ah]) else 0.0
+    return round(100 * (p_actual / p_top) ** 0.5)
 
 
 def match_predictions(fixtures: list[dict], predictions: dict,
@@ -354,21 +339,20 @@ def match_predictions(fixtures: list[dict], predictions: dict,
 
     `predicted_scoreline` is passed through verbatim from predictions.json.
     `actual_score` comes from results.json ("—" until the match is played), and
-    the three binary metrics (scoreline_match / result_match / gd_match) grade the
-    prediction against that actual once it's known (None until then).
+    `prediction_score` grades the prediction against that actual once known
+    (None until then).
     """
     out = []
     for f in fixtures_in_group(fixtures, group):
         fid = f.get("id")
         p = predictions.get(fid, {})
+        grid = p.get("scoreline_grid")
 
         res = results.get(fid, {})
         actual = None
         if res.get("played") and res.get("home_score") is not None \
                 and res.get("away_score") is not None:
             actual = f"{res['home_score']}-{res['away_score']}"
-
-        metrics = _evaluation_metrics(p, actual)
 
         out.append({
             "fixture_id": fid,
@@ -382,9 +366,7 @@ def match_predictions(fixtures: list[dict], predictions: dict,
             "predicted_scoreline": p.get("predicted_scoreline"),
             "top_scorelines": p.get("top_scorelines"),
             "actual_score": actual or "—",
-            "scoreline_match": metrics["scoreline_match"],
-            "result_match": metrics["result_match"],
-            "gd_match": metrics["gd_match"],
+            "prediction_score": prediction_score(grid, actual),
             "has_prediction": _is_populated(p),
         })
     return out
