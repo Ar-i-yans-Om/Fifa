@@ -16,6 +16,7 @@ per-match predictions so there's only one thing to persist.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from collections import defaultdict
 
@@ -224,59 +225,61 @@ def current_standings(fixtures: list[dict], results: dict, group: str) -> list[d
     return rows
 
 
+def _parse_scoreline(sl) -> tuple:
+    """
+    Extract (home_goals, away_goals) from a predicted scoreline string such as
+    'Mexico 2-0 South Africa' or a bare '2-0'. The format is always
+    'HOME h-a AWAY', so the first number is the home goals. Returns (None, None)
+    if no score can be parsed.
+    """
+    if not sl:
+        return None, None
+    m = re.search(r"(\d+)\s*-\s*(\d+)", str(sl))
+    if not m:
+        return None, None
+    return int(m.group(1)), int(m.group(2))
+
+
 def predicted_standings(fixtures: list[dict], results: dict,
                         predictions: dict, group: str) -> list[dict]:
     """
-    Projected final table. Starts from actual played results, then for every
-    UNPLAYED fixture awards points by the prediction's most-likely outcome
-    (home win / draw / away win). Expected goals feed GF/GA when present so the
-    projected GD is meaningful; falls back to the predicted scoreline, else 0.
+    Projected final table built PURELY from the model's predicted scorelines.
 
-    Returns rows tagged with 'delta' (up/down/flat) vs the current table.
+    Every group fixture that has a populated prediction contributes its
+    PREDICTED scoreline — W/D/L, GF, GA and GD are all derived from that
+    scoreline, never from the actual result. Actual results are intentionally
+    ignored here, so this table does NOT change when live scores are entered;
+    it is the model's standalone view of how the group should finish.
+
+    Fixtures whose prediction hasn't been generated yet (skeleton entries) are
+    skipped, so before the whole group is run the projection is partial — the
+    UI surfaces that via group_prediction_status().
+
+    Rows carry a 'delta' (up/down/flat) showing where each team sits in this
+    projection relative to the current live table — purely a visual comparison;
+    it does not alter the projected figures.
     """
-    # baseline = whatever has actually been played
-    base_current = {r["team"]: r for r in current_standings(fixtures, results, group)}
-    table = {t: dict(base_current.get(t, _blank_row(t))) for t in teams_in_group(fixtures, group)}
-    for r in table.values():
-        r.pop("GD", None)  # recompute at the end
+    table = {t: _blank_row(t) for t in teams_in_group(fixtures, group)}
 
     for f in fixtures_in_group(fixtures, group):
-        fid = f.get("id")
-        if results.get(fid, {}).get("played"):
-            continue  # already counted in baseline
-        pred = predictions.get(fid)
+        pred = predictions.get(f.get("id"))
         if not _is_populated(pred):
-            continue  # skeleton entry, pipeline hasn't run this fixture yet
+            continue
         h, a = f.get("home"), f.get("away")
         if h not in table or a not in table:
             continue
 
-        ph = pred.get("prob_home_win", 0)
-        pd = pred.get("prob_draw", 0)
-        pa = pred.get("prob_away_win", 0)
-
-        # expected goals -> projected GF/GA (rounded), else parse scoreline
-        eg = pred.get("expected_goals") or {}
-        hg, ag = eg.get("home"), eg.get("away")
+        hg, ag = _parse_scoreline(pred.get("predicted_scoreline"))
         if hg is None or ag is None:
-            sl = pred.get("predicted_scoreline")
-            if sl and "-" in sl:
-                try:
-                    hg, ag = (int(x) for x in sl.split("-", 1))
-                except ValueError:
-                    hg, ag = 0, 0
-            else:
-                hg, ag = 0, 0
-        hg_r, ag_r = round(hg), round(ag)
+            continue
 
         table[h]["P"] += 1; table[a]["P"] += 1
-        table[h]["GF"] += hg_r; table[h]["GA"] += ag_r
-        table[a]["GF"] += ag_r; table[a]["GA"] += hg_r
+        table[h]["GF"] += hg; table[h]["GA"] += ag
+        table[a]["GF"] += ag; table[a]["GA"] += hg
 
-        outcome = max((ph, "H"), (pd, "D"), (pa, "A"))[1]
-        if outcome == "H":
+        if hg > ag:
             table[h]["W"] += 1; table[h]["Pts"] += 3; table[a]["L"] += 1
-        elif outcome == "A":
+        elif hg < ag:
             table[a]["W"] += 1; table[a]["Pts"] += 3; table[h]["L"] += 1
         else:
             table[h]["D"] += 1; table[a]["D"] += 1
@@ -286,7 +289,7 @@ def predicted_standings(fixtures: list[dict], results: dict,
     for r in rows:
         r["GD"] = r["GF"] - r["GA"]
 
-    # movement vs current ordering
+    # movement vs the current live ordering (comparison overlay only)
     cur_pos = {r["team"]: i for i, r in
                enumerate(current_standings(fixtures, results, group))}
     for new_pos, r in enumerate(rows):
@@ -305,26 +308,41 @@ def _is_populated(p: dict) -> bool:
     return bool(p.get("top_scorelines"))
 
 
-def prediction_score(grid, actual_score):
+def _evaluation_metrics(pred: dict, actual_score):
     """
-    0–100: how close reality was to the model's best guess, on the model's own
-    probability scale. score = 100 * sqrt(p_actual / p_top) — non-linear, so an
-    actual that matched a near-tied 2nd-most-likely cell still scores high, while
-    the tail drops off smoothly. grid[i][j] = P(home i, away j) as a fraction.
-    Returns None if the grid or actual score is unavailable.
+    Three binary accuracy checks comparing the prediction to the actual result.
+    Each is True/False once the match is played, or None while it isn't (or when
+    the needed inputs are missing):
+
+      scoreline_match : predicted scoreline == actual scoreline (exact).
+      result_match    : the model's most-likely outcome (argmax of the home/draw/
+                        away win probabilities) == the actual outcome.
+      gd_match        : predicted goal difference (home-away, from the predicted
+                        scoreline) == actual goal difference.
     """
-    if not grid or not actual_score or "-" not in actual_score:
-        return None
+    out = {"scoreline_match": None, "result_match": None, "gd_match": None}
+    if not actual_score or "-" not in str(actual_score):
+        return out
     try:
-        ah, aa = (int(x) for x in actual_score.split("-", 1))
+        ah, aa = (int(x) for x in str(actual_score).split("-", 1))
     except ValueError:
-        return None
-    flat = [p for row in grid for p in row]
-    p_top = max(flat) if flat else 0
-    if p_top <= 0:
-        return None
-    p_actual = grid[ah][aa] if ah < len(grid) and aa < len(grid[ah]) else 0.0
-    return round(100 * (p_actual / p_top) ** 0.5)
+        return out
+
+    phg, pag = _parse_scoreline(pred.get("predicted_scoreline"))
+
+    if phg is not None and pag is not None:
+        out["scoreline_match"] = (phg == ah and pag == aa)
+        out["gd_match"] = ((phg - pag) == (ah - aa))
+
+    ph = pred.get("prob_home_win")
+    pd = pred.get("prob_draw")
+    pa = pred.get("prob_away_win")
+    if None not in (ph, pd, pa):
+        pred_outcome = max(((ph, "H"), (pd, "D"), (pa, "A")))[1]
+        actual_outcome = "H" if ah > aa else "A" if aa > ah else "D"
+        out["result_match"] = (pred_outcome == actual_outcome)
+
+    return out
 
 
 def match_predictions(fixtures: list[dict], predictions: dict,
@@ -334,22 +352,23 @@ def match_predictions(fixtures: list[dict], predictions: dict,
     Always returns a row per group fixture; fixtures whose prediction entry is
     still all-null (skeleton, not yet run) render as 'pending'.
 
-    `predicted_scoreline` and `top_outcome` are passed through verbatim from
-    predictions.json — both are computed by match_runner when it writes the file.
+    `predicted_scoreline` is passed through verbatim from predictions.json.
     `actual_score` comes from results.json ("—" until the match is played), and
-    `prediction_score` grades the prediction against that actual once known.
+    the three binary metrics (scoreline_match / result_match / gd_match) grade the
+    prediction against that actual once it's known (None until then).
     """
     out = []
     for f in fixtures_in_group(fixtures, group):
         fid = f.get("id")
         p = predictions.get(fid, {})
-        grid = p.get("scoreline_grid")
 
         res = results.get(fid, {})
         actual = None
         if res.get("played") and res.get("home_score") is not None \
                 and res.get("away_score") is not None:
             actual = f"{res['home_score']}-{res['away_score']}"
+
+        metrics = _evaluation_metrics(p, actual)
 
         out.append({
             "fixture_id": fid,
@@ -362,9 +381,10 @@ def match_predictions(fixtures: list[dict], predictions: dict,
             "expected_goals": p.get("expected_goals"),
             "predicted_scoreline": p.get("predicted_scoreline"),
             "top_scorelines": p.get("top_scorelines"),
-            "top_outcome": p.get("top_outcome"),                   # req 1 (from file)
-            "actual_score": actual or "—",                          # req 2
-            "prediction_score": prediction_score(grid, actual),     # req 3
+            "actual_score": actual or "—",
+            "scoreline_match": metrics["scoreline_match"],
+            "result_match": metrics["result_match"],
+            "gd_match": metrics["gd_match"],
             "has_prediction": _is_populated(p),
         })
     return out
