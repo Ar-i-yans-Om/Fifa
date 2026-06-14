@@ -300,6 +300,17 @@ def standings_card(rows, kind, focused, status=None, show_header=True):
     )
 
 
+def _metric_html(label, val):
+    """Render a binary evaluation metric as a tick / cross, or — when not graded yet."""
+    if val is True:
+        body = "<div class='v' style='color:#16a34a;font-size:1.4rem'>✓</div>"
+    elif val is False:
+        body = "<div class='v' style='color:#dc2626;font-size:1.4rem'>✗</div>"
+    else:
+        body = "<div class='v'>—</div>"
+    return f"<div class='detail-block'><div class='h'>{label}</div>{body}</div>"
+
+
 def match_block(m):
     a, b = m["home"], m["away"]
     pa, pd, pb = m["prob_home_win"], m["prob_draw"], m["prob_away_win"]
@@ -366,11 +377,9 @@ def match_block(m):
                     unsafe_allow_html=True,
                 )
             with cols[2]:
-                bo = m.get("top_outcome")
-                bo_val = f"{bo['team']} {bo['score']} · {bo['prob']}%" if bo else "—"
                 st.markdown(
-                    f"<div class='detail-block'><div class='h'>Top Outcome</div>"
-                    f"<div class='v'>{bo_val}</div></div>",
+                    f"<div class='detail-block'><div class='h'>Actual Scoreline</div>"
+                    f"<div class='v'>{m.get('actual_score', '—')}</div></div>",
                     unsafe_allow_html=True,
                 )
 
@@ -378,30 +387,23 @@ def match_block(m):
 
             cols2 = st.columns(3)
             with cols2[0]:
-                st.markdown(
-                    f"<div class='detail-block'><div class='h'>Actual Scoreline</div>"
-                    f"<div class='v'>{m.get('actual_score', '—')}</div></div>",
-                    unsafe_allow_html=True,
-                )
+                st.markdown(_metric_html("Scoreline Match", m.get("scoreline_match")),
+                            unsafe_allow_html=True)
             with cols2[1]:
-                ps = m.get("prediction_score")
-                ps_val = f"{ps}%" if ps is not None else "—"
-                st.markdown(
-                    f"<div class='detail-block'><div class='h'>Prediction Score</div>"
-                    f"<div class='v'>{ps_val}</div></div>",
-                    unsafe_allow_html=True,
-                )
+                st.markdown(_metric_html("Result Match", m.get("result_match")),
+                            unsafe_allow_html=True)
             with cols2[2]:
-                if tops:
-                    pills = "".join(
-                        f"<span class='scoreline-pill'>{t.get('score')} · {t.get('prob')}%</span>"
-                        for t in tops
-                    )
-                else:
-                    pills = "<div class='v'>—</div>"
+                st.markdown(_metric_html("Goal Difference", m.get("gd_match")),
+                            unsafe_allow_html=True)
+
+            if tops:
+                pills = "".join(
+                    f"<span class='scoreline-pill'>{t.get('score')} · {t.get('prob')}%</span>"
+                    for t in tops
+                )
                 st.markdown(
-                    f"<div class='detail-block'><div class='h'>Most Likely Scorelines</div>"
-                    f"{pills}</div>",
+                    f"<div style='margin-top:12px'><div class='detail-block'>"
+                    f"<div class='h'>Most Likely Scorelines</div>{pills}</div></div>",
                     unsafe_allow_html=True,
                 )
 
