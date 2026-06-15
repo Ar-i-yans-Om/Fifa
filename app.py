@@ -8,11 +8,38 @@ pipeline writes. See ui_data.py for the predictions.json contract.
 Run:  streamlit run app.py
 """
 
+import base64
 import re
+from functools import lru_cache
+from pathlib import Path
 
 import streamlit as st
 
 import ui_data as D
+
+# --------------------------------------------------------------------------- #
+#  ASSETS  (theme images live in ./assets, anchored to this file so the path
+#  resolves identically locally and on Streamlit Cloud / Linux deploy)
+# --------------------------------------------------------------------------- #
+ASSETS = Path(__file__).parent / "assets"
+HEADER_IMG = ASSETS / "Siuumulator-header.png"
+THEME_GROUP_IMG = ASSETS / "Group-stage-theme-siumulator.png"
+THEME_KNOCKOUT_IMG = ASSETS / "knockout-stage-siumulator.png"
+
+
+@lru_cache(maxsize=8)
+def _data_uri(path_str):
+    """Read an image file and return a base64 data-URI, or '' if missing.
+
+    Inlining keeps the image baked into the served HTML, so there is never a
+    runtime file-path lookup to break between local and deployed environments.
+    """
+    p = Path(path_str)
+    try:
+        raw = p.read_bytes()
+    except OSError:
+        return ""
+    return "data:image/png;base64," + base64.b64encode(raw).decode("ascii")
 
 # --------------------------------------------------------------------------- #
 #  PAGE CONFIG
@@ -25,16 +52,20 @@ st.set_page_config(
 )
 
 # --------------------------------------------------------------------------- #
-#  THEME PALETTE
+#  THEME PALETTE  (dark "glass" theme to match the SIUUUMULATOR slate)
 # --------------------------------------------------------------------------- #
-PRIMARY = "#0a1f44"
-BLUE = "#1a5fd4"
-BLUE_SOFT = "#e8f0fe"
-WIN = "#1a5fd4"
-DRAW = "#cbd5e1"
-LOSS = "#0a1f44"
-INK = "#0a1f44"
-MUTED = "#64748b"
+PRIMARY = "#0a1424"      # deep navy base (matches group-theme darkest tone)
+BLUE = "#2f6bff"         # electric blue accent (the chalkboard blue)
+BLUE_SOFT = "#16244a"    # translucent-ish soft blue panel tint
+WIN = "#2f6bff"          # home-win bar
+DRAW = "#5a6b86"         # draw bar (muted slate-blue, readable on dark)
+LOSS = "#c9a227"         # away-win bar (gold accent, ties to knockout theme)
+INK = "#eaf1ff"          # primary text on dark (near-white, blue tint)
+MUTED = "#8fa3c4"        # secondary/label text on dark
+GOLD = "#e9b949"         # gold highlight (titles / pred labels)
+CARD_BG = "rgba(16, 26, 50, 0.72)"      # dark glass card fill
+CARD_BORDER = "rgba(120, 150, 220, 0.18)"
+CARD_BG_SOLID = "#0e1830"               # opaque fallback for nested rows
 
 st.markdown(
     f"""
@@ -42,34 +73,56 @@ st.markdown(
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap');
 
     html, body, [class*="css"] {{ font-family: 'Inter', -apple-system, sans-serif; }}
-    .stApp {{ background: #ffffff; }}
-    .block-container {{ padding-top: 1.4rem; max-width: 1180px; }}
 
-    /* ---------- HEADER ---------- */
-    .app-header {{
-        display: flex; align-items: center; gap: 14px;
-        padding: 18px 26px; margin-bottom: 18px;
-        background: linear-gradient(100deg, {PRIMARY} 0%, {BLUE} 130%);
-        border-radius: 14px; box-shadow: 0 6px 22px rgba(10,31,68,0.18);
+    /* ---------- DARK THEME BASE ----------
+       The page background is set per-active-tab further down via .stApp[data-theme].
+       Default (group) tone here so first paint is never white. */
+    .stApp {{
+        background-color: {PRIMARY};
+        background-position: center top;
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
     }}
-    .app-header .ball {{ font-size: 34px; line-height: 1; }}
-    .app-header h1 {{
-        font-family: 'Barlow Condensed', sans-serif; color: #fff; margin: 0;
-        font-size: 36px; font-weight: 800; letter-spacing: 1.5px;
+    /* dark scrim over the textured image so cards/text stay readable */
+    .stApp::before {{
+        content: ""; position: fixed; inset: 0; z-index: 0;
+        background: linear-gradient(180deg,
+            rgba(8,14,28,0.55) 0%, rgba(8,14,28,0.78) 60%, rgba(8,14,28,0.88) 100%);
+        pointer-events: none;
     }}
-    .app-header .sub {{
-        color: #b9cdf2; font-size: 12.5px; font-weight: 500;
-        letter-spacing: 2px; text-transform: uppercase; margin-top: 2px;
+    .block-container {{ padding-top: 1.2rem; max-width: 1180px; position: relative; z-index: 1; }}
+    /* lift Streamlit's own containers above the scrim */
+    .main, .block-container, [data-testid="stHeader"] {{ background: transparent !important; }}
+    [data-testid="stHeader"] {{ z-index: 2; }}
+
+    /* ---------- HEADER IMAGE ---------- */
+    /* PNG is cropped tight to the artwork (aspect ~4.29:1), so width:100% +
+       height:auto renders it large and full-width with no padding/clipping.
+       max-width caps it on very wide screens; tune that if you want. */
+    .app-header-img {{
+        display: block;
+        width: 100%;
+        height: auto;
+        max-width: 1180px;
+        margin: 6px auto 16px auto;
+        filter: drop-shadow(0 6px 18px rgba(0,0,0,0.40));
     }}
 
     /* ---------- TABS ---------- */
-    .stTabs [data-baseweb="tab-list"] {{ gap: 4px; border-bottom: 2px solid #eef2f7; }}
+    .stTabs [data-baseweb="tab-list"] {{
+        gap: 4px; border-bottom: 1px solid {CARD_BORDER}; background: transparent;
+    }}
     .stTabs [data-baseweb="tab"] {{
         font-weight: 600; font-size: 14px; color: {MUTED};
-        padding: 8px 16px; border-radius: 8px 8px 0 0;
+        padding: 8px 16px; border-radius: 8px 8px 0 0; background: transparent;
     }}
-    .stTabs [aria-selected="true"] {{ color: {BLUE} !important; background: {BLUE_SOFT}; }}
-    .stTabs [aria-disabled="true"] {{ color: #cbd5e1 !important; }}
+    .stTabs [aria-selected="true"] {{
+        color: {INK} !important;
+        background: {BLUE_SOFT};
+        border-bottom: 2px solid {GOLD};
+    }}
+    .stTabs [aria-disabled="true"] {{ color: #46577a !important; }}
 
     /* ---------- SEGMENTED CONTROL (LIVE | PROJECTED), centered ---------- */
     div[data-testid="stSegmentedControl"] {{
@@ -79,69 +132,68 @@ st.markdown(
     div[data-testid="stSegmentedControl"] > * {{
         margin-left: auto !important; margin-right: auto !important;
         display: inline-flex !important; width: fit-content !important;
-        background: #eef1f5 !important; border-radius: 10px; padding: 3px;
-        gap: 3px; border: 1px solid #e2e8f0 !important;
+        background: rgba(8,14,28,0.55) !important; border-radius: 10px; padding: 3px;
+        gap: 3px; border: 1px solid {CARD_BORDER} !important;
     }}
-    /* base segment: white, grey text, no red accent anywhere */
     div[data-testid="stSegmentedControl"] button {{
         border: 1px solid transparent !important;
-        background: #ffffff !important;
-        color: {INK} !important;
+        background: transparent !important;
+        color: {MUTED} !important;
         font-weight: 700 !important; font-size: 12px !important;
         letter-spacing: 1.5px !important;
         padding: 6px 22px !important; border-radius: 8px !important;
         box-shadow: none !important; outline: none !important;
     }}
-    div[data-testid="stSegmentedControl"] button p {{ color: {INK} !important; }}
-    /* hover / focus must not reintroduce the theme's red */
+    div[data-testid="stSegmentedControl"] button p {{ color: {MUTED} !important; }}
     div[data-testid="stSegmentedControl"] button:hover,
     div[data-testid="stSegmentedControl"] button:focus,
     div[data-testid="stSegmentedControl"] button:active {{
-        color: {INK} !important; border-color: #e2e8f0 !important;
+        color: {INK} !important; border-color: {CARD_BORDER} !important;
         box-shadow: none !important; outline: none !important;
     }}
-    /* selected segment: very light grey, dark text (override blue theme accent) */
     div[data-testid="stSegmentedControl"] button[aria-checked="true"],
     div[data-testid="stSegmentedControl"] button[aria-selected="true"],
     div[data-testid="stSegmentedControl"] button[data-selected="true"],
     div[data-testid="stSegmentedControl"] button[kind="segmented_controlActive"] {{
-        background: #e2e8f0 !important;
-        color: {INK} !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: inset 0 1px 2px rgba(10,31,68,0.06) !important;
+        background: {BLUE} !important;
+        color: #ffffff !important;
+        border-color: {BLUE} !important;
+        box-shadow: 0 2px 8px rgba(47,107,255,0.35) !important;
     }}
     div[data-testid="stSegmentedControl"] button[aria-checked="true"] *,
     div[data-testid="stSegmentedControl"] button[aria-selected="true"] *,
     div[data-testid="stSegmentedControl"] button[data-selected="true"] *,
     div[data-testid="stSegmentedControl"] button[kind="segmented_controlActive"] * {{
-        color: {INK} !important;
+        color: #ffffff !important;
     }}
 
-    /* ---------- STANDINGS TABLE ---------- */
+    /* ---------- STANDINGS TABLE (dark glass) ---------- */
     .tbl-card {{
-        border: 1px solid #eef2f7; border-radius: 12px;
-        padding: 14px 16px 10px 16px; background: #fff;
-        box-shadow: 0 2px 10px rgba(10,31,68,0.05); transition: all .25s ease;
+        border: 1px solid {CARD_BORDER}; border-radius: 12px;
+        padding: 14px 16px 10px 16px;
+        background: {CARD_BG};
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 6px 24px rgba(0,0,0,0.35); transition: all .25s ease;
     }}
-    .tbl-card.dim {{ opacity: 0.40; filter: grayscale(0.4); }}
+    .tbl-card.dim {{ opacity: 0.40; filter: grayscale(0.3); }}
     .tbl-head {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }}
     .tbl-head .lbl {{ font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:{BLUE}; }}
-    .tbl-head .lbl.pred {{ color:{PRIMARY}; }}
+    .tbl-head .lbl.pred {{ color:{GOLD}; }}
     .badge {{ font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px;
-        background:{BLUE_SOFT}; color:{BLUE}; letter-spacing:1px; }}
+        background:{BLUE_SOFT}; color:{INK}; letter-spacing:1px; border:1px solid {CARD_BORDER}; }}
     table.stand {{ width:100%; border-collapse:collapse; font-size:13.5px; }}
     table.stand th {{ text-align:left; color:{MUTED}; font-weight:600; font-size:11px;
-        text-transform:uppercase; letter-spacing:0.5px; padding:4px 6px; border-bottom:1px solid #eef2f7; }}
+        text-transform:uppercase; letter-spacing:0.5px; padding:4px 6px; border-bottom:1px solid {CARD_BORDER}; }}
     table.stand th.num, table.stand td.num {{ text-align:center; }}
-    table.stand td {{ padding:7px 6px; border-bottom:1px solid #f5f7fa; color:{INK}; }}
+    table.stand td {{ padding:7px 6px; border-bottom:1px solid rgba(120,150,220,0.10); color:{INK}; }}
     table.stand tr:last-child td {{ border-bottom:none; }}
     table.stand td.team {{ font-weight:600; }}
-    table.stand td.pts {{ font-weight:800; color:{BLUE}; }}
+    table.stand td.pts {{ font-weight:800; color:{GOLD}; }}
     .pos {{ display:inline-block; width:20px; height:20px; line-height:20px; text-align:center;
-        border-radius:6px; font-size:11px; font-weight:700; background:#f1f5f9; color:{MUTED}; margin-right:2px; }}
+        border-radius:6px; font-size:11px; font-weight:700; background:rgba(120,150,220,0.14); color:{MUTED}; margin-right:2px; }}
     .pos.q {{ background:{BLUE}; color:#fff; }}
-    .delta-up {{ color:#16a34a; font-weight:700; }}
-    .delta-down {{ color:#dc2626; font-weight:700; }}
+    .delta-up {{ color:#34d399; font-weight:700; }}
+    .delta-down {{ color:#f87171; font-weight:700; }}
     .delta-flat {{ color:{MUTED}; }}
 
     /* ---------- MATCH PROB BAR ---------- */
@@ -149,15 +201,15 @@ st.markdown(
         font-weight:600; color:{INK}; margin-bottom:6px; }}
     .match-teams .vs {{ color:{MUTED}; font-weight:500; font-size:12px; }}
     .prob-bar {{ display:flex; width:100%; height:34px; border-radius:8px; overflow:hidden;
-        box-shadow: inset 0 0 0 1px #eef2f7; }}
+        box-shadow: inset 0 0 0 1px {CARD_BORDER}; }}
     .prob-seg {{ display:flex; align-items:center; justify-content:center; font-size:12.5px;
         font-weight:700; color:#fff; white-space:nowrap; transition:all .3s ease; }}
     .seg-win {{ background:{WIN}; }}
     .seg-draw {{ background:{DRAW}; color:{INK}; }}
-    .seg-loss {{ background:{LOSS}; }}
+    .seg-loss {{ background:{LOSS}; color:#1a1303; }}
     .prob-pending {{ display:flex; align-items:center; justify-content:center; width:100%;
-        height:34px; border-radius:8px; background:#f8fafc; color:{MUTED};
-        font-size:12px; font-weight:600; box-shadow: inset 0 0 0 1px #eef2f7; }}
+        height:34px; border-radius:8px; background:rgba(8,14,28,0.45); color:{MUTED};
+        font-size:12px; font-weight:600; box-shadow: inset 0 0 0 1px {CARD_BORDER}; }}
     .prob-legend {{ display:flex; gap:18px; margin:4px 2px 0 2px; font-size:11px; color:{MUTED}; }}
     .prob-legend .k {{ display:flex; align-items:center; gap:5px; }}
     .dot {{ width:9px; height:9px; border-radius:3px; display:inline-block; }}
@@ -165,13 +217,17 @@ st.markdown(
     /* ---------- DETAIL DROPDOWN ---------- */
     .detail-block .h {{ font-size:10.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
         color:{MUTED}; margin-bottom:4px; }}
-    .detail-block .v {{ font-size:18px; font-weight:800; color:{BLUE}; font-family:'Barlow Condensed',sans-serif; }}
-    .scoreline-pill {{ display:inline-block; background:{BLUE_SOFT}; color:{BLUE}; font-weight:700;
-        padding:3px 10px; border-radius:7px; margin:2px 6px 2px 0; font-size:12.5px; }}
-    .proj-note {{ margin-top:10px; padding:7px 10px; border-radius:8px; background:#fff8e6;
-        color:#92710c; font-size:11.5px; font-weight:600; border:1px solid #f3e2b3; }}
+    .detail-block .v {{ font-size:18px; font-weight:800; color:{INK}; font-family:'Barlow Condensed',sans-serif; }}
+    .scoreline-pill {{ display:inline-block; background:{BLUE_SOFT}; color:{INK}; font-weight:700;
+        padding:3px 10px; border-radius:7px; margin:2px 6px 2px 0; font-size:12.5px; border:1px solid {CARD_BORDER}; }}
+    .proj-note {{ margin-top:10px; padding:7px 10px; border-radius:8px; background:rgba(233,185,73,0.10);
+        color:{GOLD}; font-size:11.5px; font-weight:600; border:1px solid rgba(233,185,73,0.30); }}
 
     /* ---------- EXPANDER ("Match details") ---------- */
+    details[data-testid="stExpander"], div[data-testid="stExpander"] {{
+        background: {CARD_BG} !important; border: 1px solid {CARD_BORDER} !important;
+        border-radius: 10px !important; backdrop-filter: blur(8px);
+    }}
     details[data-testid="stExpander"] summary,
     div[data-testid="stExpander"] summary {{
         display: flex !important; align-items: center !important;
@@ -185,32 +241,38 @@ st.markdown(
         text-align: center !important; width: auto !important; flex: 0 0 auto !important;
     }}
     div[data-testid="stExpander"] summary svg {{ fill: {INK} !important; color: {INK} !important; }}
-    div[data-testid="stExpander"] details {{ border-radius: 10px !important; }}
     .md-divider {{ display:flex; align-items:center; gap:10px; margin:18px 0 10px 0; }}
     .md-divider .lbl {{ font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700;
-        letter-spacing:1.5px; text-transform:uppercase; color:{BLUE}; white-space:nowrap; }}
-    .md-divider .line {{ flex:1; height:1px; background:#eef2f7; }}
+        letter-spacing:1.5px; text-transform:uppercase; color:{GOLD}; white-space:nowrap; }}
+    .md-divider .line {{ flex:1; height:1px; background:{CARD_BORDER}; }}
     .md-divider .tag {{ font-size:10px; font-weight:600; color:{MUTED}; }}
+
+    /* generic: any stray Streamlit caption/markdown text stays light on dark */
+    .stCaption, [data-testid="stCaptionContainer"], .stMarkdown p {{ color:{MUTED} !important; }}
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # --------------------------------------------------------------------------- #
-#  HEADER
+#  HEADER  (image banner; falls back to text if the asset is missing)
 # --------------------------------------------------------------------------- #
-st.markdown(
-    """
-    <div class="app-header">
-        <span class="ball">⚽</span>
-        <div>
-            <h1>FIFA WC 2026 SIMULATION ENGINE</h1>
-            <div class="sub">Multi-Agent Match Prediction · Group Stage</div>
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+_header_uri = _data_uri(str(HEADER_IMG))
+if _header_uri:
+    st.markdown(
+        f"<img class='app-header-img' src='{_header_uri}' alt='SIUUUMULATOR' />",
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        "<div style='font-family:\"Barlow Condensed\",sans-serif;font-size:38px;"
+        "font-weight:800;letter-spacing:1.5px;color:#e9b949;margin:6px 0 4px 0'>"
+        "SIUUUMULATOR</div>"
+        "<div style='font-size:12.5px;font-weight:500;letter-spacing:2px;"
+        "text-transform:uppercase;color:#8fa3c4;margin-bottom:16px'>"
+        "FIFA WC 2026 Simulation Engine · Multi-Agent Match Prediction</div>",
+        unsafe_allow_html=True,
+    )
 
 # --------------------------------------------------------------------------- #
 #  LOAD DATA (cached; invalidates when any source file's mtime changes)
@@ -298,6 +360,16 @@ def standings_card(rows, kind, focused, status=None, show_header=True):
         """,
         unsafe_allow_html=True,
     )
+
+
+def _call_html(label, val):
+    """Render the Outcome Call verdict as a coloured word (no emoji), or — if ungraded."""
+    colors = {"Bullseye": "#16a34a", "On Target": "#d97706", "Off Target": "#dc2626"}
+    if val in colors:
+        body = f"<div class='v' style='color:{colors[val]}'>{val}</div>"
+    else:
+        body = "<div class='v'>—</div>"
+    return f"<div class='detail-block'><div class='h'>{label}</div>{body}</div>"
 
 
 def match_block(m):
@@ -401,6 +473,9 @@ def match_block(m):
                     f"<div class='v'>{ps_val}</div></div>",
                     unsafe_allow_html=True,
                 )
+            with cols2[2]:
+                st.markdown(_call_html("Final Outcome", m.get("outcome_call")),
+                            unsafe_allow_html=True)
 
     st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
@@ -442,7 +517,7 @@ def render_group(letter):
     st.markdown("<div style='height:22px'></div>", unsafe_allow_html=True)
     st.markdown(
         "<div style=\"font-family:'Barlow Condensed',sans-serif;font-size:22px;"
-        "font-weight:700;color:#0a1f44;letter-spacing:0.5px;text-transform:uppercase\">"
+        "font-weight:700;color:#eaf1ff;letter-spacing:0.5px;text-transform:uppercase\">"
         "Match Probabilities</div>",
         unsafe_allow_html=True,
     )
@@ -473,6 +548,33 @@ def render_group(letter):
 # --------------------------------------------------------------------------- #
 tab_groups, tab_bracket = st.tabs(["Groups", "Predicted Knockout Bracket"])
 
+# --- theme background follows the visually-active top-level tab ---------------
+# Streamlit renders BOTH tab panels in the DOM at once and marks the inactive
+# one with [hidden] / aria-hidden. We can't branch in Python (both `with`
+# blocks run every rerun), so we drive the .stApp background purely in CSS:
+#   default        -> group-stage theme
+#   knockout panel visible -> knockout theme
+# The selector keys off the 2nd tabpanel (index 1) NOT being hidden.
+_group_uri = _data_uri(str(THEME_GROUP_IMG))
+_knock_uri = _data_uri(str(THEME_KNOCKOUT_IMG))
+if _group_uri or _knock_uri:
+    st.markdown(
+        f"""
+        <style>
+        /* default page background = group-stage theme */
+        .stApp {{ background-image: url('{_group_uri}'); }}
+        /* when the knockout tab panel (2nd tablist child) is the visible one,
+           swap the whole-page background to the knockout theme.              */
+        .stApp:has(
+            [data-baseweb="tab-panel"]:nth-of-type(2):not([hidden]):not([aria-hidden="true"])
+        ) {{
+            background-image: url('{_knock_uri}');
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 with tab_groups:
     if not GROUPS:
         st.warning("No fixtures found. Check that data/fixtures.json exists at the project root.")
@@ -483,4 +585,13 @@ with tab_groups:
                 render_group(g)
 
 with tab_bracket:
-    st.info("Knockout bracket coming soon — disabled for now.")
+    st.markdown(
+        "<div style='text-align:center;padding:60px 20px'>"
+        "<div style=\"font-family:'Barlow Condensed',sans-serif;font-size:30px;"
+        "font-weight:800;letter-spacing:1px;color:#e9b949\">KNOCKOUT BRACKET</div>"
+        "<div style='font-size:13px;font-weight:600;letter-spacing:1.5px;"
+        "text-transform:uppercase;color:#8fa3c4;margin-top:8px'>"
+        "Coming soon — the predicted bracket will render here once the group "
+        "stage is fully projected.</div></div>",
+        unsafe_allow_html=True,
+    )
