@@ -1661,75 +1661,75 @@
     "md": 1,
     "home": "Belgium",
     "away": "Egypt",
-    "prob_home_win": 56,
-    "prob_draw": 23,
-    "prob_away_win": 21,
+    "prob_home_win": 64,
+    "prob_draw": 22,
+    "prob_away_win": 15,
     "expected_goals": {
-      "home": 1.75,
-      "away": 0.95
+      "home": 1.95,
+      "away": 0.75
     },
     "predicted_scoreline": "Belgium 1-0 Egypt",
     "top_scorelines": [
       {
         "score": "1-0",
-        "prob": 11
-      },
-      {
-        "score": "1-1",
-        "prob": 11
+        "prob": 13
       },
       {
         "score": "2-0",
+        "prob": 13
+      },
+      {
+        "score": "1-1",
         "prob": 10
       }
     ],
     "top_outcome": {
       "team": "Belgium",
       "score": "3-1",
-      "prob": 6
+      "prob": 7
     },
     "scoreline_grid": [
       [
-        0.06397,
-        0.06169,
-        0.03024,
-        0.01015,
-        0.00341
+        0.06626,
+        0.05116,
+        0.02045,
+        0.00578,
+        0.00134
       ],
       [
-        0.11296,
-        0.10886,
-        0.05332,
-        0.01788,
-        0.00599
+        0.1308,
+        0.10087,
+        0.04027,
+        0.01137,
+        0.00263
       ],
       [
-        0.10031,
-        0.09658,
-        0.04726,
-        0.01583,
-        0.00529
+        0.12999,
+        0.10011,
+        0.03989,
+        0.01123,
+        0.00259
       ],
       [
-        0.05981,
-        0.05754,
-        0.02813,
-        0.00941,
-        0.00314
+        0.08687,
+        0.06681,
+        0.02656,
+        0.00746,
+        0.00171
       ],
       [
-        0.04104,
-        0.03943,
-        0.01923,
-        0.00641,
-        0.00212
+        0.04402,
+        0.0338,
+        0.0134,
+        0.00375,
+        0.00086
       ]
     ],
     "confidence": "high",
-    "headline": "Belgium win most likely (Belgium 1-0 Egypt).",
-    "narrative": "Baseline xG (pre-chaos): Belgium 1.75 vs Egypt 0.95; chaos folded into the grid below. 56%/23%/21% W/D/L. Both sides are employing high-press tactics, which will likely result in an end-to-end, chaotic match where Belgium's superior technical quality is challenged by Egypt's targeted exploitation of the space behind Belgium's high line.",
-    "model_vs_market": "Model gives Belgium 56% vs market 60% (edge -4%); draw 23% vs 24%; Egypt 21% vs 17%.",
-    "updated_at": "2026-06-15T21:15:13"
+    "headline": "Belgium enters as clear favorites to dominate through superior verticality and pressing intensity.",
+    "narrative": "Belgium's tactical blueprint relies on high-pressing traps designed to nullify Egypt's reliance on quick transitions, effectively isolating individual threats like Salah. Conversely, Egypt’s low block is structurally ill-equipped to handle Belgium's vertical progression once possession is won in the final third. The expected result is a match defined by sustained Belgian territorial dominance, with the weighted chaos mass accounting for the possibility of disrupted flow or isolated tactical errors.",
+    "model_vs_market": "The model displays a 2% edge in favor of Belgium compared to market consensus, suggesting the betting lines slightly undervalue Belgium's capacity to convert high-intensity pressure into sustained control.",
+    "updated_at": "2026-06-16T00:39:55"
   },
   "G2": {
     "fixture_id": "G2",
@@ -1737,75 +1737,75 @@
     "md": 1,
     "home": "Iran",
     "away": "New Zealand",
-    "prob_home_win": 70,
-    "prob_draw": 20,
-    "prob_away_win": 10,
+    "prob_home_win": 60,
+    "prob_draw": 24,
+    "prob_away_win": 17,
     "expected_goals": {
-      "home": 1.95,
-      "away": 0.55
+      "home": 1.75,
+      "away": 0.75
     },
-    "predicted_scoreline": "Iran 2-0 New Zealand",
+    "predicted_scoreline": "Iran 1-0 New Zealand",
     "top_scorelines": [
       {
         "score": "1-0",
-        "prob": 15
+        "prob": 14
       },
       {
         "score": "2-0",
-        "prob": 15
+        "prob": 13
       },
       {
-        "score": "3-0",
-        "prob": 10
+        "score": "1-1",
+        "prob": 11
       }
     ],
     "top_outcome": {
       "team": "Iran",
-      "score": "4-0",
-      "prob": 8
+      "score": "3-1",
+      "prob": 6
     },
     "scoreline_grid": [
       [
-        0.07828,
-        0.04447,
-        0.01321,
-        0.00285,
-        0.00065
+        0.0798,
+        0.0618,
+        0.02476,
+        0.00701,
+        0.00163
       ],
       [
-        0.1534,
-        0.08708,
-        0.02584,
-        0.00558,
-        0.00127
+        0.14109,
+        0.10914,
+        0.04368,
+        0.01235,
+        0.00286
       ],
       [
-        0.15104,
-        0.08566,
-        0.02539,
-        0.00547,
-        0.00125
+        0.12581,
+        0.09719,
+        0.03882,
+        0.01095,
+        0.00253
       ],
       [
-        0.09977,
-        0.05652,
-        0.01673,
-        0.0036,
-        0.00081
+        0.07561,
+        0.05832,
+        0.02324,
+        0.00653,
+        0.0015
       ],
       [
-        0.07948,
-        0.04494,
-        0.01325,
-        0.00283,
-        0.00064
+        0.03457,
+        0.02661,
+        0.01057,
+        0.00296,
+        0.00068
       ]
     ],
     "confidence": "high",
-    "headline": "Iran holds a decisive statistical advantage against a vulnerable New Zealand structure.",
-    "narrative": "Iran’s high-press intensity is fundamentally mismatched against New Zealand’s current tactical setup, creating a high probability of total field control. While New Zealand's 5-3-2 formation attempts to punish Iran’s aggressive fullbacks, the sheer volume of expected quality chances for Iran suggests they will stifle New Zealand before the counter-attack can manifest. The model reflects a consistent dominance where Iran creates sufficient margin to absorb variance.",
-    "model_vs_market": "The model identifies a significant 16% value edge on an Iran victory compared to the market, suggesting the bookmakers are overestimating New Zealand's defensive resilience in a 5-3-2 setup.",
-    "updated_at": "2026-06-15T21:16:10"
+    "headline": "Iran holds a decisive tactical and quality advantage, projecting a comfortable home victory.",
+    "narrative": "Both teams employing aggressive 4-3-3 structures will turn the pitch into a transitional battleground that disproportionately benefits Iran's higher baseline individual talent. While Iran faces injury-related depth issues, their ability to execute in high-pressure scenarios outweighs New Zealand's structural cohesion. The match is likely to remain competitive through the mid-field, but Iran's efficiency in the final third should ultimately resolve the deadlock.",
+    "model_vs_market": "The model identifies a significant 6% value edge on Iran compared to the betting market, suggesting that bookmakers are underestimating Iran's individual quality relative to the tactical environment.",
+    "updated_at": "2026-06-16T00:40:29"
   },
   "G3": {
     "fixture_id": "G3",
@@ -1953,18 +1953,18 @@
     "md": 1,
     "home": "Saudi Arabia",
     "away": "Uruguay",
-    "prob_home_win": 14,
-    "prob_draw": 23,
-    "prob_away_win": 63,
+    "prob_home_win": 17,
+    "prob_draw": 24,
+    "prob_away_win": 59,
     "expected_goals": {
-      "home": 0.65,
+      "home": 0.75,
       "away": 1.75
     },
     "predicted_scoreline": "Saudi Arabia 0-1 Uruguay",
     "top_scorelines": [
       {
         "score": "0-1",
-        "prob": 15
+        "prob": 14
       },
       {
         "score": "0-2",
@@ -1972,56 +1972,56 @@
       },
       {
         "score": "1-1",
-        "prob": 10
+        "prob": 11
       }
     ],
     "top_outcome": {
       "team": "Uruguay",
-      "score": "4-0",
-      "prob": 5
+      "score": "3-1",
+      "prob": 6
     },
     "scoreline_grid": [
       [
-        0.0871,
-        0.1528,
-        0.13481,
-        0.07989,
-        0.05433
+        0.08056,
+        0.14167,
+        0.12564,
+        0.07509,
+        0.03413
       ],
       [
-        0.05816,
-        0.10194,
-        0.08986,
-        0.0532,
-        0.0361
+        0.0624,
+        0.1096,
+        0.09707,
+        0.05793,
+        0.02628
       ],
       [
-        0.02003,
-        0.03507,
-        0.03088,
-        0.01826,
-        0.01235
+        0.02496,
+        0.04379,
+        0.03872,
+        0.02305,
+        0.01043
       ],
       [
-        0.00487,
-        0.00852,
-        0.00749,
-        0.00442,
-        0.00298
+        0.00703,
+        0.01232,
+        0.01087,
+        0.00646,
+        0.00291
       ],
       [
-        0.0012,
-        0.00209,
-        0.00184,
-        0.00108,
-        0.00072
+        0.00162,
+        0.00283,
+        0.00249,
+        0.00147,
+        0.00066
       ]
     ],
     "confidence": "high",
-    "headline": "Uruguay enters as heavy favorites, expected to dismantle the Saudi low block with superior verticality.",
-    "narrative": "Uruguay's high-intensity pressing system is specifically architected to stifle Saudi Arabia's defensive organization, forcing high-value turnovers. The statistical edge lies in Uruguay's ability to exploit the space left by a retreating low block before the Saudi defense can transition into a settled shape. Even with chaos factors creating potential for an upset, the disparity in talent and press efficiency favors a controlled, albeit tight, Uruguay win.",
-    "model_vs_market": "The model aligns closely with the market on the draw, but perceives slightly more value in a Saudi upset (+2%) compared to the market's tighter confidence in a Uruguay victory.",
-    "updated_at": "2026-06-15T21:18:00"
+    "headline": "Uruguay enters as a heavy favorite to stifle Saudi Arabia’s counter-attacking ambitions.",
+    "narrative": "Uruguay's high-pressing 4-3-3 structure is designed to isolate the Saudi low-block, making the 0-1 and 0-2 outcomes the most likely progression of play. Saudi Arabia's only viable path involves high-risk, long-ball transitions that remain fragile against Uruguay's disciplined defensive transition. The model projects that while Uruguay is the superior side, the intrinsic uncertainty of the match prevents a blowout, favoring a tight, attrition-heavy victory.",
+    "model_vs_market": "The model identifies an inefficiency in the market's over-valuation of Uruguay, suggesting a six-percent edge for the hosts compared to betting odds.",
+    "updated_at": "2026-06-16T00:48:29"
   },
   "H3": {
     "fixture_id": "H3",
