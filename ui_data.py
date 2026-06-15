@@ -326,8 +326,38 @@ def prediction_score(grid, actual_score):
     p_top = max(flat) if flat else 0
     if p_top <= 0:
         return None
-    p_actual = grid[ah][aa] if ah < len(grid) and aa < len(grid[ah]) else 0.0
+    # Clamp the actual scoreline onto the grid: a result beyond the grid's max
+    # (e.g. 7-1 on a 0..4 grid) maps to the edge cell so it scores against the
+    # tail probability instead of falling off the grid and reading 0%.
+    ah = min(ah, len(grid) - 1)
+    aa = min(aa, len(grid[ah]) - 1)
+    p_actual = grid[ah][aa]
     return round(100 * (p_actual / p_top) ** 0.5)
+
+
+def _outcome_call(pred: dict, actual_score):
+    """
+    Qualitative verdict comparing the predicted scoreline to the actual one at the
+    OUTCOME level:
+      'Bullseye'   - predicted scoreline exactly equals the actual scoreline
+      'On Target'  - same result (home win / draw / away win), different score
+      'Off Target' - the predicted result didn't happen
+      None         - not played yet (or the scoreline can't be parsed)
+    """
+    if not actual_score or "-" not in str(actual_score):
+        return None
+    try:
+        ah, aa = (int(x) for x in str(actual_score).split("-", 1))
+    except ValueError:
+        return None
+    phg, pag = _parse_scoreline(pred.get("predicted_scoreline"))
+    if phg is None or pag is None:
+        return None
+    if phg == ah and pag == aa:
+        return "Bullseye"
+    pred_out = "H" if phg > pag else "A" if pag > phg else "D"
+    act_out = "H" if ah > aa else "A" if aa > ah else "D"
+    return "On Target" if pred_out == act_out else "Off Target"
 
 
 def match_predictions(fixtures: list[dict], predictions: dict,
@@ -367,6 +397,7 @@ def match_predictions(fixtures: list[dict], predictions: dict,
             "top_scorelines": p.get("top_scorelines"),
             "actual_score": actual or "—",
             "prediction_score": prediction_score(grid, actual),
+            "outcome_call": _outcome_call(p, actual),
             "has_prediction": _is_populated(p),
         })
     return out
