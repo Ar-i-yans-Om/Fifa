@@ -16,6 +16,7 @@ per-match predictions so there's only one thing to persist.
 from __future__ import annotations
 
 import json
+import math
 import re
 from pathlib import Path
 from collections import defaultdict
@@ -358,6 +359,496 @@ def _outcome_call(pred: dict, actual_score):
     pred_out = "H" if phg > pag else "A" if pag > phg else "D"
     act_out = "H" if ah > aa else "A" if aa > ah else "D"
     return "On Target" if pred_out == act_out else "Off Target"
+
+
+def accuracy_summary(fixtures: list[dict], results: dict, predictions: dict) -> dict:
+    """
+    Aggregate prediction accuracy across all played matches.
+    Returns counts and rates; all values are None/0 when no played matches exist.
+    """
+    total_played = 0
+    with_prediction = 0
+    bullseye = 0
+    on_target = 0
+    off_target = 0
+    scores: list[int] = []
+
+    for f in fixtures:
+        fid = f.get("id")
+        res = results.get(fid, {})
+        if not res.get("played"):
+            continue
+        total_played += 1
+        p = predictions.get(fid, {})
+        if not _is_populated(p):
+            continue
+        hs, as_ = res.get("home_score"), res.get("away_score")
+        if hs is None or as_ is None:
+            continue
+        with_prediction += 1
+        actual = f"{hs}-{as_}"
+        call = _outcome_call(p, actual)
+        if call == "Bullseye":
+            bullseye += 1
+        elif call == "On Target":
+            on_target += 1
+        elif call == "Off Target":
+            off_target += 1
+        sc = prediction_score(p.get("scoreline_grid"), actual)
+        if sc is not None:
+            scores.append(sc)
+
+    outcome_acc = (
+        round(100 * (bullseye + on_target) / with_prediction)
+        if with_prediction else None
+    )
+    exact_pct = round(100 * bullseye / with_prediction) if with_prediction else None
+    avg_score = round(sum(scores) / len(scores)) if scores else None
+
+    return {
+        "total_played": total_played,
+        "with_prediction": with_prediction,
+        "bullseye": bullseye,
+        "on_target": on_target,
+        "off_target": off_target,
+        "outcome_accuracy": outcome_acc,
+        "exact_pct": exact_pct,
+        "avg_score": avg_score,
+    }
+
+
+def grid_insights(grid) -> dict | None:
+    """
+    Derive betting-style insights from the full Poisson scoreline grid.
+    grid[i][j] = P(home i goals, away j goals) as a fraction. Values are
+    re-normalised so percentages are honest even if the grid doesn't sum to 1.
+
+    Returns None when no usable grid is present. Otherwise:
+        {
+          "over25": 58, "under25": 42,      # P(total goals >= 3) and complement
+          "btts": 47, "btts_no": 53,        # both teams score (>=1 each)
+          "home_cs": 38, "away_cs": 12,     # clean-sheet prob for each side
+          "ml_total": 2, "ml_total_prob": 27,  # most-likely total goals + its prob
+          "exp_total": 2.8,                 # expected total goals
+          "goal_dist": {0: 6, 1: 18, 2: 27, ...},  # P(total goals = k), %, summing ~100
+        }
+    """
+    if not grid or not isinstance(grid, list) or not grid or not grid[0]:
+        return None
+
+    total = over25 = btts = home_cs = away_cs = 0.0
+    goal_dist: dict[int, float] = {}
+    for i, row in enumerate(grid):
+        if not isinstance(row, list):
+            continue
+        for j, p in enumerate(row):
+            if not isinstance(p, (int, float)):
+                continue
+            p = float(p)
+            if p <= 0:
+                continue
+            total += p
+            tg = i + j
+            goal_dist[tg] = goal_dist.get(tg, 0.0) + p
+            if tg >= 3:
+                over25 += p
+            if i >= 1 and j >= 1:
+                btts += p
+            if j == 0:            # away scored 0 -> home keeps a clean sheet
+                home_cs += p
+            if i == 0:            # home scored 0 -> away keeps a clean sheet
+                away_cs += p
+
+    if total <= 0:
+        return None
+
+    over25 /= total; btts /= total; home_cs /= total; away_cs /= total
+    goal_dist = {k: v / total for k, v in goal_dist.items()}
+    ml_total = max(goal_dist, key=goal_dist.get)
+    exp_total = sum(k * v for k, v in goal_dist.items())
+
+    return {
+        "over25": round(over25 * 100),
+        "under25": round((1 - over25) * 100),
+        "btts": round(btts * 100),
+        "btts_no": round((1 - btts) * 100),
+        "home_cs": round(home_cs * 100),
+        "away_cs": round(away_cs * 100),
+        "ml_total": ml_total,
+        "ml_total_prob": round(goal_dist[ml_total] * 100),
+        "exp_total": round(exp_total, 1),
+        "goal_dist": {k: round(v * 100) for k, v in sorted(goal_dist.items())},
+    }
+
+
+def _pct(x):
+    """Coerce a probability that may be a fraction (0.52) or percent (52) to an int %."""
+    if not isinstance(x, (int, float)):
+        return None
+    v = float(x)
+    if v <= 1.0:
+        v *= 100
+    return int(round(v))
+
+
+def market_divergence(pred: dict) -> dict | None:
+    """
+    Compare the model's win/draw/loss probabilities against the betting market.
+
+    Prefers a STRUCTURED 'market_probs' object (implied_home_win/draw/away_win),
+    which the pipeline can persist for an exact three-way comparison. Falls back
+    to a conservative parse of the prose 'model_vs_market' field — only when a
+    market percentage for the model's favoured side can be extracted with
+    confidence — yielding a single favourite-win-probability comparison.
+
+    Returns None when neither is available. Shapes:
+        full   -> {"mode":"full", "model":{"home","draw","away"},
+                                   "market":{"home","draw","away"}}
+        single -> {"mode":"single", "side":"home"|"away", "team":str,
+                   "model_pct":int, "market_pct":int, "edge":int}
+    """
+    mh, md_, ma = pred.get("prob_home_win"), pred.get("prob_draw"), pred.get("prob_away_win")
+
+    # 1) Structured market probabilities (exact, future-proof)
+    mp = pred.get("market_probs") or pred.get("market")
+    if isinstance(mp, dict):
+        mk_home = _pct(mp.get("implied_home_win", mp.get("home")))
+        mk_draw = _pct(mp.get("implied_draw", mp.get("draw")))
+        mk_away = _pct(mp.get("implied_away_win", mp.get("away")))
+        if None not in (mk_home, mk_draw, mk_away) and None not in (mh, md_, ma):
+            return {
+                "mode": "full",
+                "model": {"home": int(mh), "draw": int(md_), "away": int(ma)},
+                "market": {"home": mk_home, "draw": mk_draw, "away": mk_away},
+            }
+
+    # 2) Conservative parse of the prose, for the model's favoured side only.
+    #    Deliberately strict: it is better to show no bar than a wrong one.
+    text = (pred.get("model_vs_market") or "").strip()
+    if not text or mh is None or ma is None:
+        return None
+    if int(mh) >= int(ma):
+        side, team, model_pct = "home", pred.get("home"), int(mh)
+    else:
+        side, team, model_pct = "away", pred.get("away"), int(ma)
+
+    # Confidence gate: the prose must actually quote the model's favourite
+    # probability. Without that anchor we can't trust which side a market % is for.
+    if not re.search(rf"(?<!\d){model_pct}\s*%", text):
+        return None
+
+    tm = re.escape(str(team)) if team else None
+    market_pct = None
+    # Patterns are tried in order of how unambiguously they tie a market % to the
+    # model's favourite. Each anchors on the model %, the team, or the word market.
+    patterns = []
+    if tm:
+        #  "<Team> <model>% vs [market] <market>%"   (e.g. "Sweden 50% vs market 76%")
+        patterns.append(
+            rf"{tm}[^.]{{0,40}}?{model_pct}\s*%\s*vs\.?\s*(?:market(?:'s)?\s*)?(\d{{1,3}})\s*%")
+    #  "<model>% ... market('s) ... <market>%"        (e.g. "67% ... the market's 52%")
+    patterns.append(
+        rf"{model_pct}\s*%[^.]{{0,60}}?market(?:'s)?[^.%]{{0,20}}?(\d{{1,3}})\s*%")
+    #  "market('s) ... <market>% ... <model>%"        (e.g. "market favors Brazil at 58% ... 46%")
+    patterns.append(
+        rf"market(?:'s)?[^.]{{0,60}}?(\d{{1,3}})\s*%[^.]{{0,40}}?(?<!\d){model_pct}\s*%")
+    for pat in patterns:
+        m = re.search(pat, text, re.I)
+        if m:
+            market_pct = int(m.group(1))
+            break
+
+    if market_pct is None or not (0 <= market_pct <= 100):
+        return None
+    # Final guard: a figure far from the favourite's scale is a mis-parse, not a
+    # real divergence — skip rather than mislead.
+    if market_pct == model_pct or abs(market_pct - model_pct) > 40:
+        return None
+
+    return {
+        "mode": "single",
+        "side": side,
+        "team": team,
+        "model_pct": model_pct,
+        "market_pct": market_pct,
+        "edge": model_pct - market_pct,
+    }
+
+
+def _enrich_match(f: dict, p: dict) -> dict:
+    """Flatten one predicted fixture into the metrics the Pulse tab ranks on."""
+    grid = p.get("scoreline_grid")
+    eg = p.get("expected_goals") or {}
+    ph, pd_, pa = p.get("prob_home_win"), p.get("prob_draw"), p.get("prob_away_win")
+    home, away = f.get("home"), f.get("away")
+    ins = grid_insights(grid) or {}
+
+    egh, ega = eg.get("home"), eg.get("away")
+    exp_total = ins.get("exp_total")
+    if exp_total is None and egh is not None and ega is not None:
+        exp_total = round(egh + ega, 1)
+
+    fav_side = "home" if (ph or 0) >= (pa or 0) else "away"
+    fav_team = home if fav_side == "home" else away
+    fav_prob = ph if fav_side == "home" else pa
+    three = [x for x in (ph, pd_, pa) if x is not None]
+    max3 = max(three) if three else None
+
+    div = market_divergence(p)
+    edge = edge_team = None
+    if div:
+        if div["mode"] == "single":
+            edge, edge_team = div["edge"], div["team"]
+        else:
+            fs = "home" if div["model"]["home"] >= div["model"]["away"] else "away"
+            edge = div["model"][fs] - div["market"][fs]
+            edge_team = home if fs == "home" else away
+
+    return {
+        "fixture_id": f.get("id"), "group": f.get("group"), "md": f.get("md"),
+        "home": home, "away": away,
+        "ph": ph, "pd": pd_, "pa": pa,
+        "exp_total": exp_total, "over25": ins.get("over25"), "btts": ins.get("btts"),
+        "fav_team": fav_team, "fav_prob": fav_prob, "max3": max3,
+        "edge": edge, "edge_team": edge_team,
+        "confidence": (p.get("confidence") or "").lower(),
+    }
+
+
+def tournament_insights(fixtures: list[dict], predictions: dict,
+                        results: dict) -> dict | None:
+    """
+    Cross-group storylines for the 'Tournament Pulse' tab, built purely from the
+    fixtures that have been predicted so far. Returns None when nothing is
+    predicted yet. Each leaderboard is a list of enriched match dicts.
+    """
+    items = [
+        _enrich_match(f, predictions[f.get("id")])
+        for f in fixtures
+        if _is_populated(predictions.get(f.get("id")))
+    ]
+    if not items:
+        return None
+
+    goals = [i["exp_total"] for i in items if i["exp_total"] is not None]
+    avg_goals = round(sum(goals) / len(goals), 1) if goals else None
+
+    value_picks = sorted(
+        (i for i in items if i["edge"] is not None),
+        key=lambda i: abs(i["edge"]), reverse=True,
+    )[:5]
+    goal_fests = sorted(
+        (i for i in items if i["over25"] is not None),
+        key=lambda i: (i["over25"], i["exp_total"] or 0), reverse=True,
+    )[:5]
+    coin_flips = sorted(
+        (i for i in items if i["max3"] is not None),
+        key=lambda i: i["max3"],
+    )[:5]
+    one_sided = sorted(
+        (i for i in items if i["fav_prob"] is not None),
+        key=lambda i: i["fav_prob"], reverse=True,
+    )[:5]
+
+    return {
+        "count": len(items),
+        "total": len(fixtures),
+        "avg_goals": avg_goals,
+        "high_conf": sum(1 for i in items if i["confidence"] == "high"),
+        "value_edges": sum(1 for i in items if i["edge"] is not None),
+        "value_picks": value_picks,
+        "goal_fests": goal_fests,
+        "coin_flips": coin_flips,
+        "one_sided": one_sided,
+    }
+
+
+def team_form(fixtures: list[dict], predictions: dict) -> dict:
+    """
+    Per-team attacking/defensive form distilled from the group-stage predictions.
+    For every team: mean expected goals scored (attack) and conceded (defence)
+    across the fixtures that have a populated prediction. Teams with no predicted
+    match fall back to a neutral 1.3/1.3 baseline so the bracket still resolves.
+    """
+    acc: dict[str, dict] = {}
+    for f in fixtures:
+        p = predictions.get(f.get("id"))
+        if not _is_populated(p):
+            continue
+        eg = p.get("expected_goals") or {}
+        egh, ega = eg.get("home"), eg.get("away")
+        if egh is None or ega is None:
+            continue
+        h, a = f.get("home"), f.get("away")
+        acc.setdefault(h, {"gf": 0.0, "ga": 0.0, "n": 0})
+        acc.setdefault(a, {"gf": 0.0, "ga": 0.0, "n": 0})
+        acc[h]["gf"] += egh; acc[h]["ga"] += ega; acc[h]["n"] += 1
+        acc[a]["gf"] += ega; acc[a]["ga"] += egh; acc[a]["n"] += 1
+
+    form: dict[str, dict] = {}
+    for t in {f.get(k) for f in fixtures for k in ("home", "away") if f.get(k)}:
+        d = acc.get(t)
+        if d and d["n"]:
+            gf, ga = d["gf"] / d["n"], d["ga"] / d["n"]
+        else:
+            gf = ga = 1.3
+        form[t] = {"gf": round(gf, 2), "ga": round(ga, 2),
+                   "rating": round(gf - ga, 3), "n": (d["n"] if d else 0)}
+    return form
+
+
+def _poisson_pmf(lam: float, k: int) -> float:
+    return math.exp(-lam) * lam ** k / math.factorial(k)
+
+
+def _resolve_tie(a: str, b: str, form: dict, max_goals: int = 6) -> dict:
+    """
+    Project a single knockout tie between team a and team b from their form.
+    Independent Poissons with blended lambdas; draws are split so the winner is
+    whichever side is likeliest in 90 mins, with knockout draws flagged a.e.t.
+    """
+    fa = form.get(a, {"gf": 1.3, "ga": 1.3})
+    fb = form.get(b, {"gf": 1.3, "ga": 1.3})
+    lam_a = min(4.0, max(0.2, (fa["gf"] + fb["ga"]) / 2))
+    lam_b = min(4.0, max(0.2, (fb["gf"] + fa["ga"]) / 2))
+
+    pa = [_poisson_pmf(lam_a, i) for i in range(max_goals + 1)]
+    pb = [_poisson_pmf(lam_b, j) for j in range(max_goals + 1)]
+
+    p_a_win = p_b_win = p_draw = 0.0
+    best_dec, best_dec_p = None, -1.0   # most-likely decisive scoreline
+    for i in range(max_goals + 1):
+        for j in range(max_goals + 1):
+            pij = pa[i] * pb[j]
+            if i > j:
+                p_a_win += pij
+            elif j > i:
+                p_b_win += pij
+            else:
+                p_draw += pij
+            if i != j and pij > best_dec_p:
+                best_dec_p, best_dec = pij, (i, j)
+
+    a_stronger = p_a_win >= p_b_win
+    winner, loser = (a, b) if a_stronger else (b, a)
+    # most-likely decisive score, oriented so the winner's tally is first
+    si, sj = best_dec or (1, 0)
+    hi, lo = (max(si, sj), min(si, sj))
+    score = f"{hi}-{lo}"
+    # if 90-min most-likely cell was a draw, label it as settled after extra time
+    aet = (p_draw >= max(p_a_win, p_b_win))
+    win_prob = round(100 * (p_a_win if a_stronger else p_b_win)
+                     / max(1e-9, p_a_win + p_b_win))
+    return {"winner": winner, "loser": loser, "score": score,
+            "aet": aet, "win_prob": win_prob}
+
+
+def _seed_slots(n: int) -> list[int]:
+    """Standard single-elimination seeding order (1 meets 2 only in the final)."""
+    seeds = [1]
+    while len(seeds) < n:
+        m = len(seeds) * 2
+        nxt = []
+        for s in seeds:
+            nxt.append(s)
+            nxt.append(m + 1 - s)
+        seeds = nxt
+    return seeds
+
+
+def qualifiers(fixtures: list[dict], results: dict, predictions: dict) -> dict:
+    """
+    Determine the 32 qualified teams from the projected group tables:
+    the top two of every group plus the eight best third-placed teams
+    (ranked across groups by Pts, then GD, then GF).
+
+    Returns {"teams": [ordered-by-rating list of qualifier dicts], "thirds": [...],
+             "groups_projected": int, "groups_total": int}. Each qualifier dict:
+        {"team", "group", "pos" (1/2/3), "pts", "gd", "gf"}.
+    """
+    groups = groups_in_order(fixtures)
+    status_full = 0
+    direct: list[dict] = []
+    thirds: list[dict] = []
+    for g in groups:
+        rows = predicted_standings(fixtures, results, predictions, g)
+        st = group_prediction_status(fixtures, results, predictions, g)
+        if st["fully_projected"]:
+            status_full += 1
+        for pos, r in enumerate(rows, 1):
+            entry = {"team": r["team"], "group": g, "pos": pos,
+                     "pts": r["Pts"], "gd": r["GD"], "gf": r["GF"]}
+            if pos <= 2:
+                direct.append(entry)
+            elif pos == 3:
+                thirds.append(entry)
+
+    thirds.sort(key=lambda e: (e["pts"], e["gd"], e["gf"]), reverse=True)
+    best_thirds = thirds[:8]
+    quals = direct + best_thirds
+
+    form = team_form(fixtures, predictions)
+    for q in quals:
+        q["rating"] = form.get(q["team"], {}).get("rating", 0.0)
+    quals.sort(key=lambda q: q["rating"], reverse=True)
+
+    return {"teams": quals, "thirds_cut": best_thirds,
+            "groups_projected": status_full, "groups_total": len(groups)}
+
+
+def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> dict | None:
+    """
+    Build the projected knockout bracket (Round of 32 → Final) by seeding the 32
+    qualifiers by form and resolving each tie with _resolve_tie. Returns None if
+    fewer than 32 qualifiers can be determined. Output:
+        {"rounds": [ {"name", "ties": [ {a,b,winner,loser,score,aet,win_prob} ] }, ... ],
+         "champion": team, "groups_projected": int, "groups_total": int,
+         "partial": bool}
+    """
+    qual = qualifiers(fixtures, results, predictions)
+    teams = qual["teams"]
+    if len(teams) < 32:
+        return None
+    teams = teams[:32]
+    form = team_form(fixtures, predictions)
+
+    seed_of = {q["team"]: i + 1 for i, q in enumerate(teams)}  # 1 = strongest
+    by_seed = {i + 1: q for i, q in enumerate(teams)}
+    slots = _seed_slots(32)                       # seed numbers in bracket order
+    bracket_teams = [by_seed[s]["team"] for s in slots]
+
+    round_names = ["Round of 32", "Round of 16", "Quarter-finals",
+                   "Semi-finals", "Final"]
+    rounds = []
+    current = bracket_teams
+    for name in round_names:
+        ties = []
+        nxt = []
+        for k in range(0, len(current), 2):
+            a, b = current[k], current[k + 1]
+            res = _resolve_tie(a, b, form)
+            res.update({"a": a, "b": b,
+                        "a_group": _group_of(teams, a), "b_group": _group_of(teams, b)})
+            ties.append(res)
+            nxt.append(res["winner"])
+        rounds.append({"name": name, "ties": ties})
+        current = nxt
+
+    return {
+        "rounds": rounds,
+        "champion": current[0] if current else None,
+        "groups_projected": qual["groups_projected"],
+        "groups_total": qual["groups_total"],
+        "partial": qual["groups_projected"] < qual["groups_total"],
+        "seed_of": seed_of,
+    }
+
+
+def _group_of(teams: list[dict], name: str):
+    for q in teams:
+        if q["team"] == name:
+            return q["group"]
+    return None
 
 
 def match_predictions(fixtures: list[dict], predictions: dict,
