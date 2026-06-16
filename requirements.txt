@@ -4,3 +4,4 @@ pandas>=2.0
 
 # Convenience
 streamlit
+Pillow>=10.0        # shareable match-card PNG rendering (share_card.py)
