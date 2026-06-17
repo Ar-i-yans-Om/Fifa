@@ -2525,33 +2525,80 @@
     "md": 1,
     "home": "Portugal",
     "away": "DR Congo",
-    "prob_home_win": 69,
-    "prob_draw": 19,
-    "prob_away_win": 12,
+    "prob_home_win": 73,
+    "prob_draw": 16,
+    "prob_away_win": 11,
     "expected_goals": {
-      "home": 2.15,
-      "away": 0.75
+      "home": 2.79,
+      "away": 0.88
     },
     "predicted_scoreline": "Portugal 2-0 DR Congo",
     "top_scorelines": [
       {
         "score": "2-0",
-        "prob": 12
+        "prob": 11
       },
       {
-        "score": "1-0",
-        "prob": 12
+        "score": "3-0",
+        "prob": 11
       },
       {
         "score": "2-1",
-        "prob": 9
+        "prob": 10
       }
     ],
+    "top_outcome": {
+      "team": "Portugal",
+      "score": "4-1",
+      "prob": 7
+    },
+    "scoreline_grid": [
+      [
+        0.02831,
+        0.02544,
+        0.01173,
+        0.00376,
+        0.00096
+      ],
+      [
+        0.07975,
+        0.0716,
+        0.03298,
+        0.01056,
+        0.0027
+      ],
+      [
+        0.11282,
+        0.10117,
+        0.04654,
+        0.01488,
+        0.0038
+      ],
+      [
+        0.10692,
+        0.09577,
+        0.04399,
+        0.01404,
+        0.00358
+      ],
+      [
+        0.07643,
+        0.06838,
+        0.03136,
+        0.00998,
+        0.00254
+      ]
+    ],
     "confidence": "high",
-    "headline": "Portugal enters as heavy favorites, though market expectations significantly overshoot the statistical likelihood of an upset.",
-    "narrative": "Portugal's tactical reliance on high-intensity pressing generates consistent scoring opportunities but creates defensive vulnerability in the transitions. DR Congo’s game plan is designed to exploit the very space Portugal vacates during their aggressive build-up phases. While the quality gap remains, the high probability of chaotic disruptions makes a clean sheet for Portugal less certain than the general betting market implies.",
-    "model_vs_market": "The market heavily overvalues a Portugal victory at 85% compared to our model's 69%, creating a notable inefficiency on the draw and underdog outcomes. This suggests the market is ignoring the latent volatility in Portugal's high-pressing system.",
-    "updated_at": "2026-06-11T19:56:58"
+    "headline": "Portugal enters as heavy favorites with the tactical capacity to comfortably handle DR Congo's transition threats.",
+    "narrative": "Portugal's superior attacking output is expected to force a game state that overwhelms DR Congo's defensive block. While DR Congo remains capable of capitalizing on space left behind by Portugal's advanced line, the statistical weight favors an efficient Portuguese performance that creates a consistent goal-scoring buffer. The projection acknowledges these high-value transition opportunities for the visitors as an offset to Portugal's sustained pressure.",
+    "model_vs_market": "The model aligns closely with market sentiment, though it suggests slightly higher value on the underdog, DR Congo, compared to current bookmaker pricing.",
+    "market_probs": {
+      "implied_home_win": 0.7412,
+      "implied_draw": 0.1725,
+      "implied_away_win": 0.0863
+    },
+    "updated_at": "2026-06-17T17:57:17"
   },
   "K2": {
     "fixture_id": "K2",
@@ -2559,33 +2606,80 @@
     "md": 1,
     "home": "Uzbekistan",
     "away": "Colombia",
-    "prob_home_win": 14,
-    "prob_draw": 22,
-    "prob_away_win": 64,
+    "prob_home_win": 19,
+    "prob_draw": 24,
+    "prob_away_win": 57,
     "expected_goals": {
-      "home": 0.72,
-      "away": 1.85
+      "home": 0.85,
+      "away": 1.75
     },
     "predicted_scoreline": "Uzbekistan 0-1 Colombia",
     "top_scorelines": [
       {
         "score": "0-1",
-        "prob": 14
-      },
-      {
-        "score": "0-2",
         "prob": 13
       },
       {
+        "score": "0-2",
+        "prob": 11
+      },
+      {
         "score": "1-1",
-        "prob": 10
+        "prob": 11
       }
     ],
+    "top_outcome": {
+      "team": "Colombia",
+      "score": "3-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.07246,
+        0.128,
+        0.11406,
+        0.06853,
+        0.03133
+      ],
+      [
+        0.0633,
+        0.11169,
+        0.09939,
+        0.05963,
+        0.02722
+      ],
+      [
+        0.02839,
+        0.05002,
+        0.04444,
+        0.02661,
+        0.01211
+      ],
+      [
+        0.00886,
+        0.0156,
+        0.01383,
+        0.00825,
+        0.00374
+      ],
+      [
+        0.00222,
+        0.00389,
+        0.00344,
+        0.00205,
+        0.00092
+      ]
+    ],
     "confidence": "high",
-    "headline": "Colombia win most likely (Uzbekistan 0-1 Colombia).",
-    "narrative": "Baseline xG (pre-chaos): Uzbekistan 0.72 vs Colombia 1.85; chaos folded into the grid below. 14%/22%/64% W/D/L. Colombia's aggressive high press against a compact low-block creates a classic clash where Colombia will dominate possession and territory, but must guard against Uzbekistan's targeted vertical transitions into the space behind their high defensive line.",
-    "model_vs_market": "Model gives Uzbekistan 14% vs market 22% (edge -8%); draw 22% vs 28%; Colombia 64% vs 50%.",
-    "updated_at": "2026-06-11T19:58:44"
+    "headline": "Colombia's technical superiority is expected to overcome Uzbekistan's high-pressing approach.",
+    "narrative": "The clash of high-pressing systems will likely result in an open, end-to-end contest where Colombia's superior technical quality in transition is the primary differentiator. While Uzbekistan remains competitive through tactical aggression, their lower baseline xG makes it difficult to sustain pressure against Colombia’s individual class. The statistical distribution reflects a game where Colombia is the likely winner but remains vulnerable to defensive lapses caused by the high-tempo nature of the match.",
+    "model_vs_market": "The model diverges significantly from the market on the home side, assigning Uzbekistan a 9% higher probability of winning than the bookmakers, while suggesting the market is overestimating Colombia's victory probability at 70%.",
+    "market_probs": {
+      "implied_home_win": 0.1028,
+      "implied_draw": 0.1981,
+      "implied_away_win": 0.6991
+    },
+    "updated_at": "2026-06-17T16:05:15"
   },
   "K3": {
     "fixture_id": "K3",
@@ -2657,33 +2751,80 @@
     "md": 1,
     "home": "England",
     "away": "Croatia",
-    "prob_home_win": 53,
-    "prob_draw": 25,
-    "prob_away_win": 23,
+    "prob_home_win": 62,
+    "prob_draw": 20,
+    "prob_away_win": 18,
     "expected_goals": {
-      "home": 1.62,
-      "away": 0.95
+      "home": 2.33,
+      "away": 1.07
     },
-    "predicted_scoreline": "England 1-0 Croatia",
+    "predicted_scoreline": "England 2-1 Croatia",
     "top_scorelines": [
       {
-        "score": "1-0",
-        "prob": 12
-      },
-      {
-        "score": "1-1",
-        "prob": 12
+        "score": "2-1",
+        "prob": 10
       },
       {
         "score": "2-0",
         "prob": 10
+      },
+      {
+        "score": "1-1",
+        "prob": 9
       }
     ],
+    "top_outcome": {
+      "team": "England",
+      "score": "4-1",
+      "prob": 5
+    },
+    "scoreline_grid": [
+      [
+        0.03429,
+        0.03746,
+        0.02086,
+        0.00797,
+        0.00238
+      ],
+      [
+        0.08092,
+        0.08831,
+        0.04912,
+        0.01875,
+        0.0056
+      ],
+      [
+        0.09604,
+        0.10471,
+        0.05816,
+        0.02216,
+        0.0066
+      ],
+      [
+        0.07653,
+        0.08335,
+        0.04623,
+        0.01758,
+        0.00522
+      ],
+      [
+        0.04613,
+        0.05018,
+        0.02778,
+        0.01054,
+        0.00312
+      ]
+    ],
     "confidence": "high",
-    "headline": "England holds a clear advantage, though a low-scoring draw remains a significant risk.",
-    "narrative": "The match projects as a tactical mismatch where England's high-pressing intensity forces the game into a territory-dominated script. While England's xG baseline of 1.62 suggests control, Croatia's reliance on clinical vertical transitions against a high line ensures they remain dangerous enough to punish defensive errors. The high-variance nature of this clash means the result will likely hinge on whether England breaks the low block early or becomes susceptible to counter-attacking attrition.",
-    "model_vs_market": "The market is slightly more bullish on England than the model (55% vs 53%) and less optimistic about Croatia, suggesting the market may be underestimating the resilience of Croatia's transition game.",
-    "updated_at": "2026-06-11T20:00:28"
+    "headline": "England holds a significant statistical advantage over Croatia despite tactical volatility.",
+    "narrative": "England's aggressive pressing structure is the primary driver of their high xG, though this forward-leaning approach forces a reliance on defensive recovery speed to neutralize Croatia’s vertical counter-play. Croatia’s reliance on Modric’s vision in transitional moments creates a high-stakes environment where England’s dominance is occasionally susceptible to sudden, sharp counter-attacks. The inclusion of VAR and red-card volatility into the model ensures the projected 2-1 outcome accounts for the inevitable structural instability inherent in England's current tactical identity.",
+    "model_vs_market": "The model identifies a 6% value edge on an England victory compared to the market, suggesting the bookmakers are overly cautious regarding the threat of a draw.",
+    "market_probs": {
+      "implied_home_win": 0.5583,
+      "implied_draw": 0.258,
+      "implied_away_win": 0.1836
+    },
+    "updated_at": "2026-06-17T17:29:45"
   },
   "L2": {
     "fixture_id": "L2",
@@ -2692,8 +2833,8 @@
     "home": "Ghana",
     "away": "Panama",
     "prob_home_win": 33,
-    "prob_draw": 25,
-    "prob_away_win": 42,
+    "prob_draw": 26,
+    "prob_away_win": 41,
     "expected_goals": {
       "home": 1.25,
       "away": 1.45
@@ -2713,11 +2854,58 @@
         "prob": 9
       }
     ],
+    "top_outcome": {
+      "team": "Draw",
+      "score": "2-2",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.06497,
+        0.09549,
+        0.07092,
+        0.03563,
+        0.01369
+      ],
+      [
+        0.08257,
+        0.12121,
+        0.08991,
+        0.04511,
+        0.01731
+      ],
+      [
+        0.05323,
+        0.07803,
+        0.0578,
+        0.02894,
+        0.01108
+      ],
+      [
+        0.02335,
+        0.03419,
+        0.02527,
+        0.01263,
+        0.00482
+      ],
+      [
+        0.00791,
+        0.01156,
+        0.00853,
+        0.00425,
+        0.00161
+      ]
+    ],
     "confidence": "low",
-    "headline": "Panama win most likely (Ghana 1-1 Panama).",
-    "narrative": "Baseline xG (pre-chaos): Ghana 1.25 vs Panama 1.45; chaos folded into the grid below. 33%/25%/42% W/D/L. Panama's high press will likely force turnovers that facilitate their preferred quick vertical transitions, though they remain vulnerable to Ghana's planned aerial exploitation of their aggressive defensive line.",
-    "model_vs_market": "Model gives Ghana 33% vs market 55% (edge -22%); draw 25% vs 25%; Panama 42% vs 20%.",
-    "updated_at": "2026-06-11T20:02:15"
+    "headline": "Panama holds a statistical advantage as Ghana’s aggressive tactical setup exposes them to counter-attacking vulnerabilities.",
+    "narrative": "Ghana’s commitment to high-pressing creates structural gaps that Panama is well-positioned to exploit via their transition-heavy game plan. While the model highlights a 1-1 draw as the most probable individual outcome, the cumulative probability favors Panama due to the efficiency of their counter-attacks against aggressive fullbacks. The mixture of volatility scenarios reinforces that a disciplined away side is more likely to profit from the defensive instability inherent in Ghana’s tactical approach.",
+    "model_vs_market": "The model identifies a significant 11% value gap on Panama compared to market sentiment, suggesting the market is overvaluing Ghana’s home status relative to the underlying tactical mismatch.",
+    "market_probs": {
+      "implied_home_win": 0.4071,
+      "implied_draw": 0.2964,
+      "implied_away_win": 0.2964
+    },
+    "updated_at": "2026-06-17T16:07:15"
   },
   "L3": {
     "fixture_id": "L3",
