@@ -16,9 +16,9 @@
     },
     {
       "id": "A3",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 1,
+      "away_score": 1,
+      "played": true
     },
     {
       "id": "A4",
