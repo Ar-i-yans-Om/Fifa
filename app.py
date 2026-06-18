@@ -419,6 +419,8 @@ table.stand td.pts {{ font-weight: 800; color: {ACCENT}; }}
             font-size: 12px; font-weight: 600; color: {MUTED}; }}
 .bk-team img {{ height: 11px !important; border-radius: 1px; flex-shrink: 0; margin: 0 !important; }}
 .bk-team .bk-name {{ flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+.bk-team .bk-slot {{ font-size: 8px; font-weight: 800; color: {MUTED}; letter-spacing: 0.3px;
+                     min-width: 15px; text-align: center; flex-shrink: 0; opacity: 0.75; }}
 .bk-team .bk-score {{ font-weight: 800; color: {MUTED}; font-variant-numeric: tabular-nums; }}
 .bk-team.win {{ color: {TEXT}; background: {ACCENT_SOFT}; }}
 .bk-team.win .bk-score {{ color: {ACCENT}; }}
@@ -1384,11 +1386,14 @@ def render_knockout_bracket() -> None:
             a_cls = " win" if a == w else ""
             b_cls = " win" if b == w else ""
             aet = "<div class='bk-aet'>AET</div>" if t["aet"] else ""
+            # FIFA slot labels (1E / 2C / 3F) — only present on Round-of-32 ties
+            a_slot = f"<span class='bk-slot'>{t['a_slot']}</span>" if t.get("a_slot") else ""
+            b_slot = f"<span class='bk-slot'>{t['b_slot']}</span>" if t.get("b_slot") else ""
             ties_html += (
                 f"<div class='bk-tie'>{aet}"
-                f"<div class='bk-team{a_cls}'>{flag_img(a, 11)}"
+                f"<div class='bk-team{a_cls}'>{a_slot}{flag_img(a, 11)}"
                 f"<span class='bk-name'>{a}</span><span class='bk-score'>{a_sc}</span></div>"
-                f"<div class='bk-team{b_cls}'>{flag_img(b, 11)}"
+                f"<div class='bk-team{b_cls}'>{b_slot}{flag_img(b, 11)}"
                 f"<span class='bk-name'>{b}</span><span class='bk-score'>{b_sc}</span></div>"
                 f"</div>"
             )
