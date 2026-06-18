@@ -361,10 +361,11 @@ def _outcome_call(pred: dict, actual_score):
     return "On Target" if pred_out == act_out else "Off Target"
 
 
-def accuracy_summary(fixtures: list[dict], results: dict, predictions: dict) -> dict:
+def _accuracy_accumulate(fixtures: list[dict], results: dict,
+                         predictions: dict) -> dict:
     """
-    Aggregate prediction accuracy across all played matches.
-    Returns counts and rates; all values are None/0 when no played matches exist.
+    Tally prediction accuracy over the supplied fixtures.
+    Shared core for both the aggregate and per-matchday summaries.
     """
     total_played = 0
     with_prediction = 0
@@ -415,6 +416,37 @@ def accuracy_summary(fixtures: list[dict], results: dict, predictions: dict) -> 
         "exact_pct": exact_pct,
         "avg_score": avg_score,
     }
+
+
+def accuracy_summary(fixtures: list[dict], results: dict, predictions: dict) -> dict:
+    """
+    Aggregate prediction accuracy across all played matches.
+    Returns counts and rates; all values are None/0 when no played matches exist.
+    """
+    return _accuracy_accumulate(fixtures, results, predictions)
+
+
+def accuracy_by_matchday(fixtures: list[dict], results: dict,
+                         predictions: dict) -> list[dict]:
+    """
+    Per-matchday prediction accuracy, one row per matchday that has at least
+    one played match, in matchday order. Each row is an accuracy_summary dict
+    with an extra "md" key. The UI pairs these rows with the aggregate banner.
+    """
+    by_md: dict[int, list[dict]] = {}
+    for f in fixtures:
+        md = f.get("md")
+        if md is None:
+            continue
+        by_md.setdefault(md, []).append(f)
+
+    rows: list[dict] = []
+    for md in sorted(by_md):
+        summ = _accuracy_accumulate(by_md[md], results, predictions)
+        if summ["total_played"] == 0:
+            continue
+        rows.append({"md": md, **summ})
+    return rows
 
 
 def grid_insights(grid) -> dict | None:
