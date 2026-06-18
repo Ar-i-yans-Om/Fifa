@@ -247,12 +247,12 @@
     "md": 2,
     "home": "Czechia",
     "away": "South Africa",
-    "prob_home_win": 49,
-    "prob_draw": 23,
-    "prob_away_win": 28,
+    "prob_home_win": 56,
+    "prob_draw": 22,
+    "prob_away_win": 22,
     "expected_goals": {
-      "home": 2.01,
-      "away": 1.41
+      "home": 2.04,
+      "away": 1.16
     },
     "predicted_scoreline": "Czechia 2-1 South Africa",
     "top_scorelines": [
@@ -265,8 +265,8 @@
         "prob": 10
       },
       {
-        "score": "2-2",
-        "prob": 7
+        "score": "2-0",
+        "prob": 9
       }
     ],
     "top_outcome": {
@@ -276,51 +276,51 @@
     },
     "scoreline_grid": [
       [
-        0.03308,
-        0.04731,
-        0.03423,
-        0.01678,
-        0.0063
+        0.04085,
+        0.04809,
+        0.02876,
+        0.01175,
+        0.00372
       ],
       [
-        0.06721,
-        0.09602,
-        0.0694,
-        0.03397,
-        0.01275
+        0.08451,
+        0.09938,
+        0.05937,
+        0.02422,
+        0.00766
       ],
       [
-        0.06874,
-        0.09811,
-        0.07082,
-        0.03463,
-        0.01297
+        0.08799,
+        0.10335,
+        0.06167,
+        0.02511,
+        0.00793
       ],
       [
-        0.04727,
-        0.06739,
-        0.04858,
-        0.02371,
-        0.00887
+        0.06157,
+        0.07224,
+        0.04304,
+        0.01749,
+        0.00551
       ],
       [
-        0.02463,
-        0.03508,
-        0.02525,
-        0.0123,
-        0.00459
+        0.03265,
+        0.03825,
+        0.02275,
+        0.00923,
+        0.0029
       ]
     ],
     "confidence": "high",
-    "headline": "Czechia holds a narrow statistical edge in a volatile, high-scoring affair.",
-    "narrative": "Both teams are committed to aggressive, vertical tactical structures that prioritize high turnovers over defensive stability. This collision of pressing systems ensures that space behind the defensive lines will be constantly exploited, keeping the game in a state of high-variance transition. The projection of 2-1 and 2-2 scorelines reflects a match where individual errors under pressure—duly accounted for by the 30% chaos weighting—will likely dictate the final outcome.",
-    "model_vs_market": "The model identifies South Africa as significantly undervalued by the market, which leans too heavily toward a Czechia win; meanwhile, the market's higher draw expectation diverges from our model's reliance on high-scoring outcomes.",
+    "headline": "Czechia holds a significant structural advantage over South Africa, making a home victory the most probable outcome.",
+    "narrative": "Czechia's direct, aerial-heavy transition game neutralizes South Africa's high-press system, forcing the visitors into isolated 1v1 defensive engagements they lack the depth to sustain. South Africa’s inability to disrupt Czechia’s build-up suggests they will be chasing the game, leading to a match profile where Czechia dictates the tempo. The underlying xG discrepancy highlights a persistent offensive edge for the hosts that is bolstered by their superior physical structure.",
+    "model_vs_market": "The model assigns a 4% higher probability to a Czechia win than the current market, suggesting the market is slightly overvaluing the draw potential relative to Czechia’s tactical dominance.",
     "market_probs": {
       "implied_home_win": 0.524,
       "implied_draw": 0.2687,
       "implied_away_win": 0.2073
     },
-    "updated_at": "2026-06-18T18:35:24"
+    "updated_at": "2026-06-18T18:50:48"
   },
   "A4": {
     "fixture_id": "A4",
@@ -328,11 +328,11 @@
     "md": 2,
     "home": "Mexico",
     "away": "Korea Republic",
-    "prob_home_win": 52,
-    "prob_draw": 22,
-    "prob_away_win": 26,
+    "prob_home_win": 54,
+    "prob_draw": 21,
+    "prob_away_win": 25,
     "expected_goals": {
-      "home": 2.22,
+      "home": 2.36,
       "away": 1.47
     },
     "predicted_scoreline": "Mexico 2-1 Korea Republic",
@@ -343,11 +343,11 @@
       },
       {
         "score": "1-1",
-        "prob": 9
+        "prob": 8
       },
       {
-        "score": "2-2",
-        "prob": 7
+        "score": "3-1",
+        "prob": 8
       }
     ],
     "top_outcome": {
@@ -357,51 +357,51 @@
     },
     "scoreline_grid": [
       [
-        0.02589,
-        0.03876,
-        0.02932,
-        0.015,
-        0.00586
+        0.02304,
+        0.0345,
+        0.0261,
+        0.01335,
+        0.00522
       ],
       [
-        0.05789,
-        0.08658,
-        0.06542,
-        0.03343,
-        0.01306
+        0.0546,
+        0.08167,
+        0.06171,
+        0.03154,
+        0.01232
       ],
       [
-        0.06512,
-        0.09728,
-        0.07342,
-        0.03747,
-        0.01462
+        0.06506,
+        0.09721,
+        0.07338,
+        0.03745,
+        0.01461
       ],
       [
-        0.04918,
-        0.07339,
-        0.05533,
-        0.0282,
-        0.01098
+        0.05203,
+        0.07765,
+        0.05854,
+        0.02984,
+        0.01163
       ],
       [
-        0.0281,
-        0.04188,
-        0.03153,
-        0.01605,
-        0.00624
+        0.03144,
+        0.04687,
+        0.03529,
+        0.01796,
+        0.00699
       ]
     ],
     "confidence": "high",
-    "headline": "Mexico's tactical discipline positions them as the clear favorite to exploit Korea's aggressive positioning.",
-    "narrative": "The match hinges on Mexico's ability to absorb Korea's high press and punish the space left behind by forward-leaning fullbacks. Mexico’s tactical transition efficiency acts as a structural deterrent to Korea's game plan, forcing a reliance on disjointed attacks that the Poisson model struggles to sustain for the visitors. The high-scoring probability mass reflects a volatile game state where Mexico likely secures a lead, forcing Korea into increasingly desperate defensive postures.",
-    "model_vs_market": "The model identifies a significant 5% value edge on Mexico compared to the market, suggesting the betting public is overvaluing the potential for a draw.",
+    "headline": "Mexico holds a clear tactical advantage, with the model signaling significant value against market expectations.",
+    "narrative": "Mexico's high-press system is poised to capitalize on Korea Republic's build-up phase, generating a superior baseline xG. However, Korea's ability to exploit the space behind Mexico's defensive line via direct transitions ensures that the match remains prone to high-scoring outcomes like 3-1 or 2-2. The tactical collision is volatile, but the sheer volume of Mexico's chances creates a structural performance gap that the market has currently underestimated.",
+    "model_vs_market": "The model identifies a 7% edge on a Mexico victory compared to the market, which appears to be over-weighting the probability of a draw.",
     "market_probs": {
       "implied_home_win": 0.4658,
       "implied_draw": 0.2894,
       "implied_away_win": 0.2448
     },
-    "updated_at": "2026-06-18T18:36:29"
+    "updated_at": "2026-06-18T18:51:39"
   },
   "A5": {
     "fixture_id": "A5",
@@ -683,80 +683,80 @@
     "md": 2,
     "home": "Switzerland",
     "away": "Bosnia and Herzegovina",
-    "prob_home_win": 62,
-    "prob_draw": 21,
-    "prob_away_win": 17,
+    "prob_home_win": 67,
+    "prob_draw": 19,
+    "prob_away_win": 14,
     "expected_goals": {
-      "home": 2.1,
-      "away": 0.93
+      "home": 2.22,
+      "away": 0.79
     },
     "predicted_scoreline": "Switzerland 2-0 Bosnia and Herzegovina",
     "top_scorelines": [
       {
         "score": "2-0",
+        "prob": 13
+      },
+      {
+        "score": "1-0",
         "prob": 11
       },
       {
         "score": "2-1",
         "prob": 10
-      },
-      {
-        "score": "1-0",
-        "prob": 10
       }
     ],
     "top_outcome": {
       "team": "Switzerland",
-      "score": "3-1",
-      "prob": 8
+      "score": "4-0",
+      "prob": 5
     },
     "scoreline_grid": [
       [
-        0.04789,
-        0.04596,
-        0.02262,
-        0.00773,
-        0.0021
+        0.04958,
+        0.04054,
+        0.01715,
+        0.00512,
+        0.00125
       ],
       [
-        0.10186,
-        0.09765,
-        0.04801,
-        0.01638,
-        0.00444
+        0.11138,
+        0.09097,
+        0.03843,
+        0.01145,
+        0.00279
       ],
       [
-        0.10905,
-        0.10443,
-        0.05126,
-        0.01745,
-        0.00472
+        0.12588,
+        0.10269,
+        0.04331,
+        0.01288,
+        0.00312
       ],
       [
-        0.07849,
-        0.07506,
-        0.03678,
-        0.01249,
-        0.00337
+        0.09556,
+        0.07785,
+        0.03277,
+        0.00972,
+        0.00235
       ],
       [
-        0.04281,
-        0.04088,
-        0.01999,
-        0.00676,
-        0.00182
+        0.05492,
+        0.04467,
+        0.01876,
+        0.00554,
+        0.00133
       ]
     ],
     "confidence": "high",
-    "headline": "Switzerland are strong favorites to break down the Bosnian low block in a game of tactical attrition.",
-    "narrative": "Switzerland’s aggressive 4-3-3 tactical identity will dictate the rhythm of the match, forcing Bosnia and Herzegovina to rely exclusively on a defensive 5-3-2 transition game. While the Swiss possess the statistical quality to generate high-value chances, the risk of a sucker-punch counter-attack is elevated, creating a narrower scoreline expectation than their raw xG dominance might otherwise suggest.",
-    "model_vs_market": "The model aligns closely with market consensus, suggesting the current pricing of a Switzerland victory is efficient and carries no significant value discrepancy.",
+    "headline": "Switzerland are strong favorites to dismantle a structurally vulnerable Bosnia and Herzegovina.",
+    "narrative": "Switzerland’s 3-4-1-2 formation is tailor-made to exploit Bosnia's aggressive man-marking by creating numerical overloads in the wide channels. Bosnia lacks the technical fluidity to punish the Swiss transition, leaving them susceptible to sustained pressure and high-quality chances. The statistical dominance is driven by Switzerland's ability to consistently find pockets of space behind an uncoordinated defensive line.",
+    "model_vs_market": "The model identifies a 6% edge for Switzerland compared to market pricing, suggesting the betting consensus undervalues the Swiss tactical advantage against Bosnia's defensive scheme.",
     "market_probs": {
-      "implied_home_win": 0.6127,
-      "implied_draw": 0.2316,
-      "implied_away_win": 0.1557
+      "implied_home_win": 0.6111,
+      "implied_draw": 0.231,
+      "implied_away_win": 0.1579
     },
-    "updated_at": "2026-06-18T18:38:09"
+    "updated_at": "2026-06-18T18:53:15"
   },
   "B4": {
     "fixture_id": "B4",
@@ -764,80 +764,80 @@
     "md": 2,
     "home": "Canada",
     "away": "Qatar",
-    "prob_home_win": 53,
-    "prob_draw": 23,
-    "prob_away_win": 24,
+    "prob_home_win": 48,
+    "prob_draw": 22,
+    "prob_away_win": 30,
     "expected_goals": {
-      "home": 2.01,
-      "away": 1.24
+      "home": 2.17,
+      "away": 1.63
     },
     "predicted_scoreline": "Canada 2-1 Qatar",
     "top_scorelines": [
       {
         "score": "2-1",
-        "prob": 10
+        "prob": 9
       },
       {
         "score": "1-1",
-        "prob": 10
+        "prob": 8
       },
       {
-        "score": "2-0",
+        "score": "2-2",
         "prob": 8
       }
     ],
     "top_outcome": {
       "team": "Canada",
-      "score": "3-1",
-      "prob": 7
+      "score": "3-2",
+      "prob": 6
     },
     "scoreline_grid": [
       [
-        0.03911,
-        0.04937,
-        0.03161,
-        0.01377,
-        0.00463
+        0.02346,
+        0.03877,
+        0.03232,
+        0.01818,
+        0.00779
       ],
       [
-        0.0792,
-        0.09987,
-        0.06387,
-        0.0278,
-        0.00934
+        0.05118,
+        0.08448,
+        0.07036,
+        0.03954,
+        0.01693
       ],
       [
-        0.08075,
-        0.10171,
-        0.06496,
-        0.02823,
-        0.00947
+        0.05617,
+        0.09262,
+        0.07705,
+        0.04325,
+        0.0185
       ],
       [
-        0.05535,
-        0.06963,
-        0.04442,
-        0.01927,
-        0.00645
+        0.0414,
+        0.0682,
+        0.05667,
+        0.03177,
+        0.01357
       ],
       [
-        0.02875,
-        0.03613,
-        0.02301,
-        0.00996,
-        0.00333
+        0.0231,
+        0.038,
+        0.03154,
+        0.01765,
+        0.00752
       ]
     ],
-    "confidence": "high",
-    "headline": "Canada holds a clear tactical advantage but the market is significantly overestimating their win probability.",
-    "narrative": "Canada's aggressive transition play is expected to dictate the tempo, forcing Qatar into a deep 5-3-2 block that limits high-quality opportunities despite Canada's xG lead. While Canada's physicality tests Qatar's endurance, the potential for counter-attacking opportunistic goals remains a constant threat. The match will likely be decided by Canada's ability to break down a compact defense without falling victim to isolated defensive lapses.",
-    "model_vs_market": "The market displays strong bias toward Canada at 74% win probability, creating a substantial 22% variance against our model's more grounded 53%. This suggests the betting public is ignoring the defensive stability of Qatar's low block and the volatility inherent in this matchup.",
+    "confidence": "medium",
+    "headline": "Canada holds a narrow statistical edge, though the market significantly overvalues their likelihood of victory.",
+    "narrative": "Canada’s pace in wide channels creates high-quality vertical opportunities that test the defensive integrity of Qatar's 3-5-2 formation, leading to an expected high-scoring affair. However, because both sides prioritize transition play, the risk of chaotic defensive lapses is elevated. The resulting probability distribution reflects a game where Canada is the favorite, but the lack of defensive solidity makes the outcome far more volatile than the market currently accounts for.",
+    "model_vs_market": "The market displays extreme bias toward Canada at 74% compared to the model's 48%, suggesting the betting public is heavily discounting Qatar's structural resiliency. This divergence identifies a substantial value opportunity on Qatar or the draw.",
     "market_probs": {
-      "implied_home_win": 0.7449,
-      "implied_draw": 0.1716,
-      "implied_away_win": 0.0836
+      "implied_home_win": 0.742,
+      "implied_draw": 0.1709,
+      "implied_away_win": 0.087
     },
-    "updated_at": "2026-06-18T18:40:32"
+    "updated_at": "2026-06-18T18:55:34"
   },
   "B5": {
     "fixture_id": "B5",
@@ -1119,11 +1119,11 @@
     "md": 2,
     "home": "Scotland",
     "away": "Morocco",
-    "prob_home_win": 18,
-    "prob_draw": 20,
+    "prob_home_win": 19,
+    "prob_draw": 21,
     "prob_away_win": 61,
     "expected_goals": {
-      "home": 1.07,
+      "home": 1.11,
       "away": 2.3
     },
     "predicted_scoreline": "Scotland 1-2 Morocco",
@@ -1134,7 +1134,7 @@
       },
       {
         "score": "0-2",
-        "prob": 10
+        "prob": 9
       },
       {
         "score": "1-1",
@@ -1148,51 +1148,51 @@
     },
     "scoreline_grid": [
       [
-        0.03564,
-        0.08236,
-        0.09574,
-        0.07474,
-        0.04413
+        0.03429,
+        0.07923,
+        0.09211,
+        0.0719,
+        0.04246
       ],
       [
-        0.0391,
-        0.09026,
-        0.10482,
-        0.08172,
-        0.0482
+        0.03897,
+        0.08997,
+        0.10448,
+        0.08147,
+        0.04805
       ],
       [
-        0.02183,
-        0.05035,
-        0.0584,
-        0.04548,
-        0.02678
+        0.02252,
+        0.05195,
+        0.06026,
+        0.04692,
+        0.02763
       ],
       [
-        0.00835,
-        0.01924,
-        0.02229,
-        0.01733,
-        0.01018
+        0.0089,
+        0.02051,
+        0.02376,
+        0.01847,
+        0.01086
       ],
       [
-        0.00249,
-        0.00574,
-        0.00664,
-        0.00515,
-        0.00302
+        0.00274,
+        0.0063,
+        0.00729,
+        0.00566,
+        0.00331
       ]
     ],
     "confidence": "high",
-    "headline": "Morocco enters as the clear favorite to exploit Scotland's structural vulnerabilities.",
-    "narrative": "Scotland's tactical reliance on a high-pressing 3-4-2-1 formation creates structural gaps in wide areas that Morocco is perfectly equipped to exploit. Morocco's technical superiority in 1v1 situations allows them to bypass the press efficiently, turning defensive transitions into high-quality scoring opportunities. While the model accounts for match-altering incidents, the fundamental disparity in creative output suggests Scotland will struggle to keep pace regardless of the game state.",
-    "model_vs_market": "The model aligns perfectly with the market on Scotland's win probability but suggests Morocco is significantly undervalued, identifying a 5% edge over current bookmaker lines.",
+    "headline": "Morocco enters as the clear favorite to dismantle Scotland's defensive structure.",
+    "narrative": "Morocco’s elite attacking width is tactically optimized to neutralize Scotland's 5-4-1 low block, likely forcing the Scots into errors within their own penalty area. While Scotland hopes to frustrate through disciplined containment, the underlying xG disparity suggests they lack the offensive transition efficiency to counter-punch effectively. The match will likely be decided by Morocco's ability to maintain sustained pressure, with the chaos variables favoring their high-press turnover strategy.",
+    "model_vs_market": "The model leans more heavily into a decisive Moroccan win than the betting market, which is more optimistic regarding Scotland's ability to grind out a stalemate.",
     "market_probs": {
       "implied_home_win": 0.1795,
       "implied_draw": 0.2642,
       "implied_away_win": 0.5563
     },
-    "updated_at": "2026-06-18T18:41:45"
+    "updated_at": "2026-06-18T18:56:11"
   },
   "C4": {
     "fixture_id": "C4",
@@ -1200,80 +1200,80 @@
     "md": 2,
     "home": "Brazil",
     "away": "Haiti",
-    "prob_home_win": 84,
-    "prob_draw": 11,
+    "prob_home_win": 83,
+    "prob_draw": 12,
     "prob_away_win": 5,
     "expected_goals": {
-      "home": 3.18,
-      "away": 0.53
+      "home": 2.86,
+      "away": 0.44
     },
-    "predicted_scoreline": "Brazil 3-0 Haiti",
+    "predicted_scoreline": "Brazil 2-0 Haiti",
     "top_scorelines": [
       {
-        "score": "3-0",
-        "prob": 16
+        "score": "2-0",
+        "prob": 17
       },
       {
-        "score": "2-0",
-        "prob": 15
+        "score": "3-0",
+        "prob": 17
       },
       {
         "score": "4-0",
-        "prob": 13
+        "prob": 12
       }
     ],
     "top_outcome": {
       "team": "Brazil",
       "score": "4-1",
-      "prob": 7
+      "prob": 6
     },
     "scoreline_grid": [
       [
-        0.02959,
-        0.01644,
-        0.00485,
-        0.00107,
-        0.00021
+        0.04166,
+        0.01935,
+        0.00489,
+        0.00097,
+        0.00018
       ],
       [
-        0.09438,
-        0.05237,
-        0.01542,
-        0.00339,
-        0.00066
+        0.1196,
+        0.05549,
+        0.014,
+        0.00277,
+        0.00052
       ],
       [
-        0.15115,
-        0.08378,
-        0.02464,
-        0.00541,
-        0.00106
+        0.17253,
+        0.07994,
+        0.02013,
+        0.00398,
+        0.00075
       ],
       [
-        0.16215,
-        0.08976,
-        0.02635,
-        0.00577,
-        0.00113
+        0.16683,
+        0.07718,
+        0.01939,
+        0.00382,
+        0.00072
       ],
       [
-        0.13115,
-        0.07249,
-        0.02124,
-        0.00464,
-        0.0009
+        0.12173,
+        0.05622,
+        0.01408,
+        0.00277,
+        0.00052
       ]
     ],
     "confidence": "high",
-    "headline": "Brazil are overwhelming favorites to dismantle Haiti in a high-scoring rout.",
-    "narrative": "Brazil's high-pressing 4-3-3 is perfectly engineered to exploit the technical gap against Haiti, effectively pinning them deep and forcing turnovers in dangerous areas. Expect a sustained period of tactical suffocation where Haiti's lack of defensive organization leads to multiple transition goals. The baseline superiority is so significant that the match will likely be decided by Brazil's efficiency in the final third rather than tactical pushback from the opponent.",
-    "model_vs_market": "The model remains slightly more conservative than the betting market on a Brazil victory, suggesting the bookmakers are perhaps overestimating the likelihood of a clean sheet or absolute blowout.",
+    "headline": "Brazil are overwhelming favorites to dismantle Haiti through sustained territorial dominance.",
+    "narrative": "Brazil’s aggressive high press against a compact low block will force Haiti into frequent turnover-prone transitions, funneling scoring opportunities toward the favorites. The tactical mismatch ensures Brazil maintains control of the game state, though the heavy chaos weighting accounts for the non-zero risk of a fluke counter-attack or officiating anomaly. Expect a lopsided contest defined by Brazilian sustained pressure rather than a competitive tactical struggle.",
+    "model_vs_market": "The market is slightly more bullish on Brazil than the model, reflecting a 4% delta that suggests the bookmakers are perhaps over-relying on name recognition over the inherent variance of high-press tactical setups.",
     "market_probs": {
       "implied_home_win": 0.8659,
       "implied_draw": 0.0927,
       "implied_away_win": 0.0414
     },
-    "updated_at": "2026-06-18T18:42:33"
+    "updated_at": "2026-06-18T18:57:00"
   },
   "C5": {
     "fixture_id": "C5",
@@ -1555,12 +1555,12 @@
     "md": 2,
     "home": "United States",
     "away": "Australia",
-    "prob_home_win": 51,
-    "prob_draw": 22,
-    "prob_away_win": 28,
+    "prob_home_win": 54,
+    "prob_draw": 21,
+    "prob_away_win": 25,
     "expected_goals": {
-      "home": 2.44,
-      "away": 1.7
+      "home": 2.49,
+      "away": 1.57
     },
     "predicted_scoreline": "United States 2-1 Australia",
     "top_scorelines": [
@@ -1569,82 +1569,147 @@
         "prob": 9
       },
       {
-        "score": "2-2",
+        "score": "3-1",
         "prob": 8
       },
       {
-        "score": "3-1",
-        "prob": 7
+        "score": "2-2",
+        "prob": 8
       }
     ],
     "top_outcome": {
       "team": "United States",
-      "score": "3-2",
-      "prob": 6
+      "score": "4-1",
+      "prob": 5
     },
     "scoreline_grid": [
       [
-        0.01725,
-        0.02977,
-        0.0259,
-        0.01519,
-        0.00678
+        0.0189,
+        0.03005,
+        0.02411,
+        0.01307,
+        0.0054
       ],
       [
-        0.04239,
-        0.07306,
-        0.0635,
-        0.0372,
-        0.01658
+        0.04723,
+        0.07501,
+        0.06013,
+        0.03256,
+        0.01345
       ],
       [
-        0.05235,
-        0.09013,
-        0.07825,
-        0.0458,
-        0.02039
+        0.05932,
+        0.0941,
+        0.07536,
+        0.04076,
+        0.01682
       ],
       [
-        0.04336,
-        0.07458,
-        0.06468,
-        0.03781,
-        0.01681
+        0.04997,
+        0.07918,
+        0.06334,
+        0.03421,
+        0.0141
       ],
       [
-        0.02713,
-        0.04662,
-        0.04039,
-        0.02358,
-        0.01047
+        0.03179,
+        0.05032,
+        0.04021,
+        0.02169,
+        0.00892
       ]
     ],
     "confidence": "high",
-    "headline": "The United States holds a tactical edge, but the high-pressing systems favor a volatile, high-scoring affair.",
-    "narrative": "Both teams are committing to an aggressive 4-3-3 structure, which effectively forces the game into a high-transition state where defensive vulnerabilities are exposed at both ends. The US holds a slight ELO and home-field advantage that allows them to better capitalize on these chaotic exchanges, but the systemic risk of conceding remains elevated for both sides. The result is a match where efficiency in the final third will prove more decisive than traditional structural stability.",
-    "model_vs_market": "The model suggests a tighter contest than the market, identifying a significant 10% value gap on Australia's win probability and a more conservative outlook on the US victory margin.",
+    "headline": "United States maintains a solid statistical edge over Australia in a high-variance environment.",
+    "narrative": "The projected outcome is driven by the United States' dominant xG output being offset by an aggressive tactical setup that grants Australia consistent transition opportunities. This high-risk interplay ensures that despite the United States' technical superiority, the match will likely feature significant scoring volatility, with both sides finding success in exploiting open-field vulnerabilities.",
+    "model_vs_market": "The market overvalues a United States victory by 5% compared to our model, while significantly underestimating Australia’s potential to secure a result, suggesting the betting public is ignoring defensive fragility.",
     "market_probs": {
       "implied_home_win": 0.5943,
       "implied_draw": 0.2211,
       "implied_away_win": 0.1846
     },
-    "updated_at": "2026-06-18T18:43:06"
+    "updated_at": "2026-06-18T18:57:40"
   },
   "D4": {
     "fixture_id": "D4",
     "group": "D",
     "md": 2,
-    "home": "Türkiye",
+    "home": "TÃ¼rkiye",
     "away": "Paraguay",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 40,
+    "prob_draw": 24,
+    "prob_away_win": 36,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 1.65,
+      "away": 1.54
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "TÃ¼rkiye 1-1 Paraguay",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "2-1",
+        "prob": 9
+      },
+      {
+        "score": "1-2",
+        "prob": 8
+      }
+    ],
+    "top_outcome": {
+      "team": "TÃ¼rkiye",
+      "score": "3-1",
+      "prob": 5
+    },
+    "scoreline_grid": [
+      [
+        0.04102,
+        0.06366,
+        0.04992,
+        0.02647,
+        0.01073
+      ],
+      [
+        0.06857,
+        0.10629,
+        0.08326,
+        0.0441,
+        0.01785
+      ],
+      [
+        0.05781,
+        0.08951,
+        0.07002,
+        0.03703,
+        0.01496
+      ],
+      [
+        0.03286,
+        0.05083,
+        0.03971,
+        0.02096,
+        0.00845
+      ],
+      [
+        0.01423,
+        0.02198,
+        0.01714,
+        0.00903,
+        0.00363
+      ]
+    ],
+    "confidence": "low",
+    "headline": "A high-variance, end-to-end clash favors a narrow TÃ¼rkiye advantage but offers significant value on Paraguay.",
+    "narrative": "The structural clash between a 4-2-3-1 and a 4-4-2, combined with both sides' insistence on high-pressing, is expected to degrade midfield control and force frequent transitions. This fragmentation creates a volatile environment where defensive errors are amplified, leading to the high-probability 1-1 and 2-1 outcomes identified in the mixture model. Because the game flow lacks sustained tactical cohesion, the match is prone to sharp swings that bridge the gap between the two sides' baseline xG figures.",
+    "model_vs_market": "The market is significantly overvaluing TÃ¼rkiye while underestimating the likelihood of a Paraguay win, creating a 12% discrepancy in win probability that identifies Paraguay as the primary value play.",
+    "market_probs": {
+      "implied_home_win": 0.476,
+      "implied_draw": 0.286,
+      "implied_away_win": 0.238
+    },
+    "updated_at": "2026-06-18T18:58:23"
   },
   "D5": {
     "fixture_id": "D5",
@@ -1836,12 +1901,12 @@
     "md": 2,
     "home": "Germany",
     "away": "Ivory Coast",
-    "prob_home_win": 59,
+    "prob_home_win": 62,
     "prob_draw": 20,
-    "prob_away_win": 21,
+    "prob_away_win": 18,
     "expected_goals": {
       "home": 2.6,
-      "away": 1.38
+      "away": 1.25
     },
     "predicted_scoreline": "Germany 2-1 Ivory Coast",
     "top_scorelines": [
@@ -1854,8 +1919,8 @@
         "prob": 9
       },
       {
-        "score": "1-1",
-        "prob": 7
+        "score": "2-0",
+        "prob": 8
       }
     ],
     "top_outcome": {
@@ -1865,67 +1930,132 @@
     },
     "scoreline_grid": [
       [
-        0.02021,
-        0.02831,
-        0.02006,
-        0.00964,
-        0.00356
+        0.02293,
+        0.02911,
+        0.01875,
+        0.00822,
+        0.00278
       ],
       [
-        0.05323,
-        0.07447,
-        0.05273,
-        0.02532,
-        0.00933
+        0.06037,
+        0.07658,
+        0.04927,
+        0.02157,
+        0.00729
       ],
       [
-        0.07038,
-        0.09838,
-        0.06959,
-        0.03338,
-        0.01228
+        0.07982,
+        0.10115,
+        0.06501,
+        0.02843,
+        0.0096
       ],
       [
-        0.06237,
-        0.0871,
-        0.06154,
-        0.02948,
-        0.01083
+        0.07073,
+        0.08954,
+        0.05748,
+        0.0251,
+        0.00846
       ],
       [
-        0.04171,
-        0.05819,
-        0.04107,
-        0.01964,
-        0.0072
+        0.0473,
+        0.05982,
+        0.03835,
+        0.01672,
+        0.00562
       ]
     ],
     "confidence": "high",
-    "headline": "Germany enters as strong favorites in a high-variance tactical shootout.",
-    "narrative": "The match projects as an end-to-end affair driven by the aggressive pressing schemes of both sides, which prioritizes transition speed over defensive structure. While Ivory Coast possesses the pace to disrupt Germany's backline, Germany's superior technical execution in the final third gives them a structural advantage in capitalizing on the inevitable turnovers. The mixture model captures this instability, suggesting that while Germany is the rightful favorite, the scoreline remains prone to extreme swings.",
-    "model_vs_market": "The market is more bullish on Germany than the model, likely underestimating Ivory Coast's capacity to exploit the defensive gaps inherent in a high-press encounter.",
+    "headline": "Germany expected to capitalize on structural defensive gaps to secure a comfortable home victory.",
+    "narrative": "Germany's 4-2-3-1 setup is tactically primed to exploit the space left by Ivory Coast’s injury-hit backline during high-intensity pressing transitions. While Ivory Coast remains dangerous in open play, Germany's superior technical execution in the final third dictates the high-scoring floor of the model. The match projects as an expansive, end-to-end affair where Ivory Coast's fitness concerns are expected to manifest as late-game defensive fragility.",
+    "model_vs_market": "The model aligns perfectly with the betting market's 62% win probability for Germany, indicating broad consensus on the current class differential. Minor discrepancies in the draw and loss probabilities are negligible and suggest the market is efficiently priced.",
     "market_probs": {
       "implied_home_win": 0.6208,
       "implied_draw": 0.2111,
       "implied_away_win": 0.1681
     },
-    "updated_at": "2026-06-18T18:45:45"
+    "updated_at": "2026-06-18T18:59:06"
   },
   "E4": {
     "fixture_id": "E4",
     "group": "E",
     "md": 2,
-    "home": "Curaçao",
+    "home": "CuraÃ§ao",
     "away": "Ecuador",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 9,
+    "prob_draw": 15,
+    "prob_away_win": 76,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 0.7,
+      "away": 2.77
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "CuraÃ§ao 0-2 Ecuador",
+    "top_scorelines": [
+      {
+        "score": "0-2",
+        "prob": 13
+      },
+      {
+        "score": "0-3",
+        "prob": 13
+      },
+      {
+        "score": "1-2",
+        "prob": 10
+      }
+    ],
+    "top_outcome": {
+      "team": "Ecuador",
+      "score": "4-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.03472,
+        0.0963,
+        0.13424,
+        0.12546,
+        0.0885
+      ],
+      [
+        0.02525,
+        0.06998,
+        0.09743,
+        0.09094,
+        0.06406
+      ],
+      [
+        0.00952,
+        0.02635,
+        0.03663,
+        0.03414,
+        0.024
+      ],
+      [
+        0.00254,
+        0.00704,
+        0.00977,
+        0.00909,
+        0.00638
+      ],
+      [
+        0.00056,
+        0.00155,
+        0.00215,
+        0.002,
+        0.0014
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Ecuador is expected to comfortably dismantle Curaçao through tactical superiority.",
+    "narrative": "Ecuador’s high-press 4-3-3 is perfectly configured to exploit the structural gaps inherent in Curaçao’s defensive low block. By forcing turnovers in dangerous areas, Ecuador consistently generates high-quality scoring chances, leaving the underdog little room to transition or find an offensive foothold. The match is projected as a methodical breakdown rather than an open contest, with the scoreline heavily skewed toward a multi-goal victory for the visitors.",
+    "model_vs_market": "The market is significantly more bullish on Ecuador at 88% than our model's 76%, suggesting the betting public is underestimating the residual risk of a low-block defensive stalemate.",
+    "market_probs": {
+      "implied_home_win": 0.037,
+      "implied_draw": 0.087,
+      "implied_away_win": 0.876
+    },
+    "updated_at": "2026-06-18T19:00:17"
   },
   "E5": {
     "fixture_id": "E5",
@@ -2117,15 +2247,80 @@
     "md": 2,
     "home": "Netherlands",
     "away": "Sweden",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 50,
+    "prob_draw": 23,
+    "prob_away_win": 27,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 1.97,
+      "away": 1.36
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Netherlands 2-1 Sweden",
+    "top_scorelines": [
+      {
+        "score": "2-1",
+        "prob": 10
+      },
+      {
+        "score": "1-1",
+        "prob": 10
+      },
+      {
+        "score": "2-0",
+        "prob": 7
+      }
+    ],
+    "top_outcome": {
+      "team": "Netherlands",
+      "score": "3-1",
+      "prob": 7
+    },
+    "scoreline_grid": [
+      [
+        0.0357,
+        0.04941,
+        0.03464,
+        0.01649,
+        0.00603
+      ],
+      [
+        0.07122,
+        0.09848,
+        0.06897,
+        0.03279,
+        0.01199
+      ],
+      [
+        0.07155,
+        0.09883,
+        0.06913,
+        0.03282,
+        0.01198
+      ],
+      [
+        0.04836,
+        0.06672,
+        0.04661,
+        0.02209,
+        0.00805
+      ],
+      [
+        0.02479,
+        0.03416,
+        0.02383,
+        0.01127,
+        0.00409
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Netherlands win most likely (Netherlands 2-1 Sweden).",
+    "narrative": "Baseline xG (pre-chaos): Netherlands 1.973 vs Sweden 1.3591; chaos folded into the grid below. 50%/23%/27% W/D/L. A high-intensity tactical clash where both teams' aggressive pressing schemes will likely lead to an open, end-to-end game that plays into the Netherlands' superior technical efficiency in wide transitions.",
+    "model_vs_market": "Model gives Netherlands 50% vs market 55% (edge -6%); draw 23% vs 25%; Sweden 27% vs 20%.",
+    "market_probs": {
+      "implied_home_win": 0.5533,
+      "implied_draw": 0.2472,
+      "implied_away_win": 0.1995
+    },
+    "updated_at": "2026-06-18T19:01:42"
   },
   "F4": {
     "fixture_id": "F4",
@@ -2133,15 +2328,80 @@
     "md": 2,
     "home": "Japan",
     "away": "Tunisia",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 70,
+    "prob_draw": 18,
+    "prob_away_win": 12,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 2.35,
+      "away": 0.74
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Japan 2-0 Tunisia",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 13
+      },
+      {
+        "score": "1-0",
+        "prob": 11
+      },
+      {
+        "score": "3-0",
+        "prob": 11
+      }
+    ],
+    "top_outcome": {
+      "team": "Japan",
+      "score": "4-0",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.04724,
+        0.03594,
+        0.01419,
+        0.00398,
+        0.00092
+      ],
+      [
+        0.11191,
+        0.08503,
+        0.03353,
+        0.00939,
+        0.00217
+      ],
+      [
+        0.13323,
+        0.10111,
+        0.0398,
+        0.01112,
+        0.00256
+      ],
+      [
+        0.10639,
+        0.08064,
+        0.03168,
+        0.00883,
+        0.00203
+      ],
+      [
+        0.06419,
+        0.04858,
+        0.01905,
+        0.00529,
+        0.00121
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Japan's superior offensive depth projects a decisive advantage over Tunisia's defensive shell.",
+    "narrative": "Japan's high-intensity press will likely force the game into the final third, consistently testing Tunisia's 5-3-2 low block. While Tunisia's structure aims to bait Japan into leaving space for transitions, the sheer volume of Japan's expected xG suggests they will break the deadlock before the visitors can find a clinical response. The tactical clash favors the team controlling territory, provided Japan maintains discipline against Tunisia's direct counter-attacks.",
+    "model_vs_market": "The model identifies an 8% value edge on Japan's win probability compared to the market, suggesting the market is overestimating Tunisia's ability to grind out a draw.",
+    "market_probs": {
+      "implied_home_win": 0.6205,
+      "implied_draw": 0.2373,
+      "implied_away_win": 0.1422
+    },
+    "updated_at": "2026-06-18T19:02:41"
   },
   "F5": {
     "fixture_id": "F5",
@@ -2333,15 +2593,80 @@
     "md": 2,
     "home": "Egypt",
     "away": "New Zealand",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 69,
+    "prob_draw": 18,
+    "prob_away_win": 13,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 2.45,
+      "away": 0.86
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Egypt 2-0 New Zealand",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 12
+      },
+      {
+        "score": "2-1",
+        "prob": 10
+      },
+      {
+        "score": "3-0",
+        "prob": 10
+      }
+    ],
+    "top_outcome": {
+      "team": "Egypt",
+      "score": "4-1",
+      "prob": 5
+    },
+    "scoreline_grid": [
+      [
+        0.03874,
+        0.03414,
+        0.01542,
+        0.00484,
+        0.00121
+      ],
+      [
+        0.09534,
+        0.08393,
+        0.03787,
+        0.01187,
+        0.00297
+      ],
+      [
+        0.11797,
+        0.10374,
+        0.04676,
+        0.01464,
+        0.00366
+      ],
+      [
+        0.09796,
+        0.08604,
+        0.03872,
+        0.0121,
+        0.00302
+      ],
+      [
+        0.06148,
+        0.05393,
+        0.02423,
+        0.00755,
+        0.00188
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Egypt holds a decisive tactical advantage over New Zealand's structurally mismatched high-press.",
+    "narrative": "Egypt's superior technical verticality is expected to systematically dismantle New Zealand’s 4-4-2 formation. By exploiting the space behind New Zealand's overly ambitious high-press, Egypt is positioned to generate high-quality transitions that should consistently bypass the visitors' defensive lines. The outcome hinges on the disparity in individual quality and tactical discipline, where the home side possesses the efficiency to capitalize on the gaps left by New Zealand's personnel deficiencies.",
+    "model_vs_market": "The model identifies a significant 9% value gap favoring Egypt compared to the betting market, suggesting the market is over-correcting for potential parity.",
+    "market_probs": {
+      "implied_home_win": 0.5923,
+      "implied_draw": 0.2384,
+      "implied_away_win": 0.1692
+    },
+    "updated_at": "2026-06-18T19:04:05"
   },
   "G4": {
     "fixture_id": "G4",
@@ -2349,15 +2674,80 @@
     "md": 2,
     "home": "Belgium",
     "away": "Iran",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 58,
+    "prob_draw": 22,
+    "prob_away_win": 20,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 2.08,
+      "away": 1.08
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Belgium 2-1 Iran",
+    "top_scorelines": [
+      {
+        "score": "2-1",
+        "prob": 10
+      },
+      {
+        "score": "1-1",
+        "prob": 10
+      },
+      {
+        "score": "2-0",
+        "prob": 9
+      }
+    ],
+    "top_outcome": {
+      "team": "Belgium",
+      "score": "3-1",
+      "prob": 7
+    },
+    "scoreline_grid": [
+      [
+        0.04263,
+        0.04704,
+        0.02642,
+        0.01017,
+        0.00305
+      ],
+      [
+        0.08957,
+        0.09873,
+        0.05539,
+        0.02129,
+        0.00638
+      ],
+      [
+        0.09473,
+        0.10429,
+        0.05844,
+        0.02242,
+        0.00671
+      ],
+      [
+        0.06733,
+        0.07404,
+        0.04142,
+        0.01586,
+        0.00473
+      ],
+      [
+        0.03626,
+        0.03982,
+        0.02224,
+        0.0085,
+        0.00253
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Belgium enters as the clear favorite, though the market is overestimating their defensive security against Iran's rigid structure.",
+    "narrative": "Belgium's high-press strategy is the primary driver of their win probability, but it creates structural vulnerabilities that Iran's low block is well-positioned to exploit. By concentrating their defensive depth, Iran effectively baits Belgium into high-risk turnovers, a dynamic that remains the primary source of volatility in this matchup. The mixture of Poisson grids confirms that while Belgium holds superior offensive efficiency, the match remains highly sensitive to disruptions like VAR or late-game red cards.",
+    "model_vs_market": "The model identifies a significant value gap on Iran, as market bookmakers are underestimating their resilience by roughly 8% compared to the statistical likelihood of an upset.",
+    "market_probs": {
+      "implied_home_win": 0.6695,
+      "implied_draw": 0.2067,
+      "implied_away_win": 0.1239
+    },
+    "updated_at": "2026-06-18T19:05:36"
   },
   "G5": {
     "fixture_id": "G5",
@@ -2549,15 +2939,80 @@
     "md": 2,
     "home": "Spain",
     "away": "Saudi Arabia",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 80,
+    "prob_draw": 13,
+    "prob_away_win": 6,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 2.78,
+      "away": 0.54
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Spain 2-0 Saudi Arabia",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 16
+      },
+      {
+        "score": "3-0",
+        "prob": 15
+      },
+      {
+        "score": "1-0",
+        "prob": 11
+      }
+    ],
+    "top_outcome": {
+      "team": "Spain",
+      "score": "4-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.0397,
+        0.02228,
+        0.00664,
+        0.00148,
+        0.0003
+      ],
+      [
+        0.11165,
+        0.06258,
+        0.01863,
+        0.00415,
+        0.00082
+      ],
+      [
+        0.15773,
+        0.08828,
+        0.02623,
+        0.00582,
+        0.00115
+      ],
+      [
+        0.14934,
+        0.08346,
+        0.02474,
+        0.00547,
+        0.00107
+      ],
+      [
+        0.10671,
+        0.05954,
+        0.01759,
+        0.00387,
+        0.00076
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Spain win most likely (Spain 2-0 Saudi Arabia).",
+    "narrative": "Baseline xG (pre-chaos): Spain 2.7766 vs Saudi Arabia 0.5386; chaos folded into the grid below. 80%/13%/6% W/D/L. Spain's aggressive high press against Saudi Arabia's low block creates a high-possession environment where Spain generates volume, while the threat of Saudi Arabia's vertical counters against a high defensive line provides a slim but non-zero probability of transition goals.",
+    "model_vs_market": "Model gives Spain 80% vs market 86% (edge -6%); draw 13% vs 10%; Saudi Arabia 6% vs 4%.",
+    "market_probs": {
+      "implied_home_win": 0.8622,
+      "implied_draw": 0.0998,
+      "implied_away_win": 0.0379
+    },
+    "updated_at": "2026-06-18T19:06:41"
   },
   "H4": {
     "fixture_id": "H4",
@@ -2565,15 +3020,80 @@
     "md": 2,
     "home": "Cape Verde",
     "away": "Uruguay",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 14,
+    "prob_draw": 20,
+    "prob_away_win": 67,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 0.8,
+      "away": 2.23
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Cape Verde 0-2 Uruguay",
+    "top_scorelines": [
+      {
+        "score": "0-2",
+        "prob": 13
+      },
+      {
+        "score": "0-1",
+        "prob": 11
+      },
+      {
+        "score": "1-2",
+        "prob": 10
+      }
+    ],
+    "top_outcome": {
+      "team": "Uruguay",
+      "score": "4-0",
+      "prob": 5
+    },
+    "scoreline_grid": [
+      [
+        0.0501,
+        0.11159,
+        0.12503,
+        0.09408,
+        0.05355
+      ],
+      [
+        0.04142,
+        0.09215,
+        0.10312,
+        0.07749,
+        0.04404
+      ],
+      [
+        0.0176,
+        0.03911,
+        0.04371,
+        0.03279,
+        0.0186
+      ],
+      [
+        0.00522,
+        0.01159,
+        0.01294,
+        0.00969,
+        0.00548
+      ],
+      [
+        0.00125,
+        0.00277,
+        0.00309,
+        0.00231,
+        0.0013
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Uruguay holds a decisive advantage over Cape Verde in a projected lopsided victory.",
+    "narrative": "Uruguay's relentless verticality and high-press system are built to exploit the specific structural vulnerabilities of Cape Verde's counter-attacking setup. By forcing high-leverage turnovers, Uruguay effectively nullifies the defensive shape that Cape Verde relies on for survival. The projected outcome reflects a stark disparity in quality and tactical efficiency that is difficult for the underdog to overcome even with high-variance interventions.",
+    "model_vs_market": "The model aligns closely with the market, though it offers a slight 2% efficiency edge favoring Uruguay, suggesting the market is slightly underestimating the gap in quality.",
+    "market_probs": {
+      "implied_home_win": 0.1256,
+      "implied_draw": 0.225,
+      "implied_away_win": 0.6494
+    },
+    "updated_at": "2026-06-18T19:07:31"
   },
   "H5": {
     "fixture_id": "H5",
@@ -2765,15 +3285,80 @@
     "md": 2,
     "home": "France",
     "away": "Iraq",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 86,
+    "prob_draw": 10,
+    "prob_away_win": 4,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 3.15,
+      "away": 0.4
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "France 3-0 Iraq",
+    "top_scorelines": [
+      {
+        "score": "3-0",
+        "prob": 18
+      },
+      {
+        "score": "2-0",
+        "prob": 17
+      },
+      {
+        "score": "4-0",
+        "prob": 15
+      }
+    ],
+    "top_outcome": {
+      "team": "France",
+      "score": "4-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.03407,
+        0.01458,
+        0.00346,
+        0.00067,
+        0.00013
+      ],
+      [
+        0.10807,
+        0.0462,
+        0.01094,
+        0.00211,
+        0.0004
+      ],
+      [
+        0.17207,
+        0.07347,
+        0.01736,
+        0.00334,
+        0.00063
+      ],
+      [
+        0.18345,
+        0.0782,
+        0.01843,
+        0.00353,
+        0.00067
+      ],
+      [
+        0.14741,
+        0.06273,
+        0.01474,
+        0.00281,
+        0.00053
+      ]
+    ],
+    "confidence": "high",
+    "headline": "France enters as overwhelming favorites to dismantle Iraq through superior transition speed.",
+    "narrative": "France's verticality is fundamentally incompatible with Iraq's defensive structure, as any attempt by Iraq to press high will leave exposed channels for France to punish. The match is projected as a one-sided tactical exercise where France's high-press efficiency negates Iraq's ability to maintain a mid-block. Even accounting for significant variance in officiating or injury disruption, the talent disparity remains the overwhelming factor.",
+    "model_vs_market": "The model is slightly more conservative on France than the betting market, suggesting a narrow edge for those looking to fade the public's heavily lopsided win expectations.",
+    "market_probs": {
+      "implied_home_win": 0.8761,
+      "implied_draw": 0.0909,
+      "implied_away_win": 0.0329
+    },
+    "updated_at": "2026-06-18T19:08:27"
   },
   "I4": {
     "fixture_id": "I4",
@@ -2781,15 +3366,80 @@
     "md": 2,
     "home": "Senegal",
     "away": "Norway",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 41,
+    "prob_draw": 23,
+    "prob_away_win": 36,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 1.88,
+      "away": 1.7
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Senegal 1-1 Norway",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 9
+      },
+      {
+        "score": "2-1",
+        "prob": 9
+      },
+      {
+        "score": "1-2",
+        "prob": 8
+      }
+    ],
+    "top_outcome": {
+      "team": "Senegal",
+      "score": "3-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.02822,
+        0.04891,
+        0.04274,
+        0.02517,
+        0.01128
+      ],
+      [
+        0.05338,
+        0.09243,
+        0.08069,
+        0.04748,
+        0.02126
+      ],
+      [
+        0.05088,
+        0.08802,
+        0.07676,
+        0.04512,
+        0.02017
+      ],
+      [
+        0.03266,
+        0.05643,
+        0.04915,
+        0.02885,
+        0.01288
+      ],
+      [
+        0.01592,
+        0.02747,
+        0.0239,
+        0.014,
+        0.00624
+      ]
+    ],
+    "confidence": "low",
+    "headline": "Senegal holds a quantitative edge as the favorite in a tactically rigid clash.",
+    "narrative": "Senegal’s disciplined low block effectively neutralizes Norway’s half-space creativity, forcing the match into a attritional battle where transition speed is the primary differentiator. While Norway aims to leverage aerial superiority, the model indicates Senegal's counter-attacking efficiency will more frequently break the deadlocks created by these tactical constraints. The equilibrium between these styles explains the clustering of high-probability outcomes around 1-1 and 2-1.",
+    "model_vs_market": "The model identifies significant value on Senegal at 41% win probability compared to the market's 32%, suggesting the market is over-weighting Norway's aerial threat.",
+    "market_probs": {
+      "implied_home_win": 0.3151,
+      "implied_draw": 0.274,
+      "implied_away_win": 0.411
+    },
+    "updated_at": "2026-06-18T19:09:14"
   },
   "I5": {
     "fixture_id": "I5",
@@ -2981,15 +3631,80 @@
     "md": 2,
     "home": "Argentina",
     "away": "Austria",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 56,
+    "prob_draw": 23,
+    "prob_away_win": 21,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 1.91,
+      "away": 1.02
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Argentina 1-1 Austria",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "2-1",
+        "prob": 10
+      },
+      {
+        "score": "1-0",
+        "prob": 10
+      }
+    ],
+    "top_outcome": {
+      "team": "Argentina",
+      "score": "3-1",
+      "prob": 7
+    },
+    "scoreline_grid": [
+      [
+        0.05268,
+        0.05533,
+        0.02958,
+        0.01084,
+        0.0031
+      ],
+      [
+        0.10131,
+        0.10629,
+        0.05676,
+        0.02077,
+        0.00594
+      ],
+      [
+        0.09828,
+        0.10299,
+        0.05492,
+        0.02007,
+        0.00573
+      ],
+      [
+        0.06426,
+        0.06725,
+        0.0358,
+        0.01305,
+        0.00372
+      ],
+      [
+        0.03195,
+        0.03338,
+        0.01773,
+        0.00645,
+        0.00183
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Argentina holds a solid edge as individual vertical quality overrides Austria's structural aggression.",
+    "narrative": "Argentina's superiority in vertical transitions allows them to exploit the spaces vacated by Austria's aggressive wide-overload strategy. While Austria's high press will likely generate meaningful chances against Argentina's defensive rotation, the overall technical disparity favors the home side. The match is projected as a high-tempo affair where Argentina's efficiency in conversion serves as the primary differentiator.",
+    "model_vs_market": "The market is slightly more bullish on Argentina than the model, likely underestimating the volatility introduced by Austria's high-press tactics against a rotated defense.",
+    "market_probs": {
+      "implied_home_win": 0.5978,
+      "implied_draw": 0.2437,
+      "implied_away_win": 0.1584
+    },
+    "updated_at": "2026-06-18T19:10:25"
   },
   "J4": {
     "fixture_id": "J4",
@@ -2997,15 +3712,80 @@
     "md": 2,
     "home": "Algeria",
     "away": "Jordan",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 64,
+    "prob_draw": 20,
+    "prob_away_win": 16,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 2.23,
+      "away": 0.91
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Algeria 2-0 Jordan",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 11
+      },
+      {
+        "score": "2-1",
+        "prob": 10
+      },
+      {
+        "score": "1-0",
+        "prob": 10
+      }
+    ],
+    "top_outcome": {
+      "team": "Algeria",
+      "score": "3-1",
+      "prob": 8
+    },
+    "scoreline_grid": [
+      [
+        0.04415,
+        0.04137,
+        0.01982,
+        0.00657,
+        0.00172
+      ],
+      [
+        0.09919,
+        0.09283,
+        0.04443,
+        0.0147,
+        0.00385
+      ],
+      [
+        0.11211,
+        0.1048,
+        0.0501,
+        0.01655,
+        0.00433
+      ],
+      [
+        0.08511,
+        0.07946,
+        0.03792,
+        0.01251,
+        0.00327
+      ],
+      [
+        0.04889,
+        0.04558,
+        0.02172,
+        0.00714,
+        0.00186
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Algeria win most likely (Algeria 2-0 Jordan).",
+    "narrative": "Baseline xG (pre-chaos): Algeria 2.2327 vs Jordan 0.9141; chaos folded into the grid below. 64%/20%/16% W/D/L. Both sides are pressing high, but Algeria's significantly higher quality and Jordan's depleted, injury-ridden defensive line mean Algeria's press will likely force far more high-value turnovers in the final third.",
+    "model_vs_market": "Model gives Algeria 64% vs market 60% (edge +4%); draw 20% vs 23%; Jordan 16% vs 16%.",
+    "market_probs": {
+      "implied_home_win": 0.6035,
+      "implied_draw": 0.234,
+      "implied_away_win": 0.1625
+    },
+    "updated_at": "2026-06-18T19:12:43"
   },
   "J5": {
     "fixture_id": "J5",
@@ -3207,15 +3987,80 @@
     "md": 2,
     "home": "Portugal",
     "away": "Uzbekistan",
-    "prob_home_win": null,
-    "prob_draw": null,
-    "prob_away_win": null,
+    "prob_home_win": 71,
+    "prob_draw": 17,
+    "prob_away_win": 12,
     "expected_goals": {
-      "home": null,
-      "away": null
+      "home": 2.61,
+      "away": 0.84
     },
-    "predicted_scoreline": null,
-    "top_scorelines": []
+    "predicted_scoreline": "Portugal 2-0 Uzbekistan",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 12
+      },
+      {
+        "score": "3-0",
+        "prob": 11
+      },
+      {
+        "score": "2-1",
+        "prob": 10
+      }
+    ],
+    "top_outcome": {
+      "team": "Portugal",
+      "score": "4-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.03413,
+        0.02942,
+        0.01304,
+        0.00403,
+        0.001
+      ],
+      [
+        0.08987,
+        0.0774,
+        0.03426,
+        0.01058,
+        0.00263
+      ],
+      [
+        0.11892,
+        0.1023,
+        0.04522,
+        0.01394,
+        0.00345
+      ],
+      [
+        0.10551,
+        0.09066,
+        0.04001,
+        0.01231,
+        0.00304
+      ],
+      [
+        0.07069,
+        0.06066,
+        0.02672,
+        0.0082,
+        0.00202
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Portugal enters as heavy favorites, though the market is slightly overestimating their win probability compared to model projections.",
+    "narrative": "Portugal possesses the elite wing mobility required to nullify Uzbekistan's aggressive press, effectively forcing the visitors into a defensive shell where they lack the technical depth to resist sustained pressure. The 2.61 xG for Portugal underscores a systematic capacity to dismantle low blocks, while the volatility reflected in the scoreline distribution suggests that while Portugal will control the tempo, defensive lapses or set-piece incidents represent the primary risks. The tactical mismatch is clear, but the outcome will be decided by how effectively Portugal handles the structural chaos inherent in breaking down a desperate, compact defensive unit.",
+    "model_vs_market": "The market is more bullish on a Portugal victory at 79% than our model's 71%, indicating the market is likely discounting the volatility inherent in lower-tier tactical upsets. There is a distinct gap in the underdog’s prospects, with the model assigning nearly double the probability (12%) of a win compared to market expectations (7%).",
+    "market_probs": {
+      "implied_home_win": 0.7872,
+      "implied_draw": 0.1453,
+      "implied_away_win": 0.0675
+    },
+    "updated_at": "2026-06-18T19:13:43"
   },
   "K4": {
     "fixture_id": "K4",
