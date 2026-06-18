@@ -996,8 +996,6 @@ def match_block(m: dict) -> None:
     p    = predictions.get(m["fixture_id"], {})
 
     headline  = (p.get("headline") or "").strip()
-    narrative = (p.get("narrative") or "").strip()
-    market    = (p.get("model_vs_market") or "").strip()
     grid      = p.get("scoreline_grid")
 
     # ── Team header ──
@@ -1123,28 +1121,6 @@ def match_block(m: dict) -> None:
                 with cols3[2]:
                     st.markdown(_call_html("Final Outcome", call),
                                 unsafe_allow_html=True)
-
-            # AI Narrative (headline + body + model-vs-market prose)
-            if narrative or headline or market:
-                parts = []
-                if headline:
-                    parts.append(
-                        f"<div class='narrative-headline'>📝 {headline}</div>"
-                    )
-                if narrative:
-                    parts.append(
-                        f"<div class='narrative-body'>{narrative}</div>"
-                    )
-                if market:
-                    parts.append(
-                        f"<div class='narrative-market'>"
-                        f"<strong style='color:{TEXT}'>Model vs market —</strong> "
-                        f"{market}</div>"
-                    )
-                st.markdown(
-                    f"<div class='narrative-wrap'>{''.join(parts)}</div>",
-                    unsafe_allow_html=True,
-                )
 
             # Model vs market divergence bar
             div = D.market_divergence(p)
