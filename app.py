@@ -115,6 +115,41 @@ html, body, [class*="css"] {{
 .acc-stat .v.green {{ color: {ACCENT}; }}
 .acc-stat .v.blue  {{ color: {BLUE}; }}
 
+/* ── PERFORMANCE TABLE (per-matchday breakdown) ── */
+.perf-card {{
+    background: {SURFACE}; border: 1px solid {BORDER};
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;
+}}
+.perf-card .title {{
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: {MUTED}; margin-bottom: 10px;
+}}
+.perf-table {{ width: 100%; border-collapse: collapse; }}
+.perf-table th {{
+    font-size: 9.5px; font-weight: 700; color: {MUTED};
+    text-transform: uppercase; letter-spacing: 0.8px;
+    text-align: center; padding: 4px 10px; white-space: nowrap;
+}}
+.perf-table th.lbl-col, .perf-table td.lbl-col {{
+    text-align: left; padding-left: 2px;
+}}
+.perf-table td {{
+    text-align: center; padding: 7px 10px; white-space: nowrap;
+    border-top: 1px solid {BORDER};
+}}
+.perf-table td.lbl {{
+    font-size: 12px; font-weight: 700; color: {TEXT};
+}}
+.perf-table td.lbl .sub {{
+    font-size: 9.5px; font-weight: 500; color: {MUTED}; margin-left: 6px;
+}}
+.perf-table td.v {{ font-size: 15px; font-weight: 800; color: {TEXT}; }}
+.perf-table td.v.green {{ color: {ACCENT}; }}
+.perf-table td.v.blue  {{ color: {BLUE}; }}
+.perf-table tr.overall td {{ border-top: none; }}
+.perf-table tr.overall td.lbl {{ color: {ACCENT}; }}
+.perf-table tr.md-row td.lbl {{ color: {MUTED}; font-weight: 600; }}
+
 /* ── TABS ── */
 .stTabs [data-baseweb="tab-list"] {{
     gap: 0; border-bottom: 1px solid {BORDER}; background: transparent;
@@ -309,22 +344,38 @@ table.stand td.pts {{ font-weight: 800; color: {ACCENT}; }}
 .gbar .glab {{ font-size: 9px; color: {MUTED}; margin-top: 3px; }}
 
 /* ── MODEL VS MARKET ── */
-.mvm {{ margin-top: 12px; }}
-.mvm-row {{ display: flex; align-items: center; gap: 9px; margin-bottom: 6px; }}
-.mvm-tag {{ font-size: 10px; font-weight: 700; width: 50px; flex-shrink: 0;
-            color: {MUTED}; text-transform: uppercase; letter-spacing: 0.5px; }}
-.mvm-bar {{ flex: 1; display: flex; height: 17px; border-radius: 5px;
+.mvm {{ margin-top: 12px; background: {SURFACE2}; border: 1px solid {BORDER};
+        border-radius: 10px; padding: 13px 15px; }}
+.mvm .section-label {{ margin-bottom: 11px; }}
+.mvm-row {{ display: flex; align-items: center; gap: 11px; margin-bottom: 9px; }}
+.mvm-tag {{ font-size: 11px; font-weight: 800; width: 54px; flex-shrink: 0;
+            text-transform: uppercase; letter-spacing: 0.5px; }}
+.mvm-tag .dot {{ display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+                 margin-right: 5px; vertical-align: middle; }}
+.mvm-bar {{ flex: 1; display: flex; height: 26px; border-radius: 6px;
             overflow: hidden; border: 1px solid {BORDER}; }}
 .mvm-seg {{ display: flex; align-items: center; justify-content: center;
-            font-size: 9px; font-weight: 700; min-width: 0; }}
-.mvm-single {{ display: flex; align-items: center; gap: 12px; }}
-.mvm-pill {{ flex: 1; background: {SURFACE2}; border: 1px solid {BORDER};
-             border-radius: 8px; padding: 9px 12px; text-align: center; }}
+            font-size: 11.5px; font-weight: 800; min-width: 0;
+            border-right: 1px solid rgba(0,0,0,0.25); }}
+.mvm-seg:last-child {{ border-right: none; }}
+.mvm-seg.seg-win  {{ background: {WIN};  color: #fff; }}
+.mvm-seg.seg-draw {{ background: {DRAW}; color: {TEXT}; }}
+.mvm-seg.seg-loss {{ background: {LOSS}; color: #000; }}
+.mvm-legend {{ display: flex; justify-content: space-between; gap: 6px;
+               margin-top: 9px; }}
+.mvm-legend span {{ display: flex; align-items: center; gap: 5px;
+                    font-size: 10.5px; font-weight: 600; color: {MUTED}; }}
+.mvm-legend i {{ width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }}
+.mvm-single {{ display: flex; align-items: center; gap: 10px; }}
+.mvm-pill {{ flex: 1; background: {SURFACE}; border: 1px solid {BORDER};
+             border-radius: 9px; padding: 11px 12px; text-align: center; }}
 .mvm-pill .pk {{ font-size: 10px; color: {MUTED}; text-transform: uppercase;
-                 letter-spacing: 0.5px; margin-bottom: 3px; }}
-.mvm-pill .pv {{ font-size: 18px; font-weight: 800; }}
-.mvm-edge {{ font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
-             white-space: nowrap; }}
+                 letter-spacing: 0.5px; margin-bottom: 4px; }}
+.mvm-pill .pv {{ font-size: 22px; font-weight: 900; line-height: 1; }}
+.mvm-edge {{ font-size: 12px; font-weight: 800; padding: 7px 13px; border-radius: 9px;
+             white-space: nowrap; border: 1px solid transparent; text-align: center;
+             line-height: 1.25; }}
+.mvm-edge .es {{ font-size: 15px; display: block; }}
 .mvm-note {{ font-size: 11px; color: {MUTED}; line-height: 1.5; margin-top: 4px; }}
 
 /* ── TOURNAMENT PULSE ── */
@@ -610,33 +661,46 @@ GROUPS = D.groups_in_order(fixtures)
 # ═══════════════════════════════════════════════════════════════════════════════
 _acc = D.accuracy_summary(fixtures, results, predictions)
 if _acc["total_played"] > 0:
-    oa  = _acc["outcome_accuracy"]
-    ep  = _acc["exact_pct"]
-    avs = _acc["avg_score"]
-    wp  = _acc["with_prediction"]
-    tp  = _acc["total_played"]
+    _md_rows = D.accuracy_by_matchday(fixtures, results, predictions)
+
+    def _perf_row(summ: dict, label: str, sublabel: str = "",
+                  row_class: str = "md-row") -> str:
+        oa  = summ["outcome_accuracy"]
+        ep  = summ["exact_pct"]
+        avs = summ["avg_score"]
+        wp  = summ["with_prediction"]
+        tp  = summ["total_played"]
+        oa_cls = " green" if (oa or 0) >= 50 else ""
+        sub = f"<span class='sub'>{sublabel}</span>" if sublabel else ""
+        return f"""
+          <tr class="{row_class}">
+            <td class="lbl-col lbl">{label}{sub}</td>
+            <td class="v{oa_cls}">{f'{oa}%' if oa is not None else '—'}</td>
+            <td class="v">{f'{ep}%' if ep is not None else '—'}</td>
+            <td class="v blue">{f'{avs}/100' if avs is not None else '—'}</td>
+            <td class="v">{wp}/{tp}</td>
+          </tr>"""
+
+    _rows_html = _perf_row(_acc, "Overall", "all matchdays", "overall")
+    for _r in _md_rows:
+        _rows_html += _perf_row(_r, f"MD{_r['md']}", "", "md-row")
+
     st.markdown(
         f"""
-        <div class="acc-banner">
+        <div class="perf-card">
           <div class="title">📊&nbsp; Model Performance</div>
-          <div class="acc-stat">
-            <div class="k">Outcome Accuracy</div>
-            <div class="v {'green' if (oa or 0) >= 50 else ''}">
-              {f'{oa}%' if oa is not None else '—'}
-            </div>
-          </div>
-          <div class="acc-stat">
-            <div class="k">Exact Score</div>
-            <div class="v">{f'{ep}%' if ep is not None else '—'}</div>
-          </div>
-          <div class="acc-stat">
-            <div class="k">Avg Score</div>
-            <div class="v blue">{f'{avs}/100' if avs is not None else '—'}</div>
-          </div>
-          <div class="acc-stat">
-            <div class="k">Predicted</div>
-            <div class="v">{wp}/{tp}</div>
-          </div>
+          <table class="perf-table">
+            <thead>
+              <tr>
+                <th class="lbl-col">Matchday</th>
+                <th>Outcome Accuracy</th>
+                <th>Exact Score</th>
+                <th>Avg Score</th>
+                <th>Predicted</th>
+              </tr>
+            </thead>
+            <tbody>{_rows_html}</tbody>
+          </table>
         </div>
         """,
         unsafe_allow_html=True,
@@ -797,28 +861,38 @@ def model_vs_market_html(div: dict, home: str, away: str) -> str:
         m, k = div["model"], div["market"]
 
         def bar(d: dict) -> str:
+            def seg(cls: str, pct: int) -> str:
+                # hide the number on very thin slivers so it doesn't overflow
+                label = pct if pct >= 8 else ""
+                return (f'<div class="mvm-seg {cls}" '
+                        f'style="width:{pct}%">{label}</div>')
             return (
                 '<div class="mvm-bar">'
-                f'<div class="mvm-seg seg-win" style="width:{d["home"]}%;color:#fff">{d["home"]}</div>'
-                f'<div class="mvm-seg seg-draw" style="width:{d["draw"]}%">{d["draw"]}</div>'
-                f'<div class="mvm-seg seg-loss" style="width:{d["away"]}%;color:#000">{d["away"]}</div>'
+                f'{seg("seg-win", d["home"])}'
+                f'{seg("seg-draw", d["draw"])}'
+                f'{seg("seg-loss", d["away"])}'
                 '</div>'
             )
         return (
             '<div class="mvm"><div class="section-label">&#9878; Model vs market</div>'
-            f'<div class="mvm-row"><span class="mvm-tag" style="color:{ACCENT}">Model</span>{bar(m)}</div>'
-            f'<div class="mvm-row"><span class="mvm-tag">Market</span>{bar(k)}</div>'
-            f'<div class="mkt-foot" style="margin-top:6px"><span>{home} win</span>'
-            f'<span>Draw</span><span>{away} win</span></div></div>'
+            f'<div class="mvm-row"><span class="mvm-tag" style="color:{ACCENT}">'
+            f'<span class="dot" style="background:{ACCENT}"></span>Model</span>{bar(m)}</div>'
+            f'<div class="mvm-row"><span class="mvm-tag" style="color:{TEXT}">'
+            f'<span class="dot" style="background:{MUTED}"></span>Market</span>{bar(k)}</div>'
+            f'<div class="mvm-legend">'
+            f'<span><i style="background:{WIN}"></i>{home} win</span>'
+            f'<span><i style="background:{DRAW}"></i>Draw</span>'
+            f'<span><i style="background:{LOSS}"></i>{away} win</span>'
+            f'</div></div>'
         )
     # single-side comparison (favourite win prob)
     team, mp, kp, edge = div["team"], div["model_pct"], div["market_pct"], div["edge"]
     if edge > 0:
-        col, bg, txt = ACCENT, ACCENT_SOFT, "value edge"
+        col, bg, bd, txt = ACCENT, ACCENT_SOFT, ACCENT_BORDER, "value edge"
     elif edge < 0:
-        col, bg, txt = RED, "#1f0a0a", "market higher"
+        col, bg, bd, txt = RED, "#1f0a0a", "#5c1a1a", "market higher"
     else:
-        col, bg, txt = MUTED, SURFACE3, "in line"
+        col, bg, bd, txt = MUTED, SURFACE3, BORDER, "in line"
     sign = f"+{edge}" if edge > 0 else str(edge)
     return (
         f'<div class="mvm"><div class="section-label">&#9878; Model vs market '
@@ -827,7 +901,8 @@ def model_vs_market_html(div: dict, home: str, away: str) -> str:
         f'<div class="pv" style="color:{ACCENT}">{mp}%</div></div>'
         f'<div class="mvm-pill"><div class="pk">Market</div>'
         f'<div class="pv" style="color:{TEXT}">{kp}%</div></div>'
-        f'<div class="mvm-edge" style="background:{bg};color:{col}">{sign}% {txt}</div>'
+        f'<div class="mvm-edge" style="background:{bg};color:{col};border-color:{bd}">'
+        f'<span class="es">{sign}%</span>{txt}</div>'
         f'</div></div>'
     )
 
