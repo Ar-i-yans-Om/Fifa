@@ -907,9 +907,13 @@ def qualifiers(fixtures: list[dict], results: dict, predictions: dict) -> dict:
 def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> dict | None:
     """
     Build the projected knockout bracket (Round of 32 → Final) on the OFFICIAL
-    2026 World Cup structure: qualifiers are slotted by their projected group
-    finish (winner / runner-up / best-third) into FIFA's fixed bracket positions,
-    NOT re-seeded by strength. Each tie is then resolved with _resolve_tie.
+    2026 World Cup structure: qualifiers are slotted by their LIVE group finish
+    (winner / runner-up / best-third, from played results only) into FIFA's fixed
+    bracket positions, NOT re-seeded by strength. Each tie is then resolved with
+    _resolve_tie (which still uses the model's xG form for the outcome).
+
+    groups_projected counts groups whose every match has been played, so the
+    bracket field firms up as real results come in (0 → 12).
 
     Returns None if the field is not the expected 12 groups, or the eight best
     thirds cannot be legally allocated. Output:
@@ -924,13 +928,14 @@ def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> 
     if len(groups) < 12:
         return None
 
-    standings = {g: predicted_standings(fixtures, results, predictions, g) for g in groups}
+    standings = {g: current_standings(fixtures, results, g) for g in groups}
     if any(len(standings[g]) < 3 for g in groups):
         return None
-    status_full = sum(
-        1 for g in groups
-        if group_prediction_status(fixtures, results, predictions, g)["fully_projected"]
-    )
+
+    def _complete(g: str) -> bool:                # every group match played
+        stt = group_prediction_status(fixtures, results, predictions, g)
+        return stt["total"] > 0 and stt["played"] == stt["total"]
+    status_full = sum(1 for g in groups if _complete(g))
 
     pos1 = {g: standings[g][0]["team"] for g in groups}
     pos2 = {g: standings[g][1]["team"] for g in groups}
