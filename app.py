@@ -1566,8 +1566,8 @@ def render_how_it_works() -> None:
               <div class="di-desc">
                 Most simulators run 10,000 random simulations and count outcomes.
                 We enumerate every scenario mathematically with exact probabilities
-                and combine them into one precise distribution. No noise. The same
-                inputs always produce the same prediction.
+                and combine them into one precise distribution, with the knowledge of 
+                how much each factor sways the distribution. 
               </div>
             </div>
           </div>
