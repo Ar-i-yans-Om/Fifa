@@ -1395,8 +1395,9 @@ def render_knockout_bracket() -> None:
     if bk["partial"]:
         banner = (
             f"<div class='bk-banner'>&#9888; Projection in progress &mdash; "
-            f"{bk['groups_projected']}/{bk['groups_total']} groups complete. "
-            f"Qualifiers &amp; matchups firm up as group-stage results come in.</div>"
+            f"{bk['groups_projected']}/{bk['groups_total']} groups fully projected. "
+            f"Qualifiers &amp; matchups firm up as results come in and predictions "
+            f"are generated.</div>"
         )
 
     champ_block = (
