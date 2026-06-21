@@ -301,15 +301,15 @@ def _parse_scoreline(sl) -> tuple:
 def predicted_standings(fixtures: list[dict], results: dict,
                         predictions: dict, group: str) -> list[dict]:
     """
-    Projected final table built PURELY from the model's predicted scorelines.
+    Projected final table: a hybrid of real results and model predictions.
 
-    Every group fixture that has a populated prediction contributes its
-    PREDICTED scoreline — W/D/L, GF, GA and GD are all derived from that
-    scoreline, never from the actual result. Actual results are intentionally
-    ignored here, so this table does NOT change when live scores are entered;
-    it is the model's standalone view of how the group should finish.
+    For each group fixture, the actual result is used once the match has been
+    played; fixtures still to come fall back to the model's predicted scoreline.
+    W/D/L, GF, GA and GD are derived from whichever scoreline applies. This
+    makes the projection update as live scores are entered while still
+    projecting the rest of the group from the model.
 
-    Fixtures whose prediction hasn't been generated yet (skeleton entries) are
+    Fixtures that are neither played nor yet predicted (skeleton entries) are
     skipped, so before the whole group is run the projection is partial — the
     UI surfaces that via group_prediction_status().
 
@@ -321,16 +321,23 @@ def predicted_standings(fixtures: list[dict], results: dict,
     played: list[tuple] = []
 
     for f in fixtures_in_group(fixtures, group):
-        pred = predictions.get(f.get("id"))
-        if not _is_populated(pred):
-            continue
         h, a = f.get("home"), f.get("away")
         if h not in table or a not in table:
             continue
 
-        hg, ag = _parse_scoreline(pred.get("predicted_scoreline"))
-        if hg is None or ag is None:
-            continue
+        # Prefer the actual result once a match is played; otherwise use the
+        # model's predicted scoreline for fixtures still to come.
+        res = results.get(f.get("id"), {})
+        hs, as_ = res.get("home_score"), res.get("away_score")
+        if res.get("played") and hs is not None and as_ is not None:
+            hg, ag = hs, as_
+        else:
+            pred = predictions.get(f.get("id"))
+            if not _is_populated(pred):
+                continue
+            hg, ag = _parse_scoreline(pred.get("predicted_scoreline"))
+            if hg is None or ag is None:
+                continue
 
         played.append((h, hg, a, ag))
         table[h]["P"] += 1; table[a]["P"] += 1
