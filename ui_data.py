@@ -183,13 +183,68 @@ def _blank_row(team: str) -> dict:
             "GF": 0, "GA": 0, "Pts": 0}
 
 
-def _sort_table(rows: list[dict]) -> list[dict]:
-    """FIFA tie-break order: points, then goal difference, then goals for."""
-    return sorted(
-        rows,
-        key=lambda r: (r["Pts"], r["GF"] - r["GA"], r["GF"]),
-        reverse=True,
-    )
+def _h2h_table(teams: set, matches: list[tuple]) -> dict:
+    """
+    Mini-table (Pts / GF / GA) built from ONLY the matches played between the
+    given `teams`. `matches` is a list of (home, home_goals, away, away_goals).
+    Used to resolve teams that are level on the overall criteria.
+    """
+    rec = {t: {"Pts": 0, "GF": 0, "GA": 0} for t in teams}
+    for h, hs, a, as_ in matches:
+        if h not in teams or a not in teams:
+            continue
+        rec[h]["GF"] += hs; rec[h]["GA"] += as_
+        rec[a]["GF"] += as_; rec[a]["GA"] += hs
+        if hs > as_:
+            rec[h]["Pts"] += 3
+        elif hs < as_:
+            rec[a]["Pts"] += 3
+        else:
+            rec[h]["Pts"] += 1; rec[a]["Pts"] += 1
+    return rec
+
+
+def _sort_table(rows: list[dict], matches: list[tuple]) -> list[dict]:
+    """
+    Rank a group per the official FIFA World Cup 2026 tie-break order.
+
+    Overall criteria (all group matches):
+      1. points  2. goal difference  3. goals for
+    Then, for teams still level on all three, the same measures applied to ONLY
+    the matches played between those tied teams (head-to-head):
+      4. h2h points  5. h2h goal difference  6. h2h goals for
+
+    (The remaining FIFA criteria — fair-play conduct points and the drawing of
+    lots — need disciplinary data we don't track, so ties surviving the
+    head-to-head stage keep their overall order.)
+
+    `matches` is a list of (home, home_goals, away, away_goals) tuples for the
+    group's played/projected fixtures, used to build the head-to-head tables.
+    """
+    def overall_key(r):
+        return (r["Pts"], r["GF"] - r["GA"], r["GF"])
+
+    rows = sorted(rows, key=overall_key, reverse=True)
+
+    # Resolve each block of teams that are level on all three overall criteria.
+    out, i = [], 0
+    while i < len(rows):
+        j = i + 1
+        while j < len(rows) and overall_key(rows[j]) == overall_key(rows[i]):
+            j += 1
+        block = rows[i:j]
+        if len(block) > 1:
+            rec = _h2h_table({r["team"] for r in block}, matches)
+            block = sorted(
+                block,
+                key=lambda r: (rec[r["team"]]["Pts"],
+                               rec[r["team"]]["GF"] - rec[r["team"]]["GA"],
+                               rec[r["team"]]["GF"]),
+                reverse=True,
+            )
+        out.extend(block)
+        i = j
+    return out
 
 
 def current_standings(fixtures: list[dict], results: dict, group: str) -> list[dict]:
@@ -198,6 +253,7 @@ def current_standings(fixtures: list[dict], results: dict, group: str) -> list[d
     Each row: team, P, W, D, L, GF, GA, GD, Pts (sorted).
     """
     table = {t: _blank_row(t) for t in teams_in_group(fixtures, group)}
+    played: list[tuple] = []
 
     for f in fixtures_in_group(fixtures, group):
         res = results.get(f.get("id"), {})
@@ -207,6 +263,7 @@ def current_standings(fixtures: list[dict], results: dict, group: str) -> list[d
         hs, as_ = res.get("home_score"), res.get("away_score")
         if h not in table or a not in table or hs is None or as_ is None:
             continue
+        played.append((h, hs, a, as_))
         for t, gf, ga in ((h, hs, as_), (a, as_, hs)):
             row = table[t]
             row["P"] += 1
@@ -220,7 +277,7 @@ def current_standings(fixtures: list[dict], results: dict, group: str) -> list[d
             table[h]["D"] += 1; table[a]["D"] += 1
             table[h]["Pts"] += 1; table[a]["Pts"] += 1
 
-    rows = _sort_table(list(table.values()))
+    rows = _sort_table(list(table.values()), played)
     for r in rows:
         r["GD"] = r["GF"] - r["GA"]
     return rows
@@ -261,6 +318,7 @@ def predicted_standings(fixtures: list[dict], results: dict,
     it does not alter the projected figures.
     """
     table = {t: _blank_row(t) for t in teams_in_group(fixtures, group)}
+    played: list[tuple] = []
 
     for f in fixtures_in_group(fixtures, group):
         pred = predictions.get(f.get("id"))
@@ -274,6 +332,7 @@ def predicted_standings(fixtures: list[dict], results: dict,
         if hg is None or ag is None:
             continue
 
+        played.append((h, hg, a, ag))
         table[h]["P"] += 1; table[a]["P"] += 1
         table[h]["GF"] += hg; table[h]["GA"] += ag
         table[a]["GF"] += ag; table[a]["GA"] += hg
@@ -286,7 +345,7 @@ def predicted_standings(fixtures: list[dict], results: dict,
             table[h]["D"] += 1; table[a]["D"] += 1
             table[h]["Pts"] += 1; table[a]["Pts"] += 1
 
-    rows = _sort_table(list(table.values()))
+    rows = _sort_table(list(table.values()), played)
     for r in rows:
         r["GD"] = r["GF"] - r["GA"]
 
