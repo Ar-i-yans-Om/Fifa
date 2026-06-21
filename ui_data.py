@@ -973,13 +973,17 @@ def qualifiers(fixtures: list[dict], results: dict, predictions: dict) -> dict:
 def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> dict | None:
     """
     Build the projected knockout bracket (Round of 32 → Final) on the OFFICIAL
-    2026 World Cup structure: qualifiers are slotted by their LIVE group finish
-    (winner / runner-up / best-third, from played results only) into FIFA's fixed
-    bracket positions, NOT re-seeded by strength. Each tie is then resolved with
-    _resolve_tie (which still uses the model's xG form for the outcome).
+    2026 World Cup structure: qualifiers are slotted by their PROJECTED group
+    finish (winner / runner-up / best-third) into FIFA's fixed bracket positions,
+    NOT re-seeded by strength. The projected finish is the hybrid table from
+    predicted_standings — actual results where a match has been played, the
+    model's predicted scoreline otherwise — so it agrees with the Projected
+    Standings view. Each tie is then resolved with _resolve_tie (which uses the
+    model's xG form for the outcome).
 
-    groups_projected counts groups whose every match has been played, so the
-    bracket field firms up as real results come in (0 → 12).
+    groups_projected counts groups that are fully projected (every fixture either
+    played or predicted), so the bracket field firms up as results come in and as
+    predictions are generated (0 → 12).
 
     Returns None if the field is not the expected 12 groups, or the eight best
     thirds cannot be legally allocated. Output:
@@ -994,13 +998,14 @@ def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> 
     if len(groups) < 12:
         return None
 
-    standings = {g: current_standings(fixtures, results, g) for g in groups}
+    standings = {g: predicted_standings(fixtures, results, predictions, g)
+                 for g in groups}
     if any(len(standings[g]) < 3 for g in groups):
         return None
 
-    def _complete(g: str) -> bool:                # every group match played
+    def _complete(g: str) -> bool:                # every fixture played or predicted
         stt = group_prediction_status(fixtures, results, predictions, g)
-        return stt["total"] > 0 and stt["played"] == stt["total"]
+        return stt["total"] > 0 and stt["fully_projected"]
     status_full = sum(1 for g in groups if _complete(g))
 
     pos1 = {g: standings[g][0]["team"] for g in groups}
