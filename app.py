@@ -246,11 +246,6 @@ table.stand td.pts {{ font-weight: 800; color: {ACCENT}; }}
     font-size: 14px; font-weight: 600; color: {TEXT}; margin-bottom: 8px;
 }}
 .match-teams .vs {{ color: {MUTED}; font-weight: 500; font-size: 12px; }}
-.match-headline {{
-    font-size: 12px; color: {MUTED}; font-style: italic; line-height: 1.45;
-    padding-left: 10px; border-left: 2px solid {ACCENT};
-    margin-bottom: 8px;
-}}
 .prob-bar {{
     display: flex; width: 100%; height: 28px; border-radius: 6px;
     overflow: hidden; border: 1px solid {BORDER};
@@ -1009,13 +1004,6 @@ def match_block(m: dict) -> None:
         f"</div>",
         unsafe_allow_html=True,
     )
-
-    # ── AI headline preview ──
-    if headline and have:
-        st.markdown(
-            f"<div class='match-headline'>{headline}</div>",
-            unsafe_allow_html=True,
-        )
 
     # ── Probability bar ──
     if have:
