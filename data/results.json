@@ -136,15 +136,15 @@
     },
     {
       "id": "D5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 3,
+      "away_score": 2,
+      "played": true
     },
     {
       "id": "D6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 0,
+      "away_score": 0,
+      "played": true
     },
     {
       "id": "E1",
@@ -172,15 +172,15 @@
     },
     {
       "id": "E5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 1,
+      "away_score": 2,
+      "played": true
     },
     {
       "id": "E6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 0,
+      "away_score": 2,
+      "played": true
     },
     {
       "id": "F1",
@@ -208,15 +208,15 @@
     },
     {
       "id": "F5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 3,
+      "away_score": 1,
+      "played": true
     },
     {
       "id": "F6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 1,
+      "away_score": 1,
+      "played": true
     },
     {
       "id": "G1",
