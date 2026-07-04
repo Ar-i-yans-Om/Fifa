@@ -427,6 +427,45 @@ def _outcome_call(pred: dict, actual_score):
     return "On Target" if pred_out == act_out else "Off Target"
 
 
+def _knockout_outcome_call(pred: dict, res: dict) -> str | None:
+    """
+    Knockout verdict graded on ADVANCEMENT, not the draw-inclusive scoreline —
+    a knockout tie always produces a winner (via extra time / penalties), so a
+    predicted draw is meaningless as an "outcome". The model's pick to advance is
+    the side with the higher win probability (a decisive predicted scoreline is
+    the fallback); the actual advancer is the winner (shootout victor via the
+    result's `winner` field for a level score).
+
+      'Bullseye'   - correct advancer AND the exact 90'/ET scoreline
+      'On Target'  - model's advancing side actually advanced (score differed)
+      'Off Target' - the wrong side advanced (regardless of score — a knockout is
+                     about who goes through, so an exact draw that lost on pens is
+                     NOT a hit)
+      None         - can't be graded (undecided, or no probs/scoreline)
+    """
+    home, away = pred.get("home"), pred.get("away")
+    if not home or not away:
+        return None
+    winner, _ = _ko_winner_loser(home, away, res)     # actual advancer (handles PSO)
+    if winner is None:
+        return None
+    ph, pa = pred.get("prob_home_win"), pred.get("prob_away_win")
+    if ph is not None and pa is not None:
+        model_adv = home if ph >= pa else away
+    else:
+        phg, pag = _parse_scoreline(pred.get("predicted_scoreline"))
+        if phg is None or phg == pag:
+            return None
+        model_adv = home if phg > pag else away
+    if model_adv != winner:
+        return "Off Target"
+    hs, as_ = res.get("home_score"), res.get("away_score")
+    phg, pag = _parse_scoreline(pred.get("predicted_scoreline"))
+    exact = (phg is not None and hs is not None
+             and phg == int(hs) and pag == int(as_))
+    return "Bullseye" if exact else "On Target"
+
+
 def _accuracy_accumulate(fixtures: list[dict], results: dict,
                          predictions: dict) -> dict:
     """
@@ -454,7 +493,9 @@ def _accuracy_accumulate(fixtures: list[dict], results: dict,
             continue
         with_prediction += 1
         actual = f"{hs}-{as_}"
-        call = _outcome_call(p, actual)
+        # Knockouts are graded on who advanced (win probability), not a draw-
+        # inclusive scoreline result — there are no draws in a knockout.
+        call = _knockout_outcome_call(p, res) if is_knockout(f) else _outcome_call(p, actual)
         if call == "Bullseye":
             bullseye += 1
         elif call == "On Target":
