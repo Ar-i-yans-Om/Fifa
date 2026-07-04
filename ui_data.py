@@ -844,229 +844,127 @@ def _resolve_tie(a: str, b: str, form: dict, max_goals: int = 6) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-#  OFFICIAL 2026 WORLD CUP KNOCKOUT STRUCTURE
-#  Source: FIFA / Wikipedia "2026 FIFA World Cup knockout stage".
-#  The bracket is FIXED by group-finish position — it is NOT re-seeded by team
-#  strength. The 12 group winners, 12 runners-up and 8 best third-placed teams
-#  drop into predetermined Round-of-32 slots (FIFA match numbers 73–88). Eight
-#  of those 16 matches pit a group winner against a third-placed team; FIFA
-#  allocates those eight thirds to slots by WHICH GROUP they came from, via the
-#  eligibility table below (a winner never meets a third from its own group).
+#  LIVE KNOCKOUT BRACKET
+#  The real bracket ties (M73–M104) live in fixtures.json with slot-reference
+#  home/away; resolve_knockout() (below) turns them into concrete teams. The
+#  bracket therefore reads straight off the actual fixtures/results — no
+#  strength re-seeding and no separate third-place allocation table (the engine
+#  already baked the correct third-place slots into fixtures.json).
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Each R32 match -> its two slots. Slot codes:
-#   ("1", "E")  -> winner of group E
-#   ("2", "C")  -> runner-up of group C
-#   ("3", None) -> a best-third team, assigned via _THIRD_ELIGIBILITY
-_R32_MATCHES = {
-    73: (("2", "A"), ("2", "B")),
-    74: (("1", "E"), ("3", None)),
-    75: (("1", "F"), ("2", "C")),
-    76: (("1", "C"), ("2", "F")),
-    77: (("1", "I"), ("3", None)),
-    78: (("2", "E"), ("2", "I")),
-    79: (("1", "A"), ("3", None)),
-    80: (("1", "L"), ("3", None)),
-    81: (("1", "D"), ("3", None)),
-    82: (("1", "G"), ("3", None)),
-    83: (("2", "K"), ("2", "L")),
-    84: (("1", "H"), ("2", "J")),
-    85: (("1", "B"), ("3", None)),
-    86: (("1", "J"), ("2", "H")),
-    87: (("1", "K"), ("3", None)),
-    88: (("2", "D"), ("2", "G")),
-}
 
-# For each match whose second slot is a best-third, the GROUPS whose third-placed
-# team may be slotted there (FIFA's third-place allocation eligibility).
-_THIRD_ELIGIBILITY = {
-    74: set("ABCDF"),
-    77: set("CDFGH"),
-    79: set("CEFHI"),
-    80: set("EHIJK"),
-    81: set("BEFIJ"),
-    82: set("AEHIJ"),
-    85: set("EFGIJ"),
-    87: set("DEIJL"),
-}
-
-# Bracket leaf order: the 16 R32 matches laid out so that resolving adjacent
-# pairs round-by-round reproduces the official R16 → QF → SF → Final tree.
-_R32_LEAF_ORDER = [74, 77, 73, 75, 83, 84, 81, 82,
-                   76, 78, 79, 80, 86, 88, 85, 87]
-
-
-def _allocate_thirds(third_groups: list[str]) -> dict[int, str] | None:
+def _decide_tie(a: str, b: str, row: dict | None, form: dict) -> dict:
     """
-    Assign the eight qualifying third-placed teams (identified by their group
-    letter) to the eight R32 slots reserved for thirds, honouring FIFA's
-    per-slot eligibility table. Returns {match_number: group_letter}, or None if
-    no valid assignment exists. Solved as an exact bipartite matching; the most
-    constrained slots are filled first and groups are tried alphabetically, so
-    the projection is deterministic and stable run-to-run.
+    Settle one knockout tie between a and b, using the best available signal:
+        actual result  →  model prediction  →  form-based projection.
+    `row` is the knockout_match_predictions entry for this tie (or None if the
+    tie hasn't resolved to these two teams). Returns
+    {winner, loser, score, aet, source}, source ∈ {"actual","pred","proj"}.
     """
-    groups = sorted(set(third_groups))
-    if len(groups) != 8:
-        return None
-    # fill the most constrained slots first (fewer eligible groups → fewer choices)
-    slots = sorted(_THIRD_ELIGIBILITY,
-                   key=lambda m: len(_THIRD_ELIGIBILITY[m] & set(groups)))
-    assignment: dict[int, str] = {}
-    used: set[str] = set()
-
-    def backtrack(i: int) -> bool:
-        if i == len(slots):
-            return True
-        m = slots[i]
-        for g in groups:                      # alphabetical → deterministic
-            if g in used or g not in _THIRD_ELIGIBILITY[m]:
-                continue
-            assignment[m] = g
-            used.add(g)
-            if backtrack(i + 1):
-                return True
-            used.remove(g)
-            del assignment[m]
-        return False
-
-    return assignment if backtrack(0) else None
-
-
-def qualifiers(fixtures: list[dict], results: dict, predictions: dict) -> dict:
-    """
-    Determine the 32 qualified teams from the projected group tables:
-    the top two of every group plus the eight best third-placed teams
-    (ranked across groups by Pts, then GD, then GF).
-
-    Returns {"teams": [ordered-by-rating list of qualifier dicts], "thirds": [...],
-             "groups_projected": int, "groups_total": int}. Each qualifier dict:
-        {"team", "group", "pos" (1/2/3), "pts", "gd", "gf"}.
-    """
-    groups = groups_in_order(fixtures)
-    status_full = 0
-    direct: list[dict] = []
-    thirds: list[dict] = []
-    for g in groups:
-        rows = predicted_standings(fixtures, results, predictions, g)
-        st = group_prediction_status(fixtures, results, predictions, g)
-        if st["fully_projected"]:
-            status_full += 1
-        for pos, r in enumerate(rows, 1):
-            entry = {"team": r["team"], "group": g, "pos": pos,
-                     "pts": r["Pts"], "gd": r["GD"], "gf": r["GF"]}
-            if pos <= 2:
-                direct.append(entry)
-            elif pos == 3:
-                thirds.append(entry)
-
-    thirds.sort(key=lambda e: (e["pts"], e["gd"], e["gf"]), reverse=True)
-    best_thirds = thirds[:8]
-    quals = direct + best_thirds
-
-    form = team_form(fixtures, predictions)
-    for q in quals:
-        q["rating"] = form.get(q["team"], {}).get("rating", 0.0)
-    quals.sort(key=lambda q: q["rating"], reverse=True)
-
-    return {"teams": quals, "thirds_cut": best_thirds,
-            "groups_projected": status_full, "groups_total": len(groups)}
+    if row and row.get("resolved"):
+        # 1) actual played result (winner-first score; level → shootout victor)
+        if row.get("actual_score") not in (None, "—", ""):
+            ph, pa = _parse_scoreline(row["actual_score"])
+            if ph is not None:
+                win = a if ph > pa else b if pa > ph else (row.get("winner") or a)
+                hi, lo = max(ph, pa), min(ph, pa)
+                return {"winner": win, "loser": b if win == a else a,
+                        "score": f"{hi}-{lo}", "aet": ph == pa, "source": "actual"}
+        # 2) model prediction
+        if row.get("has_prediction"):
+            ph, pa = _parse_scoreline(row.get("predicted_scoreline"))
+            if ph is not None:
+                if ph > pa:
+                    win = a
+                elif pa > ph:
+                    win = b
+                else:
+                    win = a if (row.get("prob_home_win") or 0) >= (row.get("prob_away_win") or 0) else b
+                hi, lo = max(ph, pa), min(ph, pa)
+                return {"winner": win, "loser": b if win == a else a,
+                        "score": f"{hi}-{lo}", "aet": ph == pa, "source": "pred"}
+    # 3) form-based projection (keeps the tree flowing to a champion)
+    r = _resolve_tie(a, b, form)
+    return {"winner": r["winner"], "loser": r["loser"], "score": r["score"],
+            "aet": r["aet"], "source": "proj"}
 
 
 def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> dict | None:
     """
-    Build the projected knockout bracket (Round of 32 → Final) on the OFFICIAL
-    2026 World Cup structure: qualifiers are slotted by their PROJECTED group
-    finish (winner / runner-up / best-third) into FIFA's fixed bracket positions,
-    NOT re-seeded by strength. The projected finish is the hybrid table from
-    predicted_standings — actual results where a match has been played, the
-    model's predicted scoreline otherwise — so it agrees with the Projected
-    Standings view. Each tie is then resolved with _resolve_tie (which uses the
-    model's xG form for the outcome).
+    Build the LIVE knockout bracket (Round of 32 → Final) from the real bracket
+    fixtures (M73–M104 in fixtures.json), resolved by resolve_knockout(): group
+    slots (1A/2B/3E) from the actual final group table, and W##/L## from played
+    knockout results. Each tie is settled by _decide_tie — actual result if the
+    match has been played, else the model's prediction, else a form projection —
+    so real outcomes show through while the tree still flows to a (projected)
+    champion. Ties cascade in FIFA match order (a standard adjacent-pair tree).
 
-    groups_projected counts groups that are fully projected (every fixture either
-    played or predicted), so the bracket field firms up as results come in and as
-    predictions are generated (0 → 12).
-
-    Returns None if the field is not the expected 12 groups, or the eight best
-    thirds cannot be legally allocated. Output:
-        {"rounds": [ {"name", "ties": [ {a,b,winner,loser,score,aet,win_prob,
-                                         a_group,b_group,a_slot,b_slot,match} ] }, ... ],
-         "champion": team, "groups_projected": int, "groups_total": int,
-         "partial": bool}
-    a_slot / b_slot are the FIFA slot labels ("1E", "2C", "3F" …); 'match' is the
-    FIFA match number for Round-of-32 ties.
+    Returns None when there are no knockout fixtures or the group field isn't set.
+    Output:
+        {"rounds": [ {"name", "ties": [ {a,b,winner,loser,score,aet,source,
+                                         a_slot,b_slot} ]}, ... ],
+         "champion", "champion_source", "actual", "pred", "projected",
+         "total", "partial"}
+    source ∈ {"actual","pred","proj"}; a_slot/b_slot are FIFA labels (1E/3D) on
+    Round-of-32 ties only. partial = at least one tie is still a projection.
     """
-    groups = groups_in_order(fixtures)
-    if len(groups) < 12:
+    if "R32" not in knockout_rounds(fixtures):
         return None
-
-    standings = {g: predicted_standings(fixtures, results, predictions, g)
-                 for g in groups}
-    if any(len(standings[g]) < 3 for g in groups):
-        return None
-
-    def _complete(g: str) -> bool:                # every fixture played or predicted
-        stt = group_prediction_status(fixtures, results, predictions, g)
-        return stt["total"] > 0 and stt["fully_projected"]
-    status_full = sum(1 for g in groups if _complete(g))
-
-    pos1 = {g: standings[g][0]["team"] for g in groups}
-    pos2 = {g: standings[g][1]["team"] for g in groups}
-    pos3 = {g: standings[g][2]["team"] for g in groups}
-
-    # best 8 third-placed teams, ranked across groups by Pts → GD → GF
-    thirds = sorted(
-        ({"group": g, "pts": standings[g][2]["Pts"],
-          "gd": standings[g][2]["GD"], "gf": standings[g][2]["GF"]} for g in groups),
-        key=lambda e: (e["pts"], e["gd"], e["gf"]), reverse=True)
-    third_slot = _allocate_thirds([e["group"] for e in thirds[:8]])
-    if third_slot is None:
-        return None
-    third_team = {m: pos3[g] for m, g in third_slot.items()}   # match → third team
-
-    def team_for(slot, match_no):
-        kind, grp = slot
-        return pos1[grp] if kind == "1" else pos2[grp] if kind == "2" else third_team[match_no]
-
-    def label_for(slot, match_no):
-        kind, grp = slot
-        return f"1{grp}" if kind == "1" else f"2{grp}" if kind == "2" else f"3{third_slot[match_no]}"
 
     form = team_form(fixtures, predictions)
-    group_of = {standings[g][p]["team"]: g for g in groups for p in range(3)}
+    counts = {"actual": 0, "pred": 0, "proj": 0}
 
-    # ── Round of 32, in bracket-leaf order so the tree resolves correctly ──
-    r32 = []
-    for m in _R32_LEAF_ORDER:
-        sa, sb = _R32_MATCHES[m]
-        a, b = team_for(sa, m), team_for(sb, m)
-        res = _resolve_tie(a, b, form)
-        res.update({"a": a, "b": b,
-                    "a_group": group_of.get(a), "b_group": group_of.get(b),
-                    "a_slot": label_for(sa, m), "b_slot": label_for(sb, m),
-                    "match": m})
-        r32.append(res)
+    def _slot(code: str) -> str | None:
+        return code if _GROUP_SLOT_RE.match(code or "") else None
 
-    rounds = [{"name": "Round of 32", "ties": r32}]
-    current = [t["winner"] for t in r32]
-    for name in ["Round of 16", "Quarter-finals", "Semi-finals", "Final"]:
-        ties, nxt = [], []
-        for k in range(0, len(current), 2):
-            a, b = current[k], current[k + 1]
-            res = _resolve_tie(a, b, form)
-            res.update({"a": a, "b": b,
-                        "a_group": group_of.get(a), "b_group": group_of.get(b)})
-            ties.append(res)
-            nxt.append(res["winner"])
-        rounds.append({"name": name, "ties": ties})
-        current = nxt
+    # ── seed Round of 32 from the resolved real fixtures ──
+    r32 = {m["match_no"]: m for m in
+           knockout_match_predictions(fixtures, predictions, results, "R32")}
+    order = sorted(r32)                      # 73..88 → sequential bracket order
+    if not order or any(not r32[mn]["resolved"] for mn in order):
+        return None                          # group stage incomplete → no field yet
 
+    ties, winners = [], []
+    for mn in order:
+        row = r32[mn]
+        a, b = row["home"], row["away"]
+        d = _decide_tie(a, b, row, form)
+        counts[d["source"]] += 1
+        ties.append({**d, "a": a, "b": b,
+                     "a_slot": _slot(row["home_slot"]), "b_slot": _slot(row["away_slot"])})
+        winners.append(d["winner"])
+    rounds = [{"name": "Round of 32", "ties": ties}]
+
+    # ── cascade through the later rounds (adjacent winners pair up) ──
+    for rcode, name, start in [("R16", "Round of 16", 89),
+                               ("QF", "Quarter-finals", 97),
+                               ("SF", "Semi-finals", 101),
+                               ("F", "Final", 104)]:
+        rows = {m["match_no"]: m for m in
+                knockout_match_predictions(fixtures, predictions, results, rcode)}
+        rties, nxt = [], []
+        for k in range(0, len(winners), 2):
+            a, b = winners[k], winners[k + 1]
+            row = rows.get(start + k // 2)
+            # trust the fixture's actual/prediction only when it resolved to this
+            # exact pair (else a feeder above was a projection, so project here too)
+            if row and not (row.get("resolved") and {row["home"], row["away"]} == {a, b}):
+                row = None
+            d = _decide_tie(a, b, row, form)
+            counts[d["source"]] += 1
+            rties.append({**d, "a": a, "b": b, "a_slot": None, "b_slot": None})
+            nxt.append(d["winner"])
+        rounds.append({"name": name, "ties": rties})
+        winners = nxt
+
+    champ_tie = rounds[-1]["ties"][0] if rounds[-1]["ties"] else None
     return {
         "rounds": rounds,
-        "champion": current[0] if current else None,
-        "groups_projected": status_full,
-        "groups_total": len(groups),
-        "partial": status_full < len(groups),
+        "champion": winners[0] if winners else None,
+        "champion_source": champ_tie["source"] if champ_tie else "proj",
+        "actual": counts["actual"], "pred": counts["pred"], "projected": counts["proj"],
+        "total": sum(counts.values()),
+        "partial": counts["proj"] > 0,
     }
 
 
