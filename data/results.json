@@ -453,7 +453,7 @@
     {"id": "M88", "home_score": 1, "away_score": 1, "played": true, "winner": "Egypt"},
 
     {"id": "M89", "home_score": null, "away_score": null, "played": false},
-    {"id": "M90", "home_score": 0, "away_score": 3, "played": false},
+    {"id": "M90", "home_score": 0, "away_score": 3, "played": true},
     {"id": "M91", "home_score": null, "away_score": null, "played": false},
     {"id": "M92", "home_score": null, "away_score": null, "played": false},
     {"id": "M93", "home_score": null, "away_score": null, "played": false},
