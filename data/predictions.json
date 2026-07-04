@@ -4326,14 +4326,14 @@
       "home": 1.98,
       "away": 1.32
     },
-    "predicted_scoreline": "Japan 1-1 Sweden",
+    "predicted_scoreline": "Japan 2-1 Sweden",
     "top_scorelines": [
       {
-        "score": "1-1",
+        "score": "2-1",
         "prob": 9
       },
       {
-        "score": "2-1",
+        "score": "1-1",
         "prob": 9
       },
       {
@@ -4359,7 +4359,7 @@
       ],
       [
         0.0686,
-        0.09328,
+        0.09228,
         0.06291,
         0.02914,
         0.0104,
@@ -4369,7 +4369,7 @@
       ],
       [
         0.06903,
-        0.09176,
+        0.09276,
         0.06317,
         0.02923,
         0.01041,
@@ -8550,5 +8550,2085 @@
       ]
     },
     "updated_at": "2026-06-26T19:56:49"
+  },
+  "M73": {
+    "fixture_id": "M73",
+    "group": "R32",
+    "md": 73,
+    "round": "R32",
+    "match_no": 73,
+    "home": "South Africa",
+    "away": "Canada",
+    "prob_home_win": 21,
+    "prob_draw": 23,
+    "prob_away_win": 56,
+    "expected_goals": {
+      "home": 0.94,
+      "away": 1.75
+    },
+    "predicted_scoreline": "South Africa 0-1 Canada",
+    "top_scorelines": [
+      {
+        "score": "0-1",
+        "prob": 11
+      },
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "0-2",
+        "prob": 10
+      }
+    ],
+    "top_outcome": {
+      "team": "Canada",
+      "score": "3-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.06383,
+        0.11261,
+        0.10011,
+        0.05993,
+        0.02725,
+        0.01008,
+        0.00317,
+        0.00088
+      ],
+      [
+        0.06143,
+        0.10825,
+        0.09611,
+        0.05745,
+        0.02609,
+        0.00963,
+        0.00302,
+        0.00084
+      ],
+      [
+        0.03024,
+        0.05321,
+        0.04718,
+        0.02815,
+        0.01276,
+        0.0047,
+        0.00147,
+        0.0004
+      ],
+      [
+        0.01028,
+        0.01807,
+        0.01599,
+        0.00952,
+        0.0043,
+        0.00158,
+        0.00049,
+        0.00013
+      ],
+      [
+        0.00277,
+        0.00486,
+        0.00429,
+        0.00254,
+        0.00114,
+        0.00042,
+        0.00013,
+        3e-05
+      ],
+      [
+        0.00064,
+        0.00112,
+        0.00099,
+        0.00058,
+        0.00026,
+        0.0001,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.00013,
+        0.00023,
+        0.00021,
+        0.00012,
+        5e-05,
+        2e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        3e-05,
+        5e-05,
+        4e-05,
+        2e-05,
+        1e-05,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Canada favoured — 0-1",
+    "narrative": "Expected goals 0.94–1.75 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 21/23/56%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M74": {
+    "fixture_id": "M74",
+    "group": "R32",
+    "md": 74,
+    "round": "R32",
+    "match_no": 74,
+    "home": "Germany",
+    "away": "Paraguay",
+    "prob_home_win": 69,
+    "prob_draw": 19,
+    "prob_away_win": 11,
+    "expected_goals": {
+      "home": 2.0,
+      "away": 0.63
+    },
+    "predicted_scoreline": "Germany 2-0 Paraguay",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 14
+      },
+      {
+        "score": "1-0",
+        "prob": 14
+      },
+      {
+        "score": "3-0",
+        "prob": 9
+      }
+    ],
+    "top_outcome": {
+      "team": "Germany",
+      "score": "3-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.06656,
+        0.04351,
+        0.01493,
+        0.00372,
+        0.00079,
+        0.00016,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.13521,
+        0.08827,
+        0.03023,
+        0.00752,
+        0.0016,
+        0.00032,
+        6e-05,
+        1e-05
+      ],
+      [
+        0.13815,
+        0.09007,
+        0.03078,
+        0.00763,
+        0.00161,
+        0.00032,
+        6e-05,
+        1e-05
+      ],
+      [
+        0.09482,
+        0.06172,
+        0.02104,
+        0.00519,
+        0.00109,
+        0.00021,
+        4e-05,
+        1e-05
+      ],
+      [
+        0.04928,
+        0.03202,
+        0.01088,
+        0.00267,
+        0.00056,
+        0.00011,
+        2e-05,
+        0.0
+      ],
+      [
+        0.02074,
+        0.01345,
+        0.00455,
+        0.00111,
+        0.00023,
+        4e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.00738,
+        0.00477,
+        0.00161,
+        0.00039,
+        8e-05,
+        2e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.00229,
+        0.00148,
+        0.00049,
+        0.00012,
+        2e-05,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Germany favoured — 2-0",
+    "narrative": "Expected goals 2.00–0.63 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 69/19/11%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M75": {
+    "fixture_id": "M75",
+    "group": "R32",
+    "md": 75,
+    "round": "R32",
+    "match_no": 75,
+    "home": "Netherlands",
+    "away": "Morocco",
+    "prob_home_win": 35,
+    "prob_draw": 24,
+    "prob_away_win": 41,
+    "expected_goals": {
+      "home": 1.4,
+      "away": 1.55
+    },
+    "predicted_scoreline": "Netherlands 1-1 Morocco",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "1-2",
+        "prob": 9
+      },
+      {
+        "score": "2-1",
+        "prob": 8
+      }
+    ],
+    "top_outcome": {
+      "team": "Draw",
+      "score": "2-2",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.0491,
+        0.07689,
+        0.06082,
+        0.03251,
+        0.01327,
+        0.00443,
+        0.00127,
+        0.00032
+      ],
+      [
+        0.06983,
+        0.10923,
+        0.0863,
+        0.04607,
+        0.01878,
+        0.00627,
+        0.00179,
+        0.00046
+      ],
+      [
+        0.0502,
+        0.07844,
+        0.06189,
+        0.03299,
+        0.01342,
+        0.00447,
+        0.00128,
+        0.00032
+      ],
+      [
+        0.02443,
+        0.03813,
+        0.03004,
+        0.01598,
+        0.00649,
+        0.00215,
+        0.00061,
+        0.00015
+      ],
+      [
+        0.0091,
+        0.01419,
+        0.01117,
+        0.00593,
+        0.0024,
+        0.00079,
+        0.00022,
+        6e-05
+      ],
+      [
+        0.00279,
+        0.00435,
+        0.00341,
+        0.00181,
+        0.00073,
+        0.00024,
+        7e-05,
+        2e-05
+      ],
+      [
+        0.00074,
+        0.00115,
+        0.0009,
+        0.00047,
+        0.00019,
+        6e-05,
+        2e-05,
+        0.0
+      ],
+      [
+        0.00017,
+        0.00027,
+        0.00021,
+        0.00011,
+        5e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "low",
+    "headline": "Morocco favoured — 1-1",
+    "narrative": "Expected goals 1.40–1.55 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 35/24/41%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M76": {
+    "fixture_id": "M76",
+    "group": "R32",
+    "md": 76,
+    "round": "R32",
+    "match_no": 76,
+    "home": "Brazil",
+    "away": "Japan",
+    "prob_home_win": 48,
+    "prob_draw": 24,
+    "prob_away_win": 29,
+    "expected_goals": {
+      "home": 1.63,
+      "away": 1.2
+    },
+    "predicted_scoreline": "Brazil 1-1 Japan",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "2-1",
+        "prob": 9
+      },
+      {
+        "score": "1-0",
+        "prob": 9
+      }
+    ],
+    "top_outcome": {
+      "team": "Brazil",
+      "score": "3-1",
+      "prob": 5
+    },
+    "scoreline_grid": [
+      [
+        0.05507,
+        0.06725,
+        0.04165,
+        0.01755,
+        0.00571,
+        0.00155,
+        0.00037,
+        8e-05
+      ],
+      [
+        0.09094,
+        0.11094,
+        0.06862,
+        0.02889,
+        0.00939,
+        0.00254,
+        0.0006,
+        0.00013
+      ],
+      [
+        0.07584,
+        0.09241,
+        0.05708,
+        0.02399,
+        0.00778,
+        0.0021,
+        0.0005,
+        0.00011
+      ],
+      [
+        0.04272,
+        0.05198,
+        0.03206,
+        0.01344,
+        0.00435,
+        0.00117,
+        0.00028,
+        6e-05
+      ],
+      [
+        0.01835,
+        0.0223,
+        0.01373,
+        0.00574,
+        0.00185,
+        0.0005,
+        0.00012,
+        3e-05
+      ],
+      [
+        0.00645,
+        0.00782,
+        0.0048,
+        0.002,
+        0.00064,
+        0.00017,
+        4e-05,
+        1e-05
+      ],
+      [
+        0.00194,
+        0.00235,
+        0.00144,
+        0.0006,
+        0.00019,
+        5e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.00052,
+        0.00062,
+        0.00038,
+        0.00016,
+        5e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "medium",
+    "headline": "Brazil favoured — 1-1",
+    "narrative": "Expected goals 1.63–1.20 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 48/24/29%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M77": {
+    "fixture_id": "M77",
+    "group": "R32",
+    "md": 77,
+    "round": "R32",
+    "match_no": 77,
+    "home": "France",
+    "away": "Sweden",
+    "prob_home_win": 78,
+    "prob_draw": 16,
+    "prob_away_win": 7,
+    "expected_goals": {
+      "home": 2.24,
+      "away": 0.45
+    },
+    "predicted_scoreline": "France 2-0 Sweden",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 16
+      },
+      {
+        "score": "1-0",
+        "prob": 14
+      },
+      {
+        "score": "3-0",
+        "prob": 12
+      }
+    ],
+    "top_outcome": {
+      "team": "France",
+      "score": "4-0",
+      "prob": 7
+    },
+    "scoreline_grid": [
+      [
+        0.06347,
+        0.03029,
+        0.00791,
+        0.00164,
+        0.00032,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.14303,
+        0.06817,
+        0.01778,
+        0.00367,
+        0.00072,
+        0.00014,
+        3e-05,
+        0.0
+      ],
+      [
+        0.16209,
+        0.07714,
+        0.02008,
+        0.00413,
+        0.00081,
+        0.00015,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.12333,
+        0.05859,
+        0.0152,
+        0.00311,
+        0.0006,
+        0.00012,
+        2e-05,
+        0.0
+      ],
+      [
+        0.07098,
+        0.03365,
+        0.0087,
+        0.00177,
+        0.00034,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.03302,
+        0.01561,
+        0.00401,
+        0.00081,
+        0.00015,
+        3e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.01296,
+        0.00611,
+        0.00156,
+        0.00031,
+        6e-05,
+        1e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.00442,
+        0.00208,
+        0.00053,
+        0.0001,
+        2e-05,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "France favoured — 2-0",
+    "narrative": "Expected goals 2.24–0.45 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 78/16/7%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M78": {
+    "fixture_id": "M78",
+    "group": "R32",
+    "md": 78,
+    "round": "R32",
+    "match_no": 78,
+    "home": "Ivory Coast",
+    "away": "Norway",
+    "prob_home_win": 35,
+    "prob_draw": 24,
+    "prob_away_win": 41,
+    "expected_goals": {
+      "home": 1.39,
+      "away": 1.53
+    },
+    "predicted_scoreline": "Ivory Coast 1-1 Norway",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "1-2",
+        "prob": 9
+      },
+      {
+        "score": "0-1",
+        "prob": 8
+      }
+    ],
+    "top_outcome": {
+      "team": "Draw",
+      "score": "2-2",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.05043,
+        0.07838,
+        0.06149,
+        0.03258,
+        0.01318,
+        0.00436,
+        0.00124,
+        0.00031
+      ],
+      [
+        0.07097,
+        0.11018,
+        0.08635,
+        0.0457,
+        0.01846,
+        0.00611,
+        0.00173,
+        0.00044
+      ],
+      [
+        0.05053,
+        0.07836,
+        0.06134,
+        0.03242,
+        0.01307,
+        0.00431,
+        0.00122,
+        0.00031
+      ],
+      [
+        0.02439,
+        0.03777,
+        0.02952,
+        0.01557,
+        0.00626,
+        0.00206,
+        0.00058,
+        0.00015
+      ],
+      [
+        0.00903,
+        0.01396,
+        0.01089,
+        0.00573,
+        0.0023,
+        0.00075,
+        0.00021,
+        5e-05
+      ],
+      [
+        0.00276,
+        0.00425,
+        0.00331,
+        0.00174,
+        0.00069,
+        0.00023,
+        6e-05,
+        2e-05
+      ],
+      [
+        0.00073,
+        0.00112,
+        0.00087,
+        0.00046,
+        0.00018,
+        6e-05,
+        2e-05,
+        0.0
+      ],
+      [
+        0.00017,
+        0.00026,
+        0.0002,
+        0.00011,
+        4e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "low",
+    "headline": "Norway favoured — 1-1",
+    "narrative": "Expected goals 1.39–1.53 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 35/24/41%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M79": {
+    "fixture_id": "M79",
+    "group": "R32",
+    "md": 79,
+    "round": "R32",
+    "match_no": 79,
+    "home": "Mexico",
+    "away": "Ecuador",
+    "prob_home_win": 65,
+    "prob_draw": 19,
+    "prob_away_win": 16,
+    "expected_goals": {
+      "home": 2.12,
+      "away": 0.91
+    },
+    "predicted_scoreline": "Mexico 2-0 Ecuador",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 10
+      },
+      {
+        "score": "1-0",
+        "prob": 10
+      },
+      {
+        "score": "2-1",
+        "prob": 10
+      }
+    ],
+    "top_outcome": {
+      "team": "Mexico",
+      "score": "3-1",
+      "prob": 7
+    },
+    "scoreline_grid": [
+      [
+        0.04548,
+        0.04237,
+        0.02022,
+        0.00668,
+        0.00176,
+        0.0004,
+        8e-05,
+        2e-05
+      ],
+      [
+        0.0971,
+        0.09036,
+        0.04307,
+        0.01422,
+        0.00373,
+        0.00085,
+        0.00017,
+        3e-05
+      ],
+      [
+        0.10425,
+        0.09689,
+        0.04612,
+        0.01521,
+        0.00398,
+        0.0009,
+        0.00019,
+        4e-05
+      ],
+      [
+        0.07512,
+        0.06973,
+        0.03314,
+        0.0109,
+        0.00285,
+        0.00064,
+        0.00013,
+        3e-05
+      ],
+      [
+        0.04093,
+        0.03794,
+        0.018,
+        0.00591,
+        0.00154,
+        0.00035,
+        7e-05,
+        1e-05
+      ],
+      [
+        0.01802,
+        0.01668,
+        0.0079,
+        0.00258,
+        0.00067,
+        0.00015,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.00669,
+        0.00619,
+        0.00292,
+        0.00095,
+        0.00025,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.00216,
+        0.00199,
+        0.00094,
+        0.0003,
+        8e-05,
+        2e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Mexico favoured — 2-0",
+    "narrative": "Expected goals 2.12–0.91 from the ELO anchor, host home advantage, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 65/19/16%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M80": {
+    "fixture_id": "M80",
+    "group": "R32",
+    "md": 80,
+    "round": "R32",
+    "match_no": 80,
+    "home": "England",
+    "away": "DR Congo",
+    "prob_home_win": 77,
+    "prob_draw": 16,
+    "prob_away_win": 7,
+    "expected_goals": {
+      "home": 2.15,
+      "away": 0.45
+    },
+    "predicted_scoreline": "England 2-0 DR Congo",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 16
+      },
+      {
+        "score": "1-0",
+        "prob": 15
+      },
+      {
+        "score": "3-0",
+        "prob": 12
+      }
+    ],
+    "top_outcome": {
+      "team": "England",
+      "score": "4-0",
+      "prob": 7
+    },
+    "scoreline_grid": [
+      [
+        0.06816,
+        0.03253,
+        0.00844,
+        0.00172,
+        0.00033,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.14883,
+        0.07093,
+        0.01837,
+        0.00372,
+        0.00071,
+        0.00014,
+        2e-05,
+        0.0
+      ],
+      [
+        0.16345,
+        0.07778,
+        0.02008,
+        0.00405,
+        0.00077,
+        0.00015,
+        3e-05,
+        0.0
+      ],
+      [
+        0.12054,
+        0.05725,
+        0.01473,
+        0.00296,
+        0.00056,
+        0.00011,
+        2e-05,
+        0.0
+      ],
+      [
+        0.06727,
+        0.03188,
+        0.00817,
+        0.00163,
+        0.0003,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.03037,
+        0.01436,
+        0.00366,
+        0.00072,
+        0.00013,
+        3e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.01158,
+        0.00546,
+        0.00138,
+        0.00027,
+        5e-05,
+        1e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.00384,
+        0.00181,
+        0.00045,
+        9e-05,
+        2e-05,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "England favoured — 2-0",
+    "narrative": "Expected goals 2.15–0.45 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 77/16/7%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M81": {
+    "fixture_id": "M81",
+    "group": "R32",
+    "md": 81,
+    "round": "R32",
+    "match_no": 81,
+    "home": "United States",
+    "away": "Bosnia and Herzegovina",
+    "prob_home_win": 79,
+    "prob_draw": 14,
+    "prob_away_win": 7,
+    "expected_goals": {
+      "home": 2.45,
+      "away": 0.52
+    },
+    "predicted_scoreline": "United States 2-0 Bosnia and Herzegovina",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 15
+      },
+      {
+        "score": "3-0",
+        "prob": 12
+      },
+      {
+        "score": "1-0",
+        "prob": 12
+      }
+    ],
+    "top_outcome": {
+      "team": "United States",
+      "score": "4-0",
+      "prob": 8
+    },
+    "scoreline_grid": [
+      [
+        0.04804,
+        0.02657,
+        0.00786,
+        0.00176,
+        0.00036,
+        7e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.11806,
+        0.06522,
+        0.01929,
+        0.00432,
+        0.00087,
+        0.00017,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.14581,
+        0.08046,
+        0.02376,
+        0.00531,
+        0.00107,
+        0.00021,
+        4e-05,
+        1e-05
+      ],
+      [
+        0.12077,
+        0.06655,
+        0.01962,
+        0.00437,
+        0.00088,
+        0.00017,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.07555,
+        0.04156,
+        0.01222,
+        0.00271,
+        0.00054,
+        0.00011,
+        2e-05,
+        0.0
+      ],
+      [
+        0.03812,
+        0.02093,
+        0.00613,
+        0.00135,
+        0.00027,
+        5e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.01618,
+        0.00886,
+        0.00259,
+        0.00057,
+        0.00011,
+        2e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.00595,
+        0.00325,
+        0.00094,
+        0.0002,
+        4e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "United States favoured — 2-0",
+    "narrative": "Expected goals 2.45–0.52 from the ELO anchor, host home advantage, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 79/14/7%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M82": {
+    "fixture_id": "M82",
+    "group": "R32",
+    "md": 82,
+    "round": "R32",
+    "match_no": 82,
+    "home": "Belgium",
+    "away": "Senegal",
+    "prob_home_win": 48,
+    "prob_draw": 24,
+    "prob_away_win": 28,
+    "expected_goals": {
+      "home": 1.58,
+      "away": 1.15
+    },
+    "predicted_scoreline": "Belgium 1-1 Senegal",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "1-0",
+        "prob": 10
+      },
+      {
+        "score": "2-1",
+        "prob": 9
+      }
+    ],
+    "top_outcome": {
+      "team": "Belgium",
+      "score": "3-1",
+      "prob": 5
+    },
+    "scoreline_grid": [
+      [
+        0.0606,
+        0.07103,
+        0.04231,
+        0.0172,
+        0.00542,
+        0.00143,
+        0.00033,
+        7e-05
+      ],
+      [
+        0.09732,
+        0.11396,
+        0.06779,
+        0.02752,
+        0.00867,
+        0.00229,
+        0.00053,
+        0.00011
+      ],
+      [
+        0.07886,
+        0.09224,
+        0.05479,
+        0.0222,
+        0.00698,
+        0.00184,
+        0.00042,
+        9e-05
+      ],
+      [
+        0.04312,
+        0.05037,
+        0.02987,
+        0.01208,
+        0.00378,
+        0.00099,
+        0.00023,
+        5e-05
+      ],
+      [
+        0.01797,
+        0.02096,
+        0.01241,
+        0.005,
+        0.00156,
+        0.00041,
+        9e-05,
+        2e-05
+      ],
+      [
+        0.00612,
+        0.00713,
+        0.00421,
+        0.00169,
+        0.00052,
+        0.00014,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.00178,
+        0.00207,
+        0.00122,
+        0.00049,
+        0.00015,
+        4e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.00046,
+        0.00053,
+        0.00031,
+        0.00013,
+        4e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "medium",
+    "headline": "Belgium favoured — 1-1",
+    "narrative": "Expected goals 1.58–1.15 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 48/24/28%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M83": {
+    "fixture_id": "M83",
+    "group": "R32",
+    "md": 83,
+    "round": "R32",
+    "match_no": 83,
+    "home": "Portugal",
+    "away": "Croatia",
+    "prob_home_win": 46,
+    "prob_draw": 24,
+    "prob_away_win": 30,
+    "expected_goals": {
+      "home": 1.55,
+      "away": 1.19
+    },
+    "predicted_scoreline": "Portugal 1-1 Croatia",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "1-0",
+        "prob": 9
+      },
+      {
+        "score": "2-1",
+        "prob": 9
+      }
+    ],
+    "top_outcome": {
+      "team": "Draw",
+      "score": "2-2",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.05999,
+        0.07304,
+        0.04516,
+        0.01904,
+        0.00622,
+        0.0017,
+        0.00041,
+        9e-05
+      ],
+      [
+        0.0941,
+        0.11446,
+        0.07069,
+        0.02977,
+        0.00971,
+        0.00264,
+        0.00063,
+        0.00014
+      ],
+      [
+        0.07458,
+        0.09061,
+        0.05588,
+        0.02349,
+        0.00764,
+        0.00208,
+        0.0005,
+        0.00011
+      ],
+      [
+        0.03997,
+        0.04849,
+        0.02985,
+        0.01252,
+        0.00406,
+        0.0011,
+        0.00026,
+        6e-05
+      ],
+      [
+        0.01637,
+        0.01983,
+        0.01218,
+        0.00509,
+        0.00164,
+        0.00044,
+        0.0001,
+        2e-05
+      ],
+      [
+        0.00549,
+        0.00664,
+        0.00407,
+        0.00169,
+        0.00054,
+        0.00015,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.00158,
+        0.00191,
+        0.00117,
+        0.00048,
+        0.00015,
+        4e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.0004,
+        0.00049,
+        0.0003,
+        0.00012,
+        4e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "medium",
+    "headline": "Portugal favoured — 1-1",
+    "narrative": "Expected goals 1.55–1.19 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 46/24/30%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M84": {
+    "fixture_id": "M84",
+    "group": "R32",
+    "md": 84,
+    "round": "R32",
+    "match_no": 84,
+    "home": "Spain",
+    "away": "Austria",
+    "prob_home_win": 68,
+    "prob_draw": 19,
+    "prob_away_win": 12,
+    "expected_goals": {
+      "home": 2.0,
+      "away": 0.67
+    },
+    "predicted_scoreline": "Spain 2-0 Austria",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 13
+      },
+      {
+        "score": "1-0",
+        "prob": 13
+      },
+      {
+        "score": "2-1",
+        "prob": 9
+      }
+    ],
+    "top_outcome": {
+      "team": "Spain",
+      "score": "3-1",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.06326,
+        0.04433,
+        0.01624,
+        0.00429,
+        0.00096,
+        0.0002,
+        4e-05,
+        1e-05
+      ],
+      [
+        0.12848,
+        0.08993,
+        0.0329,
+        0.00867,
+        0.00193,
+        0.00039,
+        8e-05,
+        1e-05
+      ],
+      [
+        0.13144,
+        0.09187,
+        0.03354,
+        0.00881,
+        0.00195,
+        0.0004,
+        8e-05,
+        1e-05
+      ],
+      [
+        0.09049,
+        0.06315,
+        0.02299,
+        0.00602,
+        0.00132,
+        0.00027,
+        5e-05,
+        1e-05
+      ],
+      [
+        0.04727,
+        0.03292,
+        0.01195,
+        0.00311,
+        0.00068,
+        0.00014,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.02004,
+        0.01393,
+        0.00503,
+        0.0013,
+        0.00028,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.00721,
+        0.005,
+        0.0018,
+        0.00046,
+        0.0001,
+        2e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.00227,
+        0.00157,
+        0.00056,
+        0.00014,
+        3e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Spain favoured — 2-0",
+    "narrative": "Expected goals 2.00–0.67 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 68/19/12%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M85": {
+    "fixture_id": "M85",
+    "group": "R32",
+    "md": 85,
+    "round": "R32",
+    "match_no": 85,
+    "home": "Switzerland",
+    "away": "Algeria",
+    "prob_home_win": 50,
+    "prob_draw": 24,
+    "prob_away_win": 26,
+    "expected_goals": {
+      "home": 1.64,
+      "away": 1.09
+    },
+    "predicted_scoreline": "Switzerland 1-1 Algeria",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 11
+      },
+      {
+        "score": "1-0",
+        "prob": 10
+      },
+      {
+        "score": "2-1",
+        "prob": 9
+      }
+    ],
+    "top_outcome": {
+      "team": "Switzerland",
+      "score": "3-1",
+      "prob": 5
+    },
+    "scoreline_grid": [
+      [
+        0.06097,
+        0.06738,
+        0.03792,
+        0.01462,
+        0.0044,
+        0.00112,
+        0.00025,
+        5e-05
+      ],
+      [
+        0.10161,
+        0.11218,
+        0.06305,
+        0.02428,
+        0.0073,
+        0.00185,
+        0.00042,
+        9e-05
+      ],
+      [
+        0.0854,
+        0.09417,
+        0.05285,
+        0.02031,
+        0.00609,
+        0.00154,
+        0.00035,
+        7e-05
+      ],
+      [
+        0.04839,
+        0.05329,
+        0.02986,
+        0.01145,
+        0.00342,
+        0.00086,
+        0.00019,
+        4e-05
+      ],
+      [
+        0.02088,
+        0.02296,
+        0.01284,
+        0.00491,
+        0.00146,
+        0.00036,
+        8e-05,
+        2e-05
+      ],
+      [
+        0.00735,
+        0.00807,
+        0.0045,
+        0.00171,
+        0.00051,
+        0.00013,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.00221,
+        0.00242,
+        0.00135,
+        0.00051,
+        0.00015,
+        4e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.00059,
+        0.00064,
+        0.00036,
+        0.00013,
+        4e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "medium",
+    "headline": "Switzerland favoured — 1-1",
+    "narrative": "Expected goals 1.64–1.09 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 50/24/26%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M86": {
+    "fixture_id": "M86",
+    "group": "R32",
+    "md": 86,
+    "round": "R32",
+    "match_no": 86,
+    "home": "Argentina",
+    "away": "Cape Verde",
+    "prob_home_win": 83,
+    "prob_draw": 13,
+    "prob_away_win": 4,
+    "expected_goals": {
+      "home": 2.33,
+      "away": 0.3
+    },
+    "predicted_scoreline": "Argentina 2-0 Cape Verde",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 19
+      },
+      {
+        "score": "1-0",
+        "prob": 16
+      },
+      {
+        "score": "3-0",
+        "prob": 15
+      }
+    ],
+    "top_outcome": {
+      "team": "Argentina",
+      "score": "4-0",
+      "prob": 9
+    },
+    "scoreline_grid": [
+      [
+        0.06827,
+        0.02198,
+        0.00411,
+        0.0007,
+        0.00013,
+        2e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.15957,
+        0.05132,
+        0.00959,
+        0.00163,
+        0.0003,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.18761,
+        0.06025,
+        0.01124,
+        0.00191,
+        0.00035,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.14809,
+        0.04746,
+        0.00882,
+        0.00149,
+        0.00027,
+        5e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.08839,
+        0.02826,
+        0.00523,
+        0.00088,
+        0.00016,
+        3e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.04262,
+        0.01359,
+        0.0025,
+        0.00042,
+        7e-05,
+        1e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.01732,
+        0.0055,
+        0.001,
+        0.00016,
+        3e-05,
+        1e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.00611,
+        0.00194,
+        0.00035,
+        6e-05,
+        1e-05,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Argentina favoured — 2-0",
+    "narrative": "Expected goals 2.33–0.30 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 83/13/4%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M87": {
+    "fixture_id": "M87",
+    "group": "R32",
+    "md": 87,
+    "round": "R32",
+    "match_no": 87,
+    "home": "Colombia",
+    "away": "Ghana",
+    "prob_home_win": 77,
+    "prob_draw": 16,
+    "prob_away_win": 7,
+    "expected_goals": {
+      "home": 2.19,
+      "away": 0.45
+    },
+    "predicted_scoreline": "Colombia 2-0 Ghana",
+    "top_scorelines": [
+      {
+        "score": "2-0",
+        "prob": 16
+      },
+      {
+        "score": "1-0",
+        "prob": 15
+      },
+      {
+        "score": "3-0",
+        "prob": 12
+      }
+    ],
+    "top_outcome": {
+      "team": "Colombia",
+      "score": "4-0",
+      "prob": 7
+    },
+    "scoreline_grid": [
+      [
+        0.06673,
+        0.03188,
+        0.00826,
+        0.00167,
+        0.00032,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.14711,
+        0.0702,
+        0.01816,
+        0.00366,
+        0.0007,
+        0.00013,
+        2e-05,
+        0.0
+      ],
+      [
+        0.1631,
+        0.07772,
+        0.02007,
+        0.00404,
+        0.00076,
+        0.00014,
+        3e-05,
+        0.0
+      ],
+      [
+        0.12141,
+        0.05776,
+        0.01487,
+        0.00298,
+        0.00056,
+        0.00011,
+        2e-05,
+        0.0
+      ],
+      [
+        0.06836,
+        0.03245,
+        0.00833,
+        0.00166,
+        0.00031,
+        6e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.03111,
+        0.01473,
+        0.00376,
+        0.00075,
+        0.00014,
+        3e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.01194,
+        0.00564,
+        0.00143,
+        0.00028,
+        5e-05,
+        1e-05,
+        0.0,
+        0.0
+      ],
+      [
+        0.00399,
+        0.00188,
+        0.00047,
+        9e-05,
+        2e-05,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "high",
+    "headline": "Colombia favoured — 2-0",
+    "narrative": "Expected goals 2.19–0.45 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 77/16/7%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
+  },
+  "M88": {
+    "fixture_id": "M88",
+    "group": "R32",
+    "md": 88,
+    "round": "R32",
+    "match_no": 88,
+    "home": "Australia",
+    "away": "Egypt",
+    "prob_home_win": 41,
+    "prob_draw": 25,
+    "prob_away_win": 34,
+    "expected_goals": {
+      "home": 1.45,
+      "away": 1.27
+    },
+    "predicted_scoreline": "Australia 1-1 Egypt",
+    "top_scorelines": [
+      {
+        "score": "1-1",
+        "prob": 12
+      },
+      {
+        "score": "1-0",
+        "prob": 9
+      },
+      {
+        "score": "2-1",
+        "prob": 9
+      }
+    ],
+    "top_outcome": {
+      "team": "Draw",
+      "score": "2-2",
+      "prob": 6
+    },
+    "scoreline_grid": [
+      [
+        0.06174,
+        0.07971,
+        0.05215,
+        0.02319,
+        0.00794,
+        0.00226,
+        0.00056,
+        0.00013
+      ],
+      [
+        0.09071,
+        0.11697,
+        0.07644,
+        0.03395,
+        0.01161,
+        0.0033,
+        0.00081,
+        0.00018
+      ],
+      [
+        0.06731,
+        0.08669,
+        0.05657,
+        0.02508,
+        0.00856,
+        0.00242,
+        0.0006,
+        0.00013
+      ],
+      [
+        0.03376,
+        0.04343,
+        0.02829,
+        0.01252,
+        0.00426,
+        0.0012,
+        0.0003,
+        7e-05
+      ],
+      [
+        0.01294,
+        0.01662,
+        0.01081,
+        0.00477,
+        0.00162,
+        0.00045,
+        0.00011,
+        2e-05
+      ],
+      [
+        0.00407,
+        0.00522,
+        0.00338,
+        0.00149,
+        0.0005,
+        0.00014,
+        3e-05,
+        1e-05
+      ],
+      [
+        0.0011,
+        0.00141,
+        0.00091,
+        0.0004,
+        0.00013,
+        4e-05,
+        1e-05,
+        0.0
+      ],
+      [
+        0.00026,
+        0.00034,
+        0.00022,
+        0.0001,
+        3e-05,
+        1e-05,
+        0.0,
+        0.0
+      ]
+    ],
+    "confidence": "low",
+    "headline": "Australia favoured — 1-1",
+    "narrative": "Expected goals 1.45–1.27 from the ELO anchor, tournament momentum, folded through the weighted chaos mixture (P=30%). Win/Draw/Loss 41/25/34%.",
+    "model_vs_market": "",
+    "market_probs": null,
+    "quality": {
+      "ok": true,
+      "grounded": false,
+      "n_issues": 0,
+      "issues": []
+    },
+    "updated_at": "2026-07-04T20:40:07"
   }
 }
