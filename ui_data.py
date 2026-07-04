@@ -441,8 +441,6 @@ def _accuracy_accumulate(fixtures: list[dict], results: dict,
     scores: list[int] = []
 
     for f in fixtures:
-        if is_knockout(f):          # banner tracks group-stage matchdays only
-            continue
         fid = f.get("id")
         res = results.get(fid, {})
         if not res.get("played"):
@@ -515,6 +513,24 @@ def accuracy_by_matchday(fixtures: list[dict], results: dict,
             continue
         rows.append({"md": md, **summ})
     return rows
+
+
+def accuracy_by_round(fixtures: list[dict], results: dict,
+                      predictions: dict) -> list[dict]:
+    """
+    Per-knockout-round prediction accuracy, one row per round (R32 → Final) that
+    has at least one played match, in bracket order. Same shape as
+    accuracy_by_matchday rows but keyed by "round"/"label" instead of "md" — the
+    UI appends these below the group-stage matchday rows in Model Performance.
+    """
+    out: list[dict] = []
+    for rc in knockout_rounds(fixtures):
+        rfx = [f for f in fixtures if f.get("round") == rc]
+        summ = _accuracy_accumulate(rfx, results, predictions)
+        if summ["total_played"] == 0:
+            continue
+        out.append({"round": rc, "label": knockout_round_label(rc), **summ})
+    return out
 
 
 def grid_insights(grid) -> dict | None:
@@ -889,15 +905,35 @@ def _decide_tie(a: str, b: str, row: dict | None, form: dict) -> dict:
             "aet": r["aet"], "source": "proj"}
 
 
+def _decide_row(a: str, b: str, res: dict | None, p: dict | None) -> dict:
+    """Assemble the minimal `row` _decide_tie needs from a fixture's result +
+    prediction. `a`/`b` are the fixture's resolved home/away, so the actual and
+    predicted scorelines (home-away) are already oriented to (a, b)."""
+    row: dict = {"resolved": True, "actual_score": None, "has_prediction": False}
+    if res and res.get("played") and res.get("home_score") is not None \
+            and res.get("away_score") is not None:
+        row["actual_score"] = f"{res['home_score']}-{res['away_score']}"
+        row["winner"] = res.get("winner")          # shootout victor for a level score
+    if _is_populated(p):
+        row["has_prediction"] = True
+        row["predicted_scoreline"] = p.get("predicted_scoreline")
+        row["prob_home_win"] = p.get("prob_home_win")
+        row["prob_away_win"] = p.get("prob_away_win")
+    return row
+
+
 def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> dict | None:
     """
-    Build the LIVE knockout bracket (Round of 32 → Final) from the real bracket
-    fixtures (M73–M104 in fixtures.json), resolved by resolve_knockout(): group
-    slots (1A/2B/3E) from the actual final group table, and W##/L## from played
-    knockout results. Each tie is settled by _decide_tie — actual result if the
-    match has been played, else the model's prediction, else a form projection —
-    so real outcomes show through while the tree still flows to a (projected)
-    champion. Ties cascade in FIFA match order (a standard adjacent-pair tree).
+    Build the LIVE knockout bracket (Round of 32 → Final) by following the REAL
+    feeder structure encoded in fixtures.json — each tie's home/away are slot
+    references (group slots 1A/2B/3E, or W##/L## pointing at specific earlier
+    matches), NOT naive adjacent pairs. Walking the ties in match-number order,
+    every winner/loser is recorded so the next round's W##/L## references resolve
+    to the right team.
+
+    Each tie is settled by _decide_tie — actual result if played, else the
+    model's prediction, else a form projection — so real outcomes show through
+    while the tree still flows to a (projected) champion.
 
     Returns None when there are no knockout fixtures or the group field isn't set.
     Output:
@@ -912,56 +948,54 @@ def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> 
         return None
 
     form = team_form(fixtures, predictions)
+    group_slots = _group_rank_slots(fixtures, results)
     counts = {"actual": 0, "pred": 0, "proj": 0}
+    winner_of: dict[int, str] = {}
+    loser_of: dict[int, str] = {}
 
     def _slot(code: str) -> str | None:
         return code if _GROUP_SLOT_RE.match(code or "") else None
 
-    # ── seed Round of 32 from the resolved real fixtures ──
-    r32 = {m["match_no"]: m for m in
-           knockout_match_predictions(fixtures, predictions, results, "R32")}
-    order = sorted(r32)                      # 73..88 → sequential bracket order
-    if not order or any(not r32[mn]["resolved"] for mn in order):
-        return None                          # group stage incomplete → no field yet
+    def _resolve_ref(ref: str) -> str | None:
+        if ref in group_slots:
+            return group_slots[ref]
+        m = _MATCH_SLOT_RE.match(ref or "")
+        if m:
+            n = int(m.group(2))
+            return (winner_of if m.group(1) == "W" else loser_of).get(n)
+        return None
 
-    ties, winners = [], []
-    for mn in order:
-        row = r32[mn]
-        a, b = row["home"], row["away"]
-        d = _decide_tie(a, b, row, form)
+    # names → labels for the funnel columns; 3P (third-place) is computed but not
+    # shown in the main tree (consistent with a standard bracket render)
+    labels = {"R32": "Round of 32", "R16": "Round of 16", "QF": "Quarter-finals",
+              "SF": "Semi-finals", "F": "Final"}
+    by_round: dict[str, list] = {rc: [] for rc in labels}
+
+    ko = sorted((f for f in fixtures if is_knockout(f)),
+                key=lambda f: f.get("match_no", 0))
+    for f in ko:
+        rc, mn = f.get("round"), f.get("match_no")
+        a, b = _resolve_ref(f.get("home", "")), _resolve_ref(f.get("away", ""))
+        if not a or not b:
+            if rc == "R32":
+                return None                  # group stage incomplete → no field yet
+            continue                         # a feeder tie is missing; skip gracefully
+        d = _decide_tie(a, b, _decide_row(a, b, results.get(f["id"]),
+                                          predictions.get(f["id"])), form)
+        winner_of[mn], loser_of[mn] = d["winner"], d["loser"]
         counts[d["source"]] += 1
-        ties.append({**d, "a": a, "b": b,
-                     "a_slot": _slot(row["home_slot"]), "b_slot": _slot(row["away_slot"])})
-        winners.append(d["winner"])
-    rounds = [{"name": "Round of 32", "ties": ties}]
+        if rc in by_round:
+            by_round[rc].append({**d, "a": a, "b": b,
+                                 "a_slot": _slot(f.get("home")) if rc == "R32" else None,
+                                 "b_slot": _slot(f.get("away")) if rc == "R32" else None})
 
-    # ── cascade through the later rounds (adjacent winners pair up) ──
-    for rcode, name, start in [("R16", "Round of 16", 89),
-                               ("QF", "Quarter-finals", 97),
-                               ("SF", "Semi-finals", 101),
-                               ("F", "Final", 104)]:
-        rows = {m["match_no"]: m for m in
-                knockout_match_predictions(fixtures, predictions, results, rcode)}
-        rties, nxt = [], []
-        for k in range(0, len(winners), 2):
-            a, b = winners[k], winners[k + 1]
-            row = rows.get(start + k // 2)
-            # trust the fixture's actual/prediction only when it resolved to this
-            # exact pair (else a feeder above was a projection, so project here too)
-            if row and not (row.get("resolved") and {row["home"], row["away"]} == {a, b}):
-                row = None
-            d = _decide_tie(a, b, row, form)
-            counts[d["source"]] += 1
-            rties.append({**d, "a": a, "b": b, "a_slot": None, "b_slot": None})
-            nxt.append(d["winner"])
-        rounds.append({"name": name, "ties": rties})
-        winners = nxt
-
-    champ_tie = rounds[-1]["ties"][0] if rounds[-1]["ties"] else None
+    rounds = [{"name": labels[rc], "ties": by_round[rc]}
+              for rc in ["R32", "R16", "QF", "SF", "F"] if by_round[rc]]
+    final_tie = by_round["F"][0] if by_round["F"] else None
     return {
         "rounds": rounds,
-        "champion": winners[0] if winners else None,
-        "champion_source": champ_tie["source"] if champ_tie else "proj",
+        "champion": final_tie["winner"] if final_tie else None,
+        "champion_source": final_tie["source"] if final_tie else "proj",
         "actual": counts["actual"], "pred": counts["pred"], "projected": counts["proj"],
         "total": sum(counts.values()),
         "partial": counts["proj"] > 0,
