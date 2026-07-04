@@ -711,9 +711,12 @@ if _acc["total_played"] > 0:
             <td class="v">{wp}/{tp}</td>
           </tr>"""
 
-    _rows_html = _perf_row(_acc, "Overall", "all matchdays", "overall")
+    _rows_html = _perf_row(_acc, "Overall", "group + knockouts", "overall")
     for _r in _md_rows:
         _rows_html += _perf_row(_r, f"MD{_r['md']}", "", "md-row")
+    # knockout rounds (R32 → Final) appended below the group matchdays
+    for _r in D.accuracy_by_round(fixtures, results, predictions):
+        _rows_html += _perf_row(_r, _r["round"], _r["label"], "md-row")
 
     st.markdown(
         f"""
@@ -722,7 +725,7 @@ if _acc["total_played"] > 0:
           <table class="perf-table">
             <thead>
               <tr>
-                <th class="lbl-col">Matchday</th>
+                <th class="lbl-col">Stage</th>
                 <th>Outcome Accuracy</th>
                 <th>Exact Score</th>
                 <th>Avg Score</th>
