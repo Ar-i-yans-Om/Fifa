@@ -424,6 +424,32 @@ table.stand td.pts {{ font-weight: 800; color: {ACCENT}; }}
            color: {MUTED}; padding: 1px 5px; border-radius: 10px; }}
 .bk-col.bk-final .bk-tie {{ border-color: {ACCENT}; box-shadow: 0 0 18px rgba(0,201,110,0.12); }}
 
+/* ── KNOCKOUT MATCH CARDS ── */
+.ko-meta {{
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    font-size: 10.5px; color: {MUTED}; margin-bottom: 7px;
+}}
+.ko-meta .ko-tag {{
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
+    color: {BLUE}; background: {BLUE_SOFT}; border: 1px solid {BLUE_BORDER};
+    padding: 2px 8px; border-radius: 20px;
+}}
+.ko-meta .ko-dot {{ color: {BORDER}; }}
+.ko-meta .ko-advance {{
+    margin-left: auto; font-size: 10.5px; font-weight: 800; color: {ACCENT};
+    background: {ACCENT_SOFT}; border: 1px solid {ACCENT_BORDER};
+    padding: 2px 9px; border-radius: 20px; white-space: nowrap;
+}}
+.ko-meta .ko-advance img {{ height: 10px !important; border-radius: 1px; margin-right: 4px; vertical-align: middle; }}
+.ko-tbd {{
+    background: {SURFACE}; border: 1px dashed {BORDER}; border-radius: 10px;
+    padding: 14px 16px; margin-bottom: 12px;
+}}
+.ko-tbd .ko-tbd-teams {{ font-size: 14px; font-weight: 700; color: {MUTED}; }}
+.ko-tbd .ko-tbd-teams .vs {{ color: {BORDER}; font-weight: 500; margin: 0 8px; }}
+.ko-tbd .ko-tbd-note {{ font-size: 11px; color: {MUTED}; margin-top: 5px; opacity: 0.8; }}
+.ko-round-intro {{ font-size: 12px; color: {MUTED}; margin: 2px 0 16px; }}
+
 /* ── EXPANDER ── */
 details[data-testid="stExpander"], div[data-testid="stExpander"] {{
     background: {SURFACE} !important; border: 1px solid {BORDER} !important;
@@ -986,7 +1012,7 @@ def _build_card_cached(fid, home, away, group, md, pa, pd, pb,
     )
 
 
-def match_block(m: dict) -> None:
+def match_block(m: dict, meta_html: str = "") -> None:
     home, away = m["home"], m["away"]
     pa, pd, pb = m["prob_home_win"], m["prob_draw"], m["prob_away_win"]
     have = m["has_prediction"] and None not in (pa, pd, pb)
@@ -994,6 +1020,10 @@ def match_block(m: dict) -> None:
 
     headline  = (p.get("headline") or "").strip()
     grid      = p.get("scoreline_grid")
+
+    # ── Optional meta line (used by knockout cards: round · venue · advance) ──
+    if meta_html:
+        st.markdown(meta_html, unsafe_allow_html=True)
 
     # ── Team header ──
     st.markdown(
@@ -1409,6 +1439,87 @@ def render_knockout_bracket() -> None:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+#  KNOCKOUT MATCH CARDS  (real bracket M73–M104, one card per fixture, per round)
+# ═══════════════════════════════════════════════════════════════════════════════
+def _ko_meta_html(m: dict) -> str:
+    """Top meta line for a knockout card: round · match · date · venue (+ who advanced)."""
+    rnd   = D.knockout_round_label(m["round"])
+    mno   = m.get("match_no")
+    date  = m.get("date") or ""
+    venue = m.get("venue") or ""
+    city  = m.get("city") or ""
+    bits = [f"<span class='ko-tag'>{rnd}</span>"]
+    if mno:
+        bits.append(f"<span>Match {mno}</span>")
+    if date:
+        bits.append(f"<span class='ko-dot'>&middot;</span><span>{date}</span>")
+    if venue:
+        loc = f"{venue}" + (f", {city}" if city else "")
+        bits.append(f"<span class='ko-dot'>&middot;</span><span>{loc}</span>")
+
+    adv = ""
+    if m.get("winner"):
+        tail = " (pens)" if m.get("decided") == "pens" else ""
+        adv = (f"<span class='ko-advance'>{flag_img(m['winner'], 10)}"
+               f"{m['winner']} advances{tail}</span>")
+    return f"<div class='ko-meta'>{''.join(bits)}{adv}</div>"
+
+
+def render_knockout_matches() -> None:
+    rounds = D.knockout_rounds(fixtures)
+    if not rounds:
+        st.markdown(
+            f"""
+            <div style="text-align:center;padding:70px 20px">
+              <div style="font-size:34px;margin-bottom:14px">🎯</div>
+              <div style="font-size:19px;font-weight:800;color:{TEXT};margin-bottom:8px">
+                No knockout fixtures yet
+              </div>
+              <div style="font-size:13px;color:{MUTED};max-width:380px;margin:0 auto;line-height:1.6">
+                Add the knockout ties to <code>fixtures.json</code> and they'll appear here,
+                one card per match, grouped by round.
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        return
+
+    intro = {
+        "R32": "Round of 32 — group winners, runners-up and the eight best third-placed teams.",
+        "R16": "Round of 16 — winners of the Round of 32.",
+        "QF":  "Quarter-finals — the last eight.",
+        "SF":  "Semi-finals — one win from the final.",
+        "3P":  "Third-place play-off.",
+        "F":   "The Final.",
+    }
+
+    round_tabs = st.tabs([D.knockout_round_label(r) for r in rounds])
+    for tab, rcode in zip(round_tabs, rounds):
+        with tab:
+            cards = D.knockout_match_predictions(fixtures, predictions, results, rcode)
+            done = sum(1 for c in cards if c["has_prediction"] or c["actual_score"] != "—")
+            st.markdown(
+                f"<div class='ko-round-intro'>{intro.get(rcode, '')} "
+                f"<span style='opacity:0.7'>· {done}/{len(cards)} with data</span></div>",
+                unsafe_allow_html=True,
+            )
+            for m in cards:
+                if not m["resolved"]:
+                    # Feeders not decided yet — slim placeholder, no full card.
+                    st.markdown(
+                        f"<div class='ko-tbd'>{_ko_meta_html(m)}"
+                        f"<div class='ko-tbd-teams'>{m['home']}"
+                        f"<span class='vs'>vs</span>{m['away']}</div>"
+                        f"<div class='ko-tbd-note'>Awaiting the feeding result — "
+                        f"this tie fills in once both sides are decided.</div></div>",
+                        unsafe_allow_html=True,
+                    )
+                    continue
+                match_block(m, meta_html=_ko_meta_html(m))
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 #  HOW IT WORKS
 # ═══════════════════════════════════════════════════════════════════════════════
 def render_how_it_works() -> None:
@@ -1615,8 +1726,8 @@ def render_how_it_works() -> None:
 # ═══════════════════════════════════════════════════════════════════════════════
 #  TOP-LEVEL TABS
 # ═══════════════════════════════════════════════════════════════════════════════
-tab_groups, tab_pulse, tab_bracket, tab_how = st.tabs(
-    ["Groups", "Tournament Pulse", "Knockout Bracket", "How It Works"]
+tab_groups, tab_pulse, tab_ko, tab_bracket, tab_how = st.tabs(
+    ["Groups", "Tournament Pulse", "Knockout Matches", "Knockout Bracket", "How It Works"]
 )
 
 with tab_groups:
@@ -1653,6 +1764,9 @@ with tab_groups:
 
 with tab_pulse:
     render_tournament_insights()
+
+with tab_ko:
+    render_knockout_matches()
 
 with tab_bracket:
     render_knockout_bracket()
