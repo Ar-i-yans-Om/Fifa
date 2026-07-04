@@ -441,6 +441,8 @@ def _accuracy_accumulate(fixtures: list[dict], results: dict,
     scores: list[int] = []
 
     for f in fixtures:
+        if is_knockout(f):          # banner tracks group-stage matchdays only
+            continue
         fid = f.get("id")
         res = results.get(fid, {})
         if not res.get("played"):
@@ -1097,6 +1099,164 @@ def match_predictions(fixtures: list[dict], predictions: dict,
             "home": f.get("home"),
             "away": f.get("away"),
             "md": f.get("md"),
+            "prob_home_win": p.get("prob_home_win"),
+            "prob_draw": p.get("prob_draw"),
+            "prob_away_win": p.get("prob_away_win"),
+            "expected_goals": p.get("expected_goals"),
+            "predicted_scoreline": p.get("predicted_scoreline"),
+            "top_scorelines": p.get("top_scorelines"),
+            "actual_score": actual or "—",
+            "prediction_score": prediction_score(grid, actual),
+            "outcome_call": _outcome_call(p, actual),
+            "has_prediction": _is_populated(p),
+        })
+    return out
+
+
+# --------------------------------------------------------------------------- #
+#  KNOCKOUT FIXTURES  (real bracket M73–M104, mirrors the engine's resolver)
+#
+#  fixtures.json knockout ties carry a "round" key and slot-reference home/away
+#  ("1A"/"2B"/"3E" group slots, "W77"/"L101" match slots). resolve_knockout()
+#  turns those into concrete teams from the ACTUAL group table + played knockout
+#  results — the same logic match_runner.resolve_bracket() uses to feed the
+#  pipeline, so the dashboard and engine always agree on who plays whom.
+# --------------------------------------------------------------------------- #
+_KO_ROUND_ORDER = ["R32", "R16", "QF", "SF", "3P", "F"]
+_KO_ROUND_LABEL = {
+    "R32": "Round of 32", "R16": "Round of 16", "QF": "Quarter-finals",
+    "SF": "Semi-finals", "3P": "Third place", "F": "Final",
+}
+_GROUP_SLOT_RE = re.compile(r"^([123])([A-L])$")
+_MATCH_SLOT_RE = re.compile(r"^([WL])(\d+)$")
+
+
+def is_knockout(f: dict) -> bool:
+    return bool(f.get("round"))
+
+
+def slot_label(code: str) -> str:
+    """Human-readable provenance for an unresolved slot code."""
+    gm = _GROUP_SLOT_RE.match(code or "")
+    if gm:
+        pos, grp = gm.groups()
+        word = {"1": "Winner", "2": "Runner-up", "3": "3rd"}[pos]
+        return f"{word} Grp {grp}"
+    mm = _MATCH_SLOT_RE.match(code or "")
+    if mm:
+        wl, n = mm.groups()
+        return f"{'Winner' if wl == 'W' else 'Loser'} M{n}"
+    return code or "?"
+
+
+def _ko_winner_loser(home: str, away: str, res: dict):
+    """(winner, loser) of a played knockout tie, or (None, None) if undecided.
+    A level score needs an explicit 'winner' field (the shootout victor)."""
+    hs, as_ = res.get("home_score"), res.get("away_score")
+    if hs is None or as_ is None:
+        return None, None
+    hs, as_ = int(hs), int(as_)
+    if hs > as_:
+        return home, away
+    if as_ > hs:
+        return away, home
+    w = res.get("winner")
+    if w == home:
+        return home, away
+    if w == away:
+        return away, home
+    return None, None
+
+
+def _group_rank_slots(fixtures: list[dict], results: dict) -> dict:
+    """Map 1A/2A/3A… → team, from the actual (played) group tables."""
+    slot: dict[str, str] = {}
+    for g in groups_in_order(fixtures):
+        for i, r in enumerate(current_standings(fixtures, results, g)):
+            slot[f"{i + 1}{g}"] = r["team"]
+    return slot
+
+
+def resolve_knockout(fixtures: list[dict], results: dict) -> dict:
+    """
+    Resolve every knockout tie's slot references to concrete teams wherever the
+    feeding results are known. Returns {fixture_id: {home, away, home_slot,
+    away_slot, home_ok, away_ok, resolved}}. Processed in match-number order so a
+    round's winners are available to the next round.
+    """
+    slot = _group_rank_slots(fixtures, results)
+    ko = sorted((f for f in fixtures if is_knockout(f)),
+                key=lambda f: f.get("match_no", 0))
+    out: dict[str, dict] = {}
+    for f in ko:
+        h_ref, a_ref = f.get("home", ""), f.get("away", "")
+        h, a = slot.get(h_ref), slot.get(a_ref)
+        out[f["id"]] = {
+            "home": h or slot_label(h_ref), "away": a or slot_label(a_ref),
+            "home_slot": h_ref, "away_slot": a_ref,
+            "home_ok": h is not None, "away_ok": a is not None,
+            "resolved": h is not None and a is not None,
+        }
+        res = results.get(f["id"])
+        if h and a and res and res.get("played"):
+            w, l = _ko_winner_loser(h, a, res)
+            n = f.get("match_no")
+            if w:
+                slot[f"W{n}"] = w
+            if l:
+                slot[f"L{n}"] = l
+    return out
+
+
+def knockout_rounds(fixtures: list[dict]) -> list[str]:
+    """Round codes present in fixtures, in bracket order (R32 → Final)."""
+    present = {f.get("round") for f in fixtures if is_knockout(f)}
+    return [r for r in _KO_ROUND_ORDER if r in present]
+
+
+def knockout_round_label(code: str) -> str:
+    return _KO_ROUND_LABEL.get(code, code)
+
+
+def knockout_match_predictions(fixtures: list[dict], predictions: dict,
+                               results: dict, round_code: str) -> list[dict]:
+    """
+    Per-fixture card rows for one knockout round, mirroring match_predictions()
+    so the same match card renders them. Adds knockout context: round, match_no,
+    venue/city/date, slot provenance, resolved flag, and (once played) which team
+    advanced and whether it took penalties.
+    """
+    resolved = resolve_knockout(fixtures, results)
+    rows = sorted((f for f in fixtures if f.get("round") == round_code),
+                  key=lambda f: f.get("match_no", 0))
+    out = []
+    for f in rows:
+        fid = f.get("id")
+        rk = resolved.get(fid, {})
+        home, away = rk.get("home"), rk.get("away")
+        both = rk.get("resolved", False)
+        p = predictions.get(fid, {})
+        grid = p.get("scoreline_grid")
+
+        res = results.get(fid, {})
+        actual, winner, decided = None, None, None
+        if res.get("played") and res.get("home_score") is not None \
+                and res.get("away_score") is not None:
+            actual = f"{res['home_score']}-{res['away_score']}"
+            if both:
+                winner, _ = _ko_winner_loser(home, away, res)
+                if int(res["home_score"]) == int(res["away_score"]) and res.get("winner"):
+                    decided = "pens"
+
+        out.append({
+            "fixture_id": fid,
+            "home": home, "away": away,
+            "round": round_code, "match_no": f.get("match_no"),
+            "md": f.get("match_no"),          # share-card label
+            "venue": f.get("venue"), "city": f.get("city"), "date": f.get("date"),
+            "home_slot": rk.get("home_slot"), "away_slot": rk.get("away_slot"),
+            "resolved": both,
+            "winner": winner, "decided": decided,
             "prob_home_win": p.get("prob_home_win"),
             "prob_draw": p.get("prob_draw"),
             "prob_away_win": p.get("prob_away_win"),
