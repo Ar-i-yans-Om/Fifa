@@ -244,15 +244,15 @@
     },
     {
       "id": "G5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 1,
+      "away_score": 1,
+      "played": true
     },
     {
       "id": "G6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 5,
+      "away_score": 1,
+      "played": true
     },
     {
       "id": "H1",
@@ -280,15 +280,15 @@
     },
     {
       "id": "H5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 1,
+      "away_score": 0,
+      "played": true
     },
     {
       "id": "H6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 0,
+      "away_score": 0,
+      "played": true
     },
     {
       "id": "I1",
@@ -316,15 +316,15 @@
     },
     {
       "id": "I5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 4,
+      "away_score": 1,
+      "played": true
     },
     {
       "id": "I6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 5,
+      "away_score": 0,
+      "played": true
     },
     {
       "id": "J1",
@@ -352,15 +352,15 @@
     },
     {
       "id": "J5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 3,
+      "away_score": 1,
+      "played": true
     },
     {
       "id": "J6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 3,
+      "away_score": 3,
+      "played": true
     },
     {
       "id": "K1",
@@ -388,15 +388,15 @@
     },
     {
       "id": "K5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 0,
+      "away_score": 0,
+      "played": true
     },
     {
       "id": "K6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 3,
+      "away_score": 1,
+      "played": true
     },
     {
       "id": "L1",
@@ -424,15 +424,15 @@
     },
     {
       "id": "L5",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 2,
+      "away_score": 0,
+      "played": true
     },
     {
       "id": "L6",
-      "home_score": null,
-      "away_score": null,
-      "played": false
+      "home_score": 2,
+      "away_score": 1,
+      "played": true
     }
   ]
 }
