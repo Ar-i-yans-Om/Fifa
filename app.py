@@ -423,6 +423,13 @@ table.stand td.pts {{ font-weight: 800; color: {ACCENT}; }}
            letter-spacing: 0.5px; background: {SURFACE3}; border: 1px solid {BORDER};
            color: {MUTED}; padding: 1px 5px; border-radius: 10px; }}
 .bk-col.bk-final .bk-tie {{ border-color: {ACCENT}; box-shadow: 0 0 18px rgba(0,201,110,0.12); }}
+/* tie provenance: real result (solid), model prediction (blue), form projection (dashed/dim) */
+.bk-tie.bk-pred {{ border-color: {BLUE_BORDER}; }}
+.bk-tie.bk-proj {{ border-style: dashed; opacity: 0.7; }}
+.bk-src {{ position: absolute; top: -7px; left: 8px; font-size: 7.5px; font-weight: 800;
+           letter-spacing: 0.5px; padding: 1px 5px; border-radius: 10px; }}
+.bk-src.pred {{ background: {BLUE_SOFT}; border: 1px solid {BLUE_BORDER}; color: {BLUE}; }}
+.bk-src.proj {{ background: {SURFACE3}; border: 1px solid {BORDER}; color: {MUTED}; }}
 
 /* ── KNOCKOUT MATCH CARDS ── */
 .ko-meta {{
@@ -1382,9 +1389,9 @@ def render_knockout_bracket() -> None:
                           letter-spacing:-0.3px;margin-bottom:8px">Knockout Bracket</div>
               <div style="font-size:13px;color:{MUTED};max-width:400px;
                           margin:0 auto;line-height:1.6">
-                Needs the full field of 32 qualifiers. Run more of the group stage
-                through the pipeline and the projected bracket — all the way to a
-                champion — will appear here.
+                Needs the knockout ties (M73–M104) in fixtures.json and a settled
+                group stage. Once they're in, the bracket fills from real results,
+                model predictions, and a form projection — all the way to a champion.
               </div>
             </div>
             """,
@@ -1404,11 +1411,16 @@ def render_knockout_bracket() -> None:
             a_cls = " win" if a == w else ""
             b_cls = " win" if b == w else ""
             aet = "<div class='bk-aet'>AET</div>" if t["aet"] else ""
+            # provenance of this tie: real result, model prediction, or projection
+            src = t.get("source", "proj")
+            src_cls = f" bk-{src}"
+            src_tag = {"actual": "", "pred": "<div class='bk-src pred'>PRED</div>",
+                       "proj": "<div class='bk-src proj'>PROJ</div>"}[src]
             # FIFA slot labels (1E / 2C / 3F) — only present on Round-of-32 ties
             a_slot = f"<span class='bk-slot'>{t['a_slot']}</span>" if t.get("a_slot") else ""
             b_slot = f"<span class='bk-slot'>{t['b_slot']}</span>" if t.get("b_slot") else ""
             ties_html += (
-                f"<div class='bk-tie'>{aet}"
+                f"<div class='bk-tie{src_cls}'>{aet}{src_tag}"
                 f"<div class='bk-team{a_cls}'>{a_slot}{flag_img(a, 11)}"
                 f"<span class='bk-name'>{a}</span><span class='bk-score'>{a_sc}</span></div>"
                 f"<div class='bk-team{b_cls}'>{b_slot}{flag_img(b, 11)}"
@@ -1421,17 +1433,19 @@ def render_knockout_bracket() -> None:
             f"<div class='bk-col-body'>{ties_html}</div></div>"
         )
 
-    banner = ""
-    if bk["partial"]:
-        banner = (
-            f"<div class='bk-banner'>&#9888; Projection in progress &mdash; "
-            f"{bk['groups_projected']}/{bk['groups_total']} groups fully projected. "
-            f"Qualifiers &amp; matchups firm up as results come in and predictions "
-            f"are generated.</div>"
-        )
+    # provenance banner: how much of the tree is real vs predicted vs projected
+    banner = (
+        f"<div class='bk-banner'>"
+        f"<b style='color:{TEXT}'>{bk['actual']}</b> decided by result &middot; "
+        f"<b style='color:{BLUE}'>{bk['pred']}</b> from model prediction &middot; "
+        f"<b>{bk['projected']}</b> projected from form"
+        + ("" if bk["partial"] else " &mdash; bracket complete")
+        + "</div>"
+    )
 
+    ct = "Champion" if bk["champion_source"] == "actual" else "Projected Champion"
     champ_block = (
-        f"<div class='champ'><div class='ct'>Projected Champion</div>"
+        f"<div class='champ'><div class='ct'>{ct}</div>"
         f"<div class='ctrophy'>&#127942;</div>"
         f"<div class='cname'>{flag_img(champ, 30)}{champ}</div></div>"
     )
