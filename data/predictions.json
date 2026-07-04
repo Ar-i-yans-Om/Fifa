@@ -10887,9 +10887,9 @@
     "narrative": "Morocco's technical control in the central corridors creates a consistent attacking threat, but their high-press approach leaves space for Canada's direct, vertical counter-attacks. The match outcome hinges on whether Canada can bypass the press to exploit Morocco's defensive transition, though Morocco's superior xG baseline indicates they are likely to sustain more pressure over the full ninety minutes.",
     "model_vs_market": "The model identifies significant value on Canada and the draw compared to the market's heavy lopsided preference for a Morocco victory, suggesting the market is underestimating the inherent volatility of this matchup.",
     "market_probs": {
-      "implied_home_win": 0.0039,
-      "implied_draw": 0.0203,
-      "implied_away_win": 0.9758
+      "implied_home_win": 0.2039,
+      "implied_draw": 0.1203,
+      "implied_away_win": 0.6758
     },
     "quality": {
       "ok": true,
