@@ -1221,6 +1221,14 @@ def knockout_match_predictions(fixtures: list[dict], predictions: dict,
                 if int(res["home_score"]) == int(res["away_score"]) and res.get("winner"):
                     decided = "pens"
 
+        # Model's pick to advance = higher win probability, normalised to exclude
+        # the (impossible-in-a-knockout) draw so it reads as a two-way call.
+        ph, pa = p.get("prob_home_win"), p.get("prob_away_win")
+        adv_team, adv_prob = None, None
+        if home and away and ph is not None and pa is not None and (ph + pa) > 0:
+            adv_team = home if ph >= pa else away
+            adv_prob = round(100 * max(ph, pa) / (ph + pa))
+
         out.append({
             "fixture_id": fid,
             "home": home, "away": away,
@@ -1230,6 +1238,7 @@ def knockout_match_predictions(fixtures: list[dict], predictions: dict,
             "home_slot": rk.get("home_slot"), "away_slot": rk.get("away_slot"),
             "resolved": both,
             "winner": winner, "decided": decided,
+            "adv_team": adv_team, "adv_prob": adv_prob,
             "prob_home_win": p.get("prob_home_win"),
             "prob_draw": p.get("prob_draw"),
             "prob_away_win": p.get("prob_away_win"),
@@ -1238,7 +1247,89 @@ def knockout_match_predictions(fixtures: list[dict], predictions: dict,
             "top_scorelines": p.get("top_scorelines"),
             "actual_score": actual or "—",
             "prediction_score": prediction_score(grid, actual),
-            "outcome_call": _outcome_call(p, actual),
+            # knockouts are graded on advancement, not the draw-inclusive scoreline
+            "outcome_call": _knockout_outcome_call(p, res) if res.get("played") else None,
             "has_prediction": _is_populated(p),
         })
     return out
+
+
+def _model_champion(fixtures: list[dict], results: dict, predictions: dict) -> str | None:
+    """Who the MODEL would crown — walk the real feeder tree but resolve every tie
+    by the model's own pick (higher win prob / decisive predicted scoreline),
+    ignoring actual results. Returns the predicted Final winner, or None."""
+    group_slots = _group_rank_slots(fixtures, results)
+    win_of: dict[int, str] = {}
+    lose_of: dict[int, str] = {}
+
+    def rref(ref: str):
+        if ref in group_slots:
+            return group_slots[ref]
+        m = _MATCH_SLOT_RE.match(ref or "")
+        if m:
+            n = int(m.group(2))
+            return (win_of if m.group(1) == "W" else lose_of).get(n)
+        return None
+
+    for f in sorted((f for f in fixtures if is_knockout(f)),
+                    key=lambda f: f.get("match_no", 0)):
+        a, b = rref(f.get("home", "")), rref(f.get("away", ""))
+        if not a or not b:
+            continue
+        p = predictions.get(f["id"], {})
+        ph, pa = p.get("prob_home_win"), p.get("prob_away_win")
+        if ph is not None and pa is not None:
+            win = a if ph >= pa else b
+        else:
+            phg, pag = _parse_scoreline(p.get("predicted_scoreline"))
+            win = b if (phg is not None and pag is not None and pag > phg) else a
+        win_of[f["match_no"]], lose_of[f["match_no"]] = win, (b if win == a else a)
+    return win_of.get(104)
+
+
+def tournament_report(fixtures: list[dict], results: dict,
+                      predictions: dict) -> dict | None:
+    """
+    End-of-tournament model 'report card'. Returns None until the Final is played.
+    Otherwise: final four (champion/runner-up/3rd/4th + final score), the model's
+    own predicted champion vs reality, overall + per-round accuracy, and the
+    model's sharpest correct calls and biggest misses across the knockouts.
+    """
+    fx = {f["id"]: f for f in fixtures}
+    rk = resolve_knockout(fixtures, results)
+    fin, tp = fx.get("M104"), fx.get("M103")
+    fres = results.get("M104", {})
+    if not (fin and fres.get("played") and rk.get("M104", {}).get("resolved")):
+        return None
+
+    fhome, faway = rk["M104"]["home"], rk["M104"]["away"]
+    champ, runner = _ko_winner_loser(fhome, faway, fres)
+    third = fourth = None
+    tres = results.get("M103", {})
+    if tp and tres.get("played") and rk.get("M103", {}).get("resolved"):
+        third, fourth = _ko_winner_loser(rk["M103"]["home"], rk["M103"]["away"], tres)
+
+    # every played knockout tie's advance call, for best-calls / misses
+    calls: list[dict] = []
+    for rc in knockout_rounds(fixtures):
+        for m in knockout_match_predictions(fixtures, predictions, results, rc):
+            if m.get("adv_team") and m.get("winner"):
+                calls.append({
+                    "round": rc, "pick": m["adv_team"], "prob": m["adv_prob"],
+                    "winner": m["winner"], "home": m["home"], "away": m["away"],
+                    "score": m["actual_score"], "hit": m["adv_team"] == m["winner"],
+                })
+    best = sorted((c for c in calls if c["hit"]), key=lambda c: -c["prob"])[:3]
+    misses = sorted((c for c in calls if not c["hit"]), key=lambda c: -c["prob"])[:3]
+
+    model_champ = _model_champion(fixtures, results, predictions)
+    return {
+        "champion": champ, "runner_up": runner, "third": third, "fourth": fourth,
+        "final_score": f"{fres['home_score']}-{fres['away_score']}",
+        "final_home": fhome, "final_away": faway,
+        "model_champion": model_champ,
+        "champion_hit": model_champ == champ,
+        "overall": accuracy_summary(fixtures, results, predictions),
+        "by_round": accuracy_by_round(fixtures, results, predictions),
+        "best_calls": best, "misses": misses,
+    }

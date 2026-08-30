@@ -448,6 +448,16 @@ table.stand td.pts {{ font-weight: 800; color: {ACCENT}; }}
     padding: 2px 9px; border-radius: 20px; white-space: nowrap;
 }}
 .ko-meta .ko-advance img {{ height: 10px !important; border-radius: 1px; margin-right: 4px; vertical-align: middle; }}
+.ko-adv {{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+           font-size: 11.5px; color: {MUTED}; margin: 0 0 9px; }}
+.ko-adv .ko-model b {{ color: {TEXT}; }}
+.ko-adv img {{ height: 10px !important; border-radius: 1px; margin: 0 4px 0 2px; vertical-align: middle; }}
+.ko-adv .ko-hit {{ font-size: 10px; font-weight: 800; color: {ACCENT};
+                   background: {ACCENT_SOFT}; border: 1px solid {ACCENT_BORDER};
+                   padding: 1px 7px; border-radius: 20px; }}
+.ko-adv .ko-miss {{ font-size: 10px; font-weight: 800; color: {RED};
+                    background: #1f0a0a; border: 1px solid #5c1a1a;
+                    padding: 1px 7px; border-radius: 20px; }}
 .ko-tbd {{
     background: {SURFACE}; border: 1px dashed {BORDER}; border-radius: 10px;
     padding: 14px 16px; margin-bottom: 12px;
@@ -1482,6 +1492,21 @@ def _ko_meta_html(m: dict) -> str:
     return f"<div class='ko-meta'>{''.join(bits)}{adv}</div>"
 
 
+def _ko_advance_html(m: dict) -> str:
+    """The model's two-way 'who advances' call (no draws in a knockout), plus a
+    ✓/✗ verdict once the tie has been played."""
+    if not m.get("adv_team"):
+        return ""
+    pick = f"{flag_img(m['adv_team'], 10)}{m['adv_team']}"
+    verdict = ""
+    if m.get("winner"):
+        hit = m["adv_team"] == m["winner"]
+        verdict = (f"<span class='{'ko-hit' if hit else 'ko-miss'}'>"
+                   f"{'✓ called it' if hit else '✗ missed'}</span>")
+    return (f"<div class='ko-adv'><span class='ko-model'>Model backs {pick} "
+            f"to advance &middot; <b>{m['adv_prob']}%</b></span>{verdict}</div>")
+
+
 def render_knockout_matches() -> None:
     rounds = D.knockout_rounds(fixtures)
     if not rounds:
@@ -1533,7 +1558,126 @@ def render_knockout_matches() -> None:
                         unsafe_allow_html=True,
                     )
                     continue
-                match_block(m, meta_html=_ko_meta_html(m))
+                match_block(m, meta_html=_ko_meta_html(m) + _ko_advance_html(m))
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  REPORT CARD  (end-of-tournament model grade)
+# ═══════════════════════════════════════════════════════════════════════════════
+def render_report_card() -> None:
+    rc = D.tournament_report(fixtures, results, predictions)
+    if not rc:
+        st.markdown(
+            f"""
+            <div style="text-align:center;padding:70px 20px">
+              <div style="font-size:34px;margin-bottom:14px">🎓</div>
+              <div style="font-size:19px;font-weight:800;color:{TEXT};margin-bottom:8px">
+                Report card pending the Final
+              </div>
+              <div style="font-size:13px;color:{MUTED};max-width:400px;margin:0 auto;line-height:1.6">
+                Once the Final result is in, this grades the model across all 104 matches —
+                its champion call, accuracy by round, sharpest reads and biggest misses.
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        return
+
+    def pod(rank_lbl, team, col, bd, icon):
+        return (f"<div style='flex:1;min-width:120px;background:{SURFACE};border:1px solid {bd};"
+                f"border-radius:12px;padding:16px 14px;text-align:center'>"
+                f"<div style='font-size:22px;line-height:1'>{icon}</div>"
+                f"<div style='font-size:9.5px;font-weight:800;letter-spacing:1px;color:{col};"
+                f"margin:8px 0 6px'>{rank_lbl}</div>"
+                f"<div style='font-size:15px;font-weight:800;color:{TEXT}'>{flag_img(team,15)}{team}</div></div>")
+
+    podium = (
+        f"<div style='display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 6px'>"
+        f"{pod('CHAMPIONS', rc['champion'], GOLD, '#4d3600', '🏆')}"
+        f"{pod('RUNNERS-UP', rc['runner_up'], MUTED, BORDER, '🥈')}"
+        f"{pod('THIRD', rc['third'] or '—', '#b06a2c', '#5c3a1a', '🥉')}"
+        f"{pod('FOURTH', rc['fourth'] or '—', MUTED, BORDER, '4️⃣')}</div>"
+        f"<div style='text-align:center;font-size:12px;color:{MUTED};margin-bottom:22px'>"
+        f"Final &middot; {rc['final_home']} <b style='color:{TEXT}'>{rc['final_score']}</b> {rc['final_away']}</div>"
+    )
+
+    # Model's champion call
+    hit = rc["champion_hit"]
+    mc, ch = rc["model_champion"], rc["champion"]
+    reached_final = (mc == rc["runner_up"])
+    if hit:
+        verdict = f"<span style='color:{ACCENT};font-weight:800'>✓ called the champion</span>"
+    elif reached_final:
+        verdict = (f"<span style='color:{GOLD};font-weight:800'>its pick reached the final</span> "
+                   f"&mdash; but {ch} lifted the trophy")
+    else:
+        verdict = f"<span style='color:{RED};font-weight:800'>✗ {ch} won it instead</span>"
+    mc_card = (
+        f"<div style='background:{SURFACE2};border:1px solid {BORDER};border-radius:12px;"
+        f"padding:18px 20px;margin-bottom:22px;text-align:center'>"
+        f"<div style='font-size:10px;font-weight:800;letter-spacing:1px;color:{MUTED};"
+        f"text-transform:uppercase;margin-bottom:8px'>The model's call</div>"
+        f"<div style='font-size:16px;color:{TEXT}'>The bracket crowned "
+        f"{flag_img(mc,15)}<b>{mc}</b></div>"
+        f"<div style='font-size:13px;color:{MUTED};margin-top:6px'>{verdict}</div></div>"
+    )
+
+    # Accuracy by round — compact bars (outcome accuracy)
+    ov = rc["overall"]
+    rows = ""
+    for r in [{"round": "All", "outcome_accuracy": ov["outcome_accuracy"],
+               "with_prediction": ov["with_prediction"], "total_played": ov["total_played"]}] + rc["by_round"]:
+        oa = r["outcome_accuracy"] or 0
+        col = ACCENT if oa >= 50 else (GOLD if oa >= 34 else RED)
+        rows += (
+            f"<div style='display:flex;align-items:center;gap:10px;margin-bottom:7px'>"
+            f"<div style='width:42px;font-size:11px;font-weight:700;color:{MUTED}'>{r['round']}</div>"
+            f"<div style='flex:1;height:16px;background:{SURFACE3};border-radius:5px;overflow:hidden'>"
+            f"<div style='width:{oa}%;height:100%;background:{col}'></div></div>"
+            f"<div style='width:78px;text-align:right;font-size:11.5px;font-weight:700;color:{TEXT}'>"
+            f"{oa}% <span style='color:{MUTED};font-weight:500'>({r['with_prediction']}/{r['total_played']})</span></div></div>"
+        )
+    acc_card = (
+        f"<div style='background:{SURFACE};border:1px solid {BORDER};border-radius:12px;padding:16px 18px;margin-bottom:22px'>"
+        f"<div style='font-size:11px;font-weight:700;letter-spacing:1px;color:{MUTED};"
+        f"text-transform:uppercase;margin-bottom:12px'>Outcome accuracy by stage</div>{rows}</div>"
+    )
+
+    # Best calls / biggest misses
+    def call_rows(items, hit):
+        out = ""
+        for c in items:
+            chip_col, chip_bg, chip_bd = ((ACCENT, ACCENT_SOFT, ACCENT_BORDER) if hit
+                                          else (RED, "#1f0a0a", "#5c1a1a"))
+            detail = (f"beat {c['away'] if c['pick']==c['home'] else c['home']} {c['score']}" if hit
+                      else f"{c['winner']} won {c['score']}")
+            out += (
+                f"<div style='display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid {SURFACE3}'>"
+                f"<div style='flex:1;min-width:0'>"
+                f"<div style='font-size:12.5px;font-weight:600;color:{TEXT};white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>"
+                f"{flag_img(c['pick'],11)}{c['pick']}</div>"
+                f"<div style='font-size:10px;color:{MUTED};margin-top:1px'>{c['round']} &middot; {detail}</div></div>"
+                f"<div style='font-size:11.5px;font-weight:800;color:{chip_col};background:{chip_bg};"
+                f"border:1px solid {chip_bd};padding:3px 9px;border-radius:20px'>{c['prob']}%</div></div>"
+            )
+        return out or f"<div style='font-size:12px;color:{MUTED};padding:9px 0'>—</div>"
+
+    calls = (
+        f"<div class='lb-grid'>"
+        f"<div class='lb-card'><div class='lb-head'><span class='lb-title'>&#127919; Sharpest calls</span>"
+        f"<span class='lb-sub'>high-confidence &amp; correct</span></div>{call_rows(rc['best_calls'], True)}</div>"
+        f"<div class='lb-card'><div class='lb-head'><span class='lb-title'>&#128165; Biggest misses</span>"
+        f"<span class='lb-sub'>backed the wrong side</span></div>{call_rows(rc['misses'], False)}</div></div>"
+    )
+
+    st.html(
+        f"<div class='how-hero' style='padding:30px 20px 10px'>"
+        f"<div class='hw-title'>Model Report Card</div>"
+        f"<div class='hw-sub'>How the Siuuumulator's forecasts held up across all "
+        f"{ov['total_played']} matches — and how far its bracket call survived.</div></div>"
+        f"{podium}{mc_card}{acc_card}{calls}<div style='height:18px'></div>"
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1743,8 +1887,9 @@ def render_how_it_works() -> None:
 # ═══════════════════════════════════════════════════════════════════════════════
 #  TOP-LEVEL TABS
 # ═══════════════════════════════════════════════════════════════════════════════
-tab_groups, tab_pulse, tab_ko, tab_bracket, tab_how = st.tabs(
-    ["Groups", "Tournament Pulse", "Knockout Matches", "Knockout Bracket", "How It Works"]
+tab_groups, tab_pulse, tab_ko, tab_bracket, tab_report, tab_how = st.tabs(
+    ["Groups", "Tournament Pulse", "Knockout Matches", "Knockout Bracket",
+     "Report Card", "How It Works"]
 )
 
 with tab_groups:
@@ -1787,6 +1932,9 @@ with tab_ko:
 
 with tab_bracket:
     render_knockout_bracket()
+
+with tab_report:
+    render_report_card()
 
 with tab_how:
     render_how_it_works()

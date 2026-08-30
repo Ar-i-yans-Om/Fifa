@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+*.code-workspace
+.DS_Store
+.streamlit/secrets.toml

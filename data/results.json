@@ -452,24 +452,24 @@
     {"id": "M87", "home_score": 1, "away_score": 0, "played": true},
     {"id": "M88", "home_score": 1, "away_score": 1, "played": true, "winner": "Egypt"},
     
-    {"id": "M89", "home_score": null, "away_score": null, "played": false},
+    {"id": "M89", "home_score": 0, "away_score": 1, "played": true},
     {"id": "M90", "home_score": 0, "away_score": 3, "played": true},
-    {"id": "M91", "home_score": null, "away_score": null, "played": false},
-    {"id": "M92", "home_score": null, "away_score": null, "played": false},
-    {"id": "M93", "home_score": null, "away_score": null, "played": false},
-    {"id": "M94", "home_score": null, "away_score": null, "played": false},
-    {"id": "M95", "home_score": null, "away_score": null, "played": false},
-    {"id": "M96", "home_score": null, "away_score": null, "played": false},
+    {"id": "M91", "home_score": 1, "away_score": 2, "played": true},
+    {"id": "M92", "home_score": 2, "away_score": 3, "played": true},
+    {"id": "M93", "home_score": 0, "away_score": 1, "played": true},
+    {"id": "M94", "home_score": 1, "away_score": 4, "played": true},
+    {"id": "M95", "home_score": 3, "away_score": 2, "played": true},
+    {"id": "M96", "home_score": 0, "away_score": 0, "played": true, "winner": "Switzerland"},
 
-    {"id": "M97", "home_score": null, "away_score": null, "played": false},
-    {"id": "M98", "home_score": null, "away_score": null, "played": false},
-    {"id": "M99", "home_score": null, "away_score": null, "played": false},
-    {"id": "M100", "home_score": null, "away_score": null, "played": false},
+    {"id": "M97", "home_score": 2, "away_score": 0, "played": true},
+    {"id": "M98", "home_score": 2, "away_score": 1, "played": true},
+    {"id": "M99", "home_score": 1, "away_score": 2, "played": true},
+    {"id": "M100", "home_score": 3, "away_score": 1, "played": true},
     
-    {"id": "M101", "home_score": null, "away_score": null, "played": false},
-    {"id": "M102", "home_score": null, "away_score": null, "played": false},
+    {"id": "M101", "home_score": 0, "away_score": 2, "played": true},
+    {"id": "M102", "home_score": 1, "away_score": 2, "played": true},
     
-    {"id": "M103", "home_score": null, "away_score": null, "played": false},
-    {"id": "M104", "home_score": null, "away_score": null, "played": false}
+    {"id": "M103", "home_score": 4, "away_score": 6, "played": true},
+    {"id": "M104", "home_score": 1, "away_score": 0, "played": true}
   ]
 }
