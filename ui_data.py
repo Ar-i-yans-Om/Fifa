@@ -1561,3 +1561,38 @@ def team_journey(team: str, fixtures: list[dict], results: dict, predictions: di
     called = sum(1 for m in graded if m["call"] in ("Bullseye", "On Target"))
     return {"team": team, "group": group, "group_finish": finish, "run": run,
             "matches": matches, "called": called, "graded": len(graded)}
+
+
+def close_calls(fixtures: list[dict], results: dict, predictions: dict) -> dict | None:
+    """Near-miss measures from the published predictions: how often the final
+    score was among the model's three most likely scorelines, how often its
+    predicted goal margin was exactly right, and how many exact scores its own
+    probabilities implied (the sum of each match's top-scoreline probability)
+    against how many it actually got."""
+    rows = {"all": [0, 0], "group": [0, 0], "ko": [0, 0]}
+    margin = exact = 0
+    expected = 0.0
+    n = 0
+    for f in fixtures:
+        res, p = results.get(f.get("id"), {}), predictions.get(f.get("id"))
+        if not res.get("played") or not _is_populated(p):
+            continue
+        hs, as_ = res.get("home_score"), res.get("away_score")
+        ph, pa = _parse_scoreline(p.get("predicted_scoreline"))
+        if hs is None or as_ is None or ph is None:
+            continue
+        hs, as_ = int(hs), int(as_)
+        n += 1
+        hit = f"{hs}-{as_}" in [t.get("score") for t in (p.get("top_scorelines") or [])]
+        for k in ("all", "ko" if is_knockout(f) else "group"):
+            rows[k][0] += hit
+            rows[k][1] += 1
+        margin += (ph - pa) == (hs - as_)
+        exact += (ph, pa) == (hs, as_)
+        grid = p.get("scoreline_grid") or []
+        expected += max((max(r) for r in grid if r), default=0.0)
+    if not n:
+        return None
+    return {"matches": n, "top3": rows, "margin": margin, "exact": exact,
+            "exact_expected": round(expected, 1)}
+

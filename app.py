@@ -1288,7 +1288,8 @@ def match_block(m: dict, meta_html: str = "") -> None:
                     if _m:
                         sl_display = f"{home} {_m.group(1)}-{_m.group(2)} {away}"
                 st.markdown(
-                    f"<div class='detail-block'><div class='h'>Predicted Scoreline</div>"
+                    f"<div class='detail-block'><div class='h'>"
+                    f"{'Most likely 90-min score' if m.get('round') else 'Predicted Scoreline'}</div>"
                     f"<div class='v'>{sl_display}</div></div>",
                     unsafe_allow_html=True,
                 )
@@ -1302,7 +1303,8 @@ def match_block(m: dict, meta_html: str = "") -> None:
                 else:
                     pills = f"<div class='v' style='color:{MUTED}'>—</div>"
                 st.markdown(
-                    f"<div class='detail-block'><div class='h'>Top Scorelines</div>"
+                    f"<div class='detail-block'><div class='h'>"
+                    f"{'Top 90-min scorelines' if m.get('round') else 'Top Scorelines'}</div>"
                     f"{pills}</div>",
                     unsafe_allow_html=True,
                 )
@@ -1748,7 +1750,9 @@ def render_knockout_matches() -> None:
             count = (f" <span style='opacity:0.7'>· {done}/{len(cards)} with data</span>"
                      if done < len(cards) else "")
             st.markdown(
-                f"<div class='ko-round-intro'>{intro.get(rcode, '')}{count}</div>",
+                f"<div class='ko-round-intro'>{intro.get(rcode, '')}{count}"
+                f"<br><span style='opacity:0.8'>Scoreline predictions cover the 90 minutes; "
+                f"results include extra time, and each tie is graded on who went through.</span></div>",
                 unsafe_allow_html=True,
             )
             for m in cards:
@@ -1887,6 +1891,28 @@ def render_report_card() -> None:
         f"<span class='lb-sub'>backed the wrong side</span></div>{call_rows(rc['misses'], False)}</div></div>"
     )
 
+    # close calls: how near the misses were
+    cc = D.close_calls(fixtures, results, predictions)
+    close_card = ""
+    if cc:
+        t3 = cc["top3"]
+        cc_cell = lambda k, v, sub: (f"<div class='vs-cell'><div class='vk'>{k}</div>"
+                                     f"<div class='vv' style='color:{ACCENT}'>{v}</div>"
+                                     f"<div class='vs'>{sub}</div></div>")
+        close_card = (
+            "<div class='rc-card'><div class='rc-title'>Close calls</div>"
+            "<div class='rc-sub'>An exact score is hard to hit even for a perfect forecaster: "
+            "the single most likely scoreline usually carries only 10&ndash;15% probability. "
+            "These show how near the rest came.</div>"
+            "<div class='vs-grid' style='grid-template-columns:1fr 1fr 1fr'>"
+            + cc_cell("Score in its top 3", f"{t3['all'][0]}/{t3['all'][1]}",
+                      f"group {t3['group'][0]}/{t3['group'][1]} &middot; knockouts {t3['ko'][0]}/{t3['ko'][1]}")
+            + cc_cell("Goal margin exact", f"{cc['margin']}/{cc['matches']}", "right winning margin")
+            + cc_cell("Exact scores", f"{cc['exact']}",
+                      f"its own odds implied about {round(cc['exact_expected'])}")
+            + "</div></div>"
+        )
+
     # the model's group tables vs the real ones
     gt = D.group_table_scorecard(fixtures, results, predictions)
     groups_card = ""
@@ -1944,7 +1970,7 @@ def render_report_card() -> None:
         f"<div class='hw-title'>Model Report Card</div>"
         f"<div class='hw-sub'>How the Siuuumulator's predictions held up across all "
         f"{ov['total_played']} matches.</div></div>"
-        f"{podium}{mc_card}{acc_card}"
+        f"{podium}{mc_card}{acc_card}{close_card}"
         f"<div class='rc-two'>{groups_card}{upsets_card}</div>"
     )
     calib = calibration_html()
