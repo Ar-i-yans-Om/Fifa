@@ -295,21 +295,14 @@ def _parse_scoreline(sl) -> tuple:
 def predicted_standings(fixtures: list[dict], results: dict,
                         predictions: dict, group: str) -> list[dict]:
     """
-    Projected final table: a hybrid of real results and model predictions.
+    The model's table: the group as the model's predicted scorelines would have
+    finished it. Each fixture uses the model's predicted scoreline; a fixture
+    with no prediction yet falls back to its actual result if it has been
+    played, and is skipped otherwise (the UI flags a partial table via
+    group_prediction_status()).
 
-    For each group fixture, the actual result is used once the match has been
-    played; fixtures still to come fall back to the model's predicted scoreline.
-    W/D/L, GF, GA and GD are derived from whichever scoreline applies. This
-    makes the projection update as live scores are entered while still
-    projecting the rest of the group from the model.
-
-    Fixtures that are neither played nor yet predicted (skeleton entries) are
-    skipped, so before the whole group is run the projection is partial — the
-    UI surfaces that via group_prediction_status().
-
-    Rows carry a 'delta' (up/down/flat) showing where each team sits in this
-    projection relative to the current live table — purely a visual comparison;
-    it does not alter the projected figures.
+    Rows carry a 'delta' (up/down/flat) showing where each team sits in the
+    model's table relative to the actual table — a comparison overlay only.
     """
     table = {t: _blank_row(t) for t in teams_in_group(fixtures, group)}
     played: list[tuple] = []
@@ -319,19 +312,18 @@ def predicted_standings(fixtures: list[dict], results: dict,
         if h not in table or a not in table:
             continue
 
-        # Prefer the actual result once a match is played; otherwise use the
-        # model's predicted scoreline for fixtures still to come.
-        res = results.get(f.get("id"), {})
-        hs, as_ = res.get("home_score"), res.get("away_score")
-        if res.get("played") and hs is not None and as_ is not None:
-            hg, ag = hs, as_
-        else:
-            pred = predictions.get(f.get("id"))
-            if not _is_populated(pred):
-                continue
+        # The model's predicted scoreline; the actual result only fills in a
+        # fixture the model has no prediction for.
+        pred = predictions.get(f.get("id"))
+        hg = ag = None
+        if _is_populated(pred):
             hg, ag = _parse_scoreline(pred.get("predicted_scoreline"))
-            if hg is None or ag is None:
+        if hg is None or ag is None:
+            res = results.get(f.get("id"), {})
+            hs, as_ = res.get("home_score"), res.get("away_score")
+            if not (res.get("played") and hs is not None and as_ is not None):
                 continue
+            hg, ag = hs, as_
 
         played.append((h, hg, a, ag))
         table[h]["P"] += 1; table[a]["P"] += 1
@@ -350,7 +342,7 @@ def predicted_standings(fixtures: list[dict], results: dict,
     for r in rows:
         r["GD"] = r["GF"] - r["GA"]
 
-    # movement vs the current live ordering (comparison overlay only)
+    # movement vs the actual table (comparison overlay only)
     cur_pos = {r["team"]: i for i, r in
                enumerate(current_standings(fixtures, results, group))}
     for new_pos, r in enumerate(rows):
@@ -726,12 +718,21 @@ def market_divergence(pred: dict) -> dict | None:
     }
 
 
-def _enrich_match(f: dict, p: dict) -> dict:
-    """Flatten one predicted fixture into the metrics the Pulse tab ranks on."""
+def stage_label(f: dict) -> str:
+    """'Group A · MD1' for a group fixture, 'Round of 16 · Match 89' for a knockout."""
+    if is_knockout(f):
+        return f"{knockout_round_label(f.get('round'))} · Match {f.get('match_no')}"
+    return f"Group {f.get('group')} · MD{f.get('md')}"
+
+
+def _enrich_match(f: dict, p: dict, home: str | None = None,
+                  away: str | None = None) -> dict:
+    """Flatten one predicted fixture into the metrics the Pulse tab ranks on.
+    `home`/`away` override the fixture's names (knockout slot references)."""
     grid = p.get("scoreline_grid")
     eg = p.get("expected_goals") or {}
     ph, pd_, pa = p.get("prob_home_win"), p.get("prob_draw"), p.get("prob_away_win")
-    home, away = f.get("home"), f.get("away")
+    home, away = home or f.get("home"), away or f.get("away")
     ins = grid_insights(grid) or {}
 
     egh, ega = eg.get("home"), eg.get("away")
@@ -756,7 +757,7 @@ def _enrich_match(f: dict, p: dict) -> dict:
             edge_team = home if fs == "home" else away
 
     return {
-        "fixture_id": f.get("id"), "group": f.get("group"), "md": f.get("md"),
+        "fixture_id": f.get("id"), "stage": stage_label(f),
         "home": home, "away": away,
         "ph": ph, "pd": pd_, "pa": pa,
         "exp_total": exp_total, "over25": ins.get("over25"), "btts": ins.get("btts"),
@@ -769,15 +770,25 @@ def _enrich_match(f: dict, p: dict) -> dict:
 def tournament_insights(fixtures: list[dict], predictions: dict,
                         results: dict) -> dict | None:
     """
-    Cross-group storylines for the 'Tournament Pulse' tab, built purely from the
-    fixtures that have been predicted so far. Returns None when nothing is
-    predicted yet. Each leaderboard is a list of enriched match dicts.
+    Tournament-wide storylines for the 'Tournament Pulse' tab, built from every
+    predicted fixture (group and knockout; knockout slot references are resolved
+    to the real teams, and ties whose teams aren't known yet are skipped).
+    Returns None when nothing is predicted yet. Each leaderboard is a list of
+    enriched match dicts.
     """
-    items = [
-        _enrich_match(f, predictions[f.get("id")])
-        for f in fixtures
-        if _is_populated(predictions.get(f.get("id")))
-    ]
+    rk = resolve_knockout(fixtures, results)
+    items = []
+    for f in fixtures:
+        p = predictions.get(f.get("id"))
+        if not _is_populated(p):
+            continue
+        if is_knockout(f):
+            r = rk.get(f["id"], {})
+            if not r.get("resolved"):
+                continue
+            items.append(_enrich_match(f, p, r["home"], r["away"]))
+        else:
+            items.append(_enrich_match(f, p))
     if not items:
         return None
 
@@ -919,8 +930,12 @@ def _decide_tie(a: str, b: str, row: dict | None, form: dict) -> dict:
             if ph is not None:
                 win = a if ph > pa else b if pa > ph else (row.get("winner") or a)
                 hi, lo = max(ph, pa), min(ph, pa)
+                pens = row.get("penalties")
+                if pens and win == b:                 # orient the shootout score winner-first
+                    pens = "-".join(reversed(pens.split("-")))
                 return {"winner": win, "loser": b if win == a else a,
-                        "score": f"{hi}-{lo}", "aet": ph == pa, "source": "actual"}
+                        "score": f"{hi}-{lo}", "aet": bool(row.get("aet")) or ph == pa,
+                        "pens": pens if ph == pa else None, "source": "actual"}
         # 2) model prediction
         if row.get("has_prediction"):
             ph, pa = _parse_scoreline(row.get("predicted_scoreline"))
@@ -933,11 +948,12 @@ def _decide_tie(a: str, b: str, row: dict | None, form: dict) -> dict:
                     win = a if (row.get("prob_home_win") or 0) >= (row.get("prob_away_win") or 0) else b
                 hi, lo = max(ph, pa), min(ph, pa)
                 return {"winner": win, "loser": b if win == a else a,
-                        "score": f"{hi}-{lo}", "aet": ph == pa, "source": "pred"}
+                        "score": f"{hi}-{lo}", "aet": ph == pa, "pens": None,
+                        "source": "pred"}
     # 3) form-based projection (keeps the tree flowing to a champion)
     r = _resolve_tie(a, b, form)
     return {"winner": r["winner"], "loser": r["loser"], "score": r["score"],
-            "aet": r["aet"], "source": "proj"}
+            "aet": r["aet"], "pens": None, "source": "proj"}
 
 
 def _decide_row(a: str, b: str, res: dict | None, p: dict | None) -> dict:
@@ -949,6 +965,8 @@ def _decide_row(a: str, b: str, res: dict | None, p: dict | None) -> dict:
             and res.get("away_score") is not None:
         row["actual_score"] = f"{res['home_score']}-{res['away_score']}"
         row["winner"] = res.get("winner")          # shootout victor for a level score
+        row["aet"] = bool(res.get("aet"))
+        row["penalties"] = res.get("penalties")    # "home-away" shootout score
     if _is_populated(p):
         row["has_prediction"] = True
         row["predicted_scoreline"] = p.get("predicted_scoreline")
@@ -972,8 +990,9 @@ def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> 
 
     Returns None when there are no knockout fixtures or the group field isn't set.
     Output:
-        {"rounds": [ {"name", "ties": [ {a,b,winner,loser,score,aet,source,
+        {"rounds": [ {"name", "ties": [ {a,b,winner,loser,score,aet,pens,source,
                                          a_slot,b_slot} ]}, ... ],
+         "third_place": tie | None,
          "champion", "champion_source", "actual", "pred", "projected",
          "total", "partial"}
     source ∈ {"actual","pred","proj"}; a_slot/b_slot are FIFA labels (1E/3D) on
@@ -1005,6 +1024,7 @@ def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> 
     labels = {"R32": "Round of 32", "R16": "Round of 16", "QF": "Quarter-finals",
               "SF": "Semi-finals", "F": "Final"}
     by_round: dict[str, list] = {rc: [] for rc in labels}
+    third_place = None
 
     ko = sorted((f for f in fixtures if is_knockout(f)),
                 key=lambda f: f.get("match_no", 0))
@@ -1019,16 +1039,20 @@ def knockout_bracket(fixtures: list[dict], results: dict, predictions: dict) -> 
                                           predictions.get(f["id"])), form)
         winner_of[mn], loser_of[mn] = d["winner"], d["loser"]
         counts[d["source"]] += 1
+        tie = {**d, "a": a, "b": b,
+               "a_slot": _slot(f.get("home")) if rc == "R32" else None,
+               "b_slot": _slot(f.get("away")) if rc == "R32" else None}
         if rc in by_round:
-            by_round[rc].append({**d, "a": a, "b": b,
-                                 "a_slot": _slot(f.get("home")) if rc == "R32" else None,
-                                 "b_slot": _slot(f.get("away")) if rc == "R32" else None})
+            by_round[rc].append(tie)
+        elif rc == "3P":
+            third_place = tie
 
     rounds = [{"name": labels[rc], "ties": by_round[rc]}
               for rc in ["R32", "R16", "QF", "SF", "F"] if by_round[rc]]
     final_tie = by_round["F"][0] if by_round["F"] else None
     return {
         "rounds": rounds,
+        "third_place": third_place,
         "champion": final_tie["winner"] if final_tie else None,
         "champion_source": final_tie["source"] if final_tie else "proj",
         "actual": counts["actual"], "pred": counts["pred"], "projected": counts["proj"],
@@ -1218,6 +1242,8 @@ def knockout_match_predictions(fixtures: list[dict], predictions: dict,
                 winner, _ = _ko_winner_loser(home, away, res)
                 if int(res["home_score"]) == int(res["away_score"]) and res.get("winner"):
                     decided = "pens"
+                elif res.get("aet"):
+                    decided = "aet"
 
         # Model's pick to advance = higher win probability, normalised to exclude
         # the (impossible-in-a-knockout) draw so it reads as a two-way call.
@@ -1235,7 +1261,7 @@ def knockout_match_predictions(fixtures: list[dict], predictions: dict,
             "venue": f.get("venue"), "city": f.get("city"), "date": f.get("date"),
             "home_slot": rk.get("home_slot"), "away_slot": rk.get("away_slot"),
             "resolved": both,
-            "winner": winner, "decided": decided,
+            "winner": winner, "decided": decided, "penalties": res.get("penalties"),
             "adv_team": adv_team, "adv_prob": adv_prob,
             "prob_home_win": p.get("prob_home_win"),
             "prob_draw": p.get("prob_draw"),
@@ -1252,46 +1278,13 @@ def knockout_match_predictions(fixtures: list[dict], predictions: dict,
     return out
 
 
-def _model_champion(fixtures: list[dict], results: dict, predictions: dict) -> str | None:
-    """Who the MODEL would crown — walk the real feeder tree but resolve every tie
-    by the model's own pick (higher win prob / decisive predicted scoreline),
-    ignoring actual results. Returns the predicted Final winner, or None."""
-    group_slots = _group_rank_slots(fixtures, results)
-    win_of: dict[int, str] = {}
-    lose_of: dict[int, str] = {}
-
-    def rref(ref: str):
-        if ref in group_slots:
-            return group_slots[ref]
-        m = _MATCH_SLOT_RE.match(ref or "")
-        if m:
-            n = int(m.group(2))
-            return (win_of if m.group(1) == "W" else lose_of).get(n)
-        return None
-
-    for f in sorted((f for f in fixtures if is_knockout(f)),
-                    key=lambda f: f.get("match_no", 0)):
-        a, b = rref(f.get("home", "")), rref(f.get("away", ""))
-        if not a or not b:
-            continue
-        p = predictions.get(f["id"], {})
-        ph, pa = p.get("prob_home_win"), p.get("prob_away_win")
-        if ph is not None and pa is not None:
-            win = a if ph >= pa else b
-        else:
-            phg, pag = _parse_scoreline(p.get("predicted_scoreline"))
-            win = b if (phg is not None and pag is not None and pag > phg) else a
-        win_of[f["match_no"]], lose_of[f["match_no"]] = win, (b if win == a else a)
-    return win_of.get(104)
-
-
 def tournament_report(fixtures: list[dict], results: dict,
                       predictions: dict) -> dict | None:
     """
     End-of-tournament model 'report card'. Returns None until the Final is played.
     Otherwise: final four (champion/runner-up/3rd/4th + final score), the model's
-    own predicted champion vs reality, overall + per-round accuracy, and the
-    model's sharpest correct calls and biggest misses across the knockouts.
+    pick in the Final vs reality, overall + group-stage + per-round accuracy, and
+    the model's sharpest correct calls and biggest misses across the knockouts.
     """
     fx = {f["id"]: f for f in fixtures}
     rk = resolve_knockout(fixtures, results)
@@ -1316,18 +1309,88 @@ def tournament_report(fixtures: list[dict], results: dict,
                     "round": rc, "pick": m["adv_team"], "prob": m["adv_prob"],
                     "winner": m["winner"], "home": m["home"], "away": m["away"],
                     "score": m["actual_score"], "hit": m["adv_team"] == m["winner"],
+                    "decided": m.get("decided"), "penalties": m.get("penalties"),
                 })
     best = sorted((c for c in calls if c["hit"]), key=lambda c: -c["prob"])[:3]
     misses = sorted((c for c in calls if not c["hit"]), key=lambda c: -c["prob"])[:3]
 
-    model_champ = _model_champion(fixtures, results, predictions)
+    final_card = next(iter(knockout_match_predictions(fixtures, predictions, results, "F")), {})
+    group_fx = [f for f in fixtures if not is_knockout(f)]
     return {
         "champion": champ, "runner_up": runner, "third": third, "fourth": fourth,
         "final_score": f"{fres['home_score']}-{fres['away_score']}",
+        "final_aet": bool(fres.get("aet")),
         "final_home": fhome, "final_away": faway,
-        "model_champion": model_champ,
-        "champion_hit": model_champ == champ,
+        "final_pick": final_card.get("adv_team"),
+        "final_pick_prob": final_card.get("adv_prob"),
+        "champion_hit": final_card.get("adv_team") == champ,
         "overall": accuracy_summary(fixtures, results, predictions),
+        "group_stage": accuracy_summary(group_fx, results, predictions),
         "by_round": accuracy_by_round(fixtures, results, predictions),
         "best_calls": best, "misses": misses,
+    }
+
+
+def model_scorecard(fixtures: list[dict], results: dict, predictions: dict) -> dict | None:
+    """
+    How trustworthy the model's probabilities were, from the played matches.
+
+    calibration — every probability the model assigned to an outcome that could
+    happen (home/draw/away in the group stage; each side advancing in a
+    knockout, with the draw normalised out) is bucketed, and each bucket's
+    average forecast is compared with how often those outcomes actually happened.
+
+    market — on group matches with recorded bookmaker odds: how often each side's
+    favourite won, and each side's Brier score (mean squared error of the
+    three-way probabilities; lower is better).
+    """
+    rk = resolve_knockout(fixtures, results)
+    pairs: list[tuple] = []                     # (forecast probability, happened)
+    m_brier, k_brier, m_fav, k_fav, n_mkt = 0.0, 0.0, 0, 0, 0
+    for f in fixtures:
+        fid = f.get("id")
+        res, p = results.get(fid, {}), predictions.get(fid)
+        if not res.get("played") or not _is_populated(p):
+            continue
+        hs, as_ = res.get("home_score"), res.get("away_score")
+        ph, pd_, pa = p.get("prob_home_win"), p.get("prob_draw"), p.get("prob_away_win")
+        if None in (hs, as_, ph, pd_, pa):
+            continue
+        if is_knockout(f):
+            r = rk.get(fid, {})
+            winner, _ = _ko_winner_loser(r.get("home"), r.get("away"), res)
+            if winner is None or ph + pa <= 0:
+                continue
+            q = ph / (ph + pa)
+            pairs += [(q, winner == r["home"]), (1 - q, winner == r["away"])]
+            continue
+        out = "H" if hs > as_ else "A" if as_ > hs else "D"
+        probs = {"H": ph / 100, "D": pd_ / 100, "A": pa / 100}
+        pairs += [(v, out == k) for k, v in probs.items()]
+        mp = p.get("market_probs")
+        if isinstance(mp, dict) and None not in (mp.get("implied_home_win"),
+                                                 mp.get("implied_draw"),
+                                                 mp.get("implied_away_win")):
+            mk = {"H": mp["implied_home_win"], "D": mp["implied_draw"], "A": mp["implied_away_win"]}
+            m_brier += sum((probs[k] - (out == k)) ** 2 for k in "HDA")
+            k_brier += sum((mk[k] - (out == k)) ** 2 for k in "HDA")
+            m_fav += max(probs, key=probs.get) == out
+            k_fav += max(mk, key=mk.get) == out
+            n_mkt += 1
+    if not pairs:
+        return None
+
+    bins = []
+    for lo, hi in ((0, .2), (.2, .4), (.4, .6), (.6, .8), (.8, 1.0001)):
+        sel = [(q, h) for q, h in pairs if lo <= q < hi]
+        if sel:
+            bins.append({"lo": round(lo * 100), "hi": round(min(hi, 1) * 100), "n": len(sel),
+                         "forecast": round(100 * sum(q for q, _ in sel) / len(sel)),
+                         "actual": round(100 * sum(1 for _, h in sel if h) / len(sel))})
+    return {
+        "bins": bins,
+        "n_forecasts": len(pairs),
+        "market": ({"n": n_mkt, "model_fav": m_fav, "market_fav": k_fav,
+                    "model_brier": round(m_brier / n_mkt, 3),
+                    "market_brier": round(k_brier / n_mkt, 3)} if n_mkt else None),
     }

@@ -1,2 +1,2 @@
-streamlit
+streamlit>=1.40      # st.pills / st.segmented_control
 Pillow>=10.0        # shareable match-card PNG rendering (share_card.py)

@@ -10,23 +10,25 @@ possible scoreline, not just a winner.
 
 ## How it turned out
 
-**Spain won the World Cup**, beating Argentina 1-0 after extra time. The model's
-bracket had crowned **Argentina**, who reached the final and lost, so the
-champion call came agonisingly close.
+**Spain won the World Cup**, beating Argentina 1-0 after extra time. In the
+final the model backed **Argentina** (55% to lift the trophy), so the champion
+call came agonisingly close.
 
-Across all 104 matches the model called **71% of outcomes**, including all four
-quarter-finals. Its costliest miss was backing Germany against Paraguay, who went
-through on penalties. The **Report Card** tab has the full grade.
+Across all 104 matches the model called **71% of results** and **25 of the 32
+knockout winners**, including all four quarter-finals. Its probabilities held up
+too: outcomes it rated 80% likely or more happened 86% of the time. Its costliest
+miss was backing Germany against Paraguay, who went through on penalties. The
+**Report Card** tab has the full grade.
 
 ## What's in the app
 
 | Tab | What you'll see |
 |---|---|
-| **Groups** | Live and projected tables for all 12 groups, plus a card for every match: win/draw/loss odds, expected goals, the predicted score, a heatmap of every possible scoreline, betting-style markets (over/under, both teams to score), how the model compared with the bookmakers, and a shareable image. |
-| **Tournament Pulse** | Storylines across the groups: the biggest gaps between model and market, the likeliest goal-fests, the true coin-flips and the safest bets. |
-| **Knockout Matches** | The same rich cards for every knockout tie, Round of 32 to the Final, with the model's pick to advance and a ✓ / ✗ once the result was in. |
-| **Knockout Bracket** | The full bracket, from the Round of 32 to the champion. |
-| **Report Card** | The final four, the model's champion call against reality, accuracy round by round, and its sharpest calls and biggest misses. |
+| **Groups** | The final table and the model's own table for all 12 groups, side by side, plus a card for every match: win/draw/loss odds, the final score and whether the model called it, expected goals, the predicted score, a heatmap of every possible scoreline, betting-style markets (over/under, both teams to score), how the model compared with the bookmakers, and a shareable image. |
+| **Tournament Pulse** | Storylines across all 104 matches: the biggest gaps between model and market, the likeliest goal-fests, the true coin-flips and the safest bets. |
+| **Knockout Matches** | The same rich cards for every knockout tie, Round of 32 to the Final, with the model's pick to go through and whether it was right. |
+| **Knockout Bracket** | The full bracket, from the Round of 32 to the champion, with extra-time and penalty results marked. |
+| **Report Card** | The final four, the model's call in the final, accuracy stage by stage, a calibration chart (did its 70% calls happen 70% of the time?), a head-to-head with the bookmakers, and its sharpest calls and biggest misses. |
 | **How It Works** | The pipeline, explained step by step. |
 
 ## How it works

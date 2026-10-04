@@ -58,7 +58,7 @@ html, body, [class*="css"] {{
 /* ── Base ── */
 .stApp {{ background-color: {BG} !important; }}
 .main, .block-container {{ background: transparent !important; }}
-.block-container {{ padding-top: 1.8rem; max-width: 1200px; }}
+.block-container {{ padding-top: 3.4rem; max-width: 1200px; }}
 
 /* Scrollbar */
 ::-webkit-scrollbar {{ width: 5px; height: 5px; }}
@@ -73,8 +73,8 @@ html, body, [class*="css"] {{
     padding: 32px 40px; margin-bottom: 22px;
 }}
 .app-header .pitch-svg {{
-    position: absolute; top: 0; right: 0;
-    width: 280px; height: 100%; pointer-events: none;
+    position: absolute; top: 16px; right: 16px;
+    width: 250px; height: 108px; pointer-events: none; opacity: 0.85;
 }}
 .app-header .header-tag {{
     font-size: 11px; font-weight: 700; letter-spacing: 2px;
@@ -84,10 +84,29 @@ html, body, [class*="css"] {{
     font-size: 40px; font-weight: 900; color: {TEXT};
     letter-spacing: -1.5px; margin: 0 0 8px 0; line-height: 1;
 }}
-.app-header .sub {{
-    font-size: 13px; font-weight: 500; color: {MUTED};
-    margin: 0; white-space: nowrap; line-height: 1.55;
+.app-header .lede {{
+    position: relative; font-size: 14.5px; color: {TEXT}; opacity: 0.88;
+    max-width: 640px; line-height: 1.6; margin: 6px 0 16px;
 }}
+.hero-result {{
+    position: relative; display: inline-flex; align-items: center; gap: 7px; flex-wrap: wrap;
+    background: rgba(217,119,6,0.10); border: 1px solid #4d3600; color: {TEXT};
+    font-size: 13px; font-weight: 600; padding: 7px 13px; border-radius: 10px; margin-bottom: 18px;
+}}
+.hero-result b {{ color: #fbbf24; }}
+.kpis {{ position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }}
+.kpi {{ background: rgba(13,17,23,0.6); border: 1px solid {BORDER}; border-radius: 11px; padding: 12px 14px; }}
+.kpi .kv {{ font-size: 24px; font-weight: 900; color: {TEXT}; line-height: 1.05; }}
+.kpi .kv.green {{ color: {ACCENT}; }}
+.kpi .kl {{ font-size: 11.5px; font-weight: 700; color: {TEXT}; margin-top: 5px; }}
+.kpi .ks {{ font-size: 10.5px; color: {MUTED}; margin-top: 2px; line-height: 1.35; }}
+.hero-links {{ position: relative; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }}
+.hero-links a {{
+    font-size: 12px; font-weight: 700; color: {TEXT} !important; text-decoration: none !important;
+    background: {SURFACE2}; border: 1px solid {BORDER}; padding: 6px 12px; border-radius: 8px;
+}}
+.hero-links a:hover {{ border-color: {ACCENT}; }}
+.hero-links .hint {{ font-size: 11.5px; color: {MUTED}; margin-left: 4px; }}
 
 /* ── ACCURACY BANNER ── */
 .acc-banner {{
@@ -577,6 +596,64 @@ div[data-testid="stExpander"] summary svg {{
 }}
 .diff-item .di-desc, .diff-item .di-body .di-desc {{ font-size: 13px; color: {MUTED}; line-height: 1.55; }}
 
+/* ── RESULT LINE on match cards ── */
+.ft {{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 9px 0 2px; font-size: 12px; color: {MUTED}; }}
+.ft .ft-tag {{ font-size: 9px; font-weight: 800; letter-spacing: 0.8px; color: {MUTED};
+               background: {SURFACE3}; border: 1px solid {BORDER}; padding: 1px 7px; border-radius: 20px; }}
+.ft .ft-score {{ font-size: 13px; font-weight: 800; color: {TEXT}; }}
+.ft .ft-note {{ font-size: 11px; color: {MUTED}; }}
+.ft .chip {{ font-size: 10.5px; font-weight: 800; padding: 1px 8px; border-radius: 20px; border: 1px solid; }}
+.ft .chip.hit {{ color: {ACCENT}; background: {ACCENT_SOFT}; border-color: {ACCENT_BORDER}; }}
+.ft .chip.exact {{ color: #04130b; background: {ACCENT}; border-color: {ACCENT}; }}
+.ft .chip.miss {{ color: {RED}; background: #1f0a0a; border-color: #5c1a1a; }}
+.tbl-note {{ margin-top: 10px; font-size: 11.5px; color: {MUTED}; }}
+.tbl-note b {{ color: {TEXT}; }}
+
+/* ── REPORT CARD extras ── */
+.rc-card {{ background: {SURFACE}; border: 1px solid {BORDER}; border-radius: 12px; padding: 16px 18px; margin-bottom: 22px; }}
+.rc-title {{ font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: {MUTED}; margin-bottom: 4px; }}
+.rc-sub {{ font-size: 12px; color: {MUTED}; line-height: 1.55; margin-bottom: 12px; }}
+.rc-sub b {{ color: {TEXT}; }}
+.rc-two {{ display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; margin-bottom: 22px; }}
+.rc-two .rc-card {{ margin-bottom: 0; }}
+.vs-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }}
+.vs-cell {{ background: {SURFACE2}; border: 1px solid {BORDER}; border-radius: 10px; padding: 11px 12px; text-align: center; }}
+.vs-cell .vk {{ font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: {MUTED}; font-weight: 700; }}
+.vs-cell .vv {{ font-size: 21px; font-weight: 900; color: {TEXT}; margin-top: 3px; }}
+.vs-cell .vs {{ font-size: 10.5px; color: {MUTED}; margin-top: 2px; }}
+.perf-scroll {{ overflow-x: auto; }}
+.perf-legend {{ font-size: 11px; color: {MUTED}; line-height: 1.65; margin-top: 10px; }}
+.perf-legend b {{ color: {TEXT}; }}
+
+/* ── SITE FOOTER ── */
+.site-footer {{ text-align: center; padding: 24px 0 34px; margin-top: 34px; border-top: 1px solid {BORDER};
+                font-size: 12px; color: {MUTED}; line-height: 1.9; }}
+.site-footer a {{ color: {TEXT} !important; font-weight: 700; text-decoration: none !important; }}
+.site-footer a:hover {{ color: {ACCENT} !important; }}
+.site-footer .brand {{ color: {ACCENT}; font-weight: 800; }}
+
+/* ── PHONE LAYOUT ── */
+@media (max-width: 640px) {{
+  .block-container {{ padding-left: 0.9rem; padding-right: 0.9rem; }}
+  .app-header {{ padding: 22px 18px; }}
+  .app-header .pitch-svg {{ display: none; }}
+  .app-header h1 {{ font-size: 32px; }}
+  .app-header .lede {{ font-size: 13.5px; }}
+  .hero-result {{ display: block; line-height: 1.6; }}
+  .kpis {{ grid-template-columns: 1fr 1fr; }}
+  .kpi .kv {{ font-size: 20px; }}
+  .pulse-stats {{ grid-template-columns: 1fr 1fr; }}
+  .lb-grid, .mkt-grid, .rc-two {{ grid-template-columns: 1fr; }}
+  .stTabs [data-baseweb="tab"] {{ padding: 8px 12px; font-size: 13px; }}
+  .match-teams {{ font-size: 13px; }}
+  .prob-legend {{ flex-wrap: wrap; gap: 4px 12px; }}
+  .how-hero .hw-title {{ font-size: 23px; }}
+  .flow .node {{ min-width: 0; white-space: normal; }}
+  .flow .cols {{ gap: 6px; }}
+  .diff-card {{ padding: 18px; }}
+  table.stand {{ font-size: 12px; }}
+}}
+
 /* ── GENERIC ── */
 .stCaption, [data-testid="stCaptionContainer"] {{ color: {MUTED} !important; }}
 .stMarkdown p {{ color: {MUTED} !important; }}
@@ -646,19 +723,6 @@ _PITCH_SVG = """
         stroke="rgba(0,201,110,0.15)" stroke-width="1"/>
 </svg>"""
 
-st.markdown(
-    f"""
-    <div class="app-header">
-      {_PITCH_SVG}
-      <div class="header-tag">⚽ FIFA World Cup 2026</div>
-      <h1>Siuuumulator</h1>
-      <p class="sub">
-        AI-powered match prediction engine &nbsp;·&nbsp; multi-agent pipeline &nbsp;·&nbsp; full scoreline distributions &nbsp;·&nbsp; live data
-      </p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  DATA  (cached; busts when any source file changes)
@@ -681,57 +745,120 @@ fixtures, results, predictions = _bundle(
 GROUPS = D.groups_in_order(fixtures)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  ACCURACY BANNER  (only shown when matches have been played)
+#  OPENING SCREEN  (what this is, how it ended, how the model did)
 # ═══════════════════════════════════════════════════════════════════════════════
+ENGINE_REPO = "https://github.com/Ar-i-yans-Om/WC_Simulator"
+DASHBOARD_REPO = "https://github.com/Ar-i-yans-Om/Fifa"
+
 _acc = D.accuracy_summary(fixtures, results, predictions)
-if _acc["total_played"] > 0:
-    _md_rows = D.accuracy_by_matchday(fixtures, results, predictions)
+_report = D.tournament_report(fixtures, results, predictions)
+_scorecard = D.model_scorecard(fixtures, results, predictions)
 
-    def _perf_row(summ: dict, label: str, sublabel: str = "",
-                  row_class: str = "md-row") -> str:
-        oa  = summ["outcome_accuracy"]
-        ep  = summ["exact_pct"]
-        avs = summ["avg_score"]
-        wp  = summ["with_prediction"]
-        tp  = summ["total_played"]
-        oa_cls = " green" if (oa or 0) >= 50 else ""
-        sub = f"<span class='sub'>{sublabel}</span>" if sublabel else ""
-        return f"""
-          <tr class="{row_class}">
-            <td class="lbl-col lbl">{label}{sub}</td>
-            <td class="v{oa_cls}">{f'{oa}%' if oa is not None else '—'}</td>
-            <td class="v">{f'{ep}%' if ep is not None else '—'}</td>
-            <td class="v blue">{f'{avs}/100' if avs is not None else '—'}</td>
-            <td class="v">{wp}/{tp}</td>
-          </tr>"""
 
-    _rows_html = _perf_row(_acc, "Overall", "group + knockouts", "overall")
-    for _r in _md_rows:
-        _rows_html += _perf_row(_r, f"MD{_r['md']}", "", "md-row")
-    # knockout rounds (R32 → Final) appended below the group matchdays
-    for _r in D.accuracy_by_round(fixtures, results, predictions):
-        _rows_html += _perf_row(_r, _r["round"], _r["label"], "md-row")
+def _hero_html() -> str:
+    tag = "⚽ FIFA World Cup 2026"
+    result = ""
+    if _report:
+        tag += " &nbsp;·&nbsp; tournament complete"
+        aet = " a.e.t." if _report["final_aet"] else ""
+        champ = _report["champion"]
+        result = (
+            f"<div class='hero-result'>🏆 {flag_img(champ, 13)}<b>{champ}</b> won the World Cup"
+            f" &nbsp;·&nbsp; Final: {_report['final_home']} {_report['final_score']}"
+            f" {_report['final_away']}{aet}</div>"
+        )
+    n_pred = sum(1 for f in fixtures if D._is_populated(predictions.get(f.get("id"))))
 
-    st.markdown(
-        f"""
-        <div class="perf-card">
-          <div class="title">📊&nbsp; Model Performance</div>
-          <table class="perf-table">
-            <thead>
-              <tr>
-                <th class="lbl-col">Stage</th>
-                <th>Outcome Accuracy</th>
-                <th>Exact Score</th>
-                <th>Avg Score</th>
-                <th>Predicted</th>
-              </tr>
-            </thead>
-            <tbody>{_rows_html}</tbody>
-          </table>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    kpis = ""
+    wp = _acc["with_prediction"]
+    if wp:
+        hits = _acc["bullseye"] + _acc["on_target"]
+        ko = D.accuracy_summary([f for f in fixtures if D.is_knockout(f)], results, predictions)
+        tiles = [
+            ("green", f"{_acc['outcome_accuracy']}%", "Results called",
+             f"{hits} of {wp} matches"),
+        ]
+        if ko["with_prediction"]:
+            ko_hits = ko["bullseye"] + ko["on_target"]
+            tiles.append(("", f"{ko['outcome_accuracy']}%", "Knockout winners called",
+                          f"{ko_hits} of {ko['with_prediction']} ties"))
+        tiles.append(("", f"{_acc['bullseye']}", "Exact scorelines", f"out of {wp} matches"))
+        top = next((b for b in (_scorecard or {}).get("bins", []) if b["lo"] == 80), None)
+        if top:
+            tiles.append(("", f"{top['actual']}%", "Confident calls landed",
+                          f"outcomes it rated 80%+ likely ({top['n']})"))
+        kpis = "<div class='kpis'>" + "".join(
+            f"<div class='kpi'><div class='kv {c}'>{v}</div><div class='kl'>{k}</div>"
+            f"<div class='ks'>{sub}</div></div>" for c, v, k, sub in tiles) + "</div>"
+
+    return (
+        f"<div class='app-header'>{_PITCH_SVG}"
+        f"<div class='header-tag'>{tag}</div>"
+        f"<h1>Siuuumulator</h1>"
+        f"<p class='lede'>A team of AI agents, modelled on a national team's coaching staff, "
+        f"that predicted all {n_pred} matches of the 2026 World Cup &mdash; every group game "
+        f"and the whole knockout bracket &mdash; as a probability for every possible "
+        f"scoreline.</p>"
+        f"{result}{kpis}"
+        f"<div class='hero-links'>"
+        f"<a href='{ENGINE_REPO}' target='_blank'>⚙️ Engine on GitHub</a>"
+        f"<a href='{DASHBOARD_REPO}' target='_blank'>📊 Dashboard on GitHub</a>"
+        f"<span class='hint'>Explore the tabs below &darr;</span></div></div>"
     )
+
+
+st.markdown(_hero_html(), unsafe_allow_html=True)
+
+
+def _perf_row(summ: dict, label: str, sublabel: str = "",
+              row_class: str = "md-row") -> str:
+    oa  = summ["outcome_accuracy"]
+    ep  = summ["exact_pct"]
+    avs = summ["avg_score"]
+    wp  = summ["with_prediction"]
+    tp  = summ["total_played"]
+    oa_cls = " green" if (oa or 0) >= 50 else ""
+    sub = f"<span class='sub'>{sublabel}</span>" if sublabel else ""
+    return f"""
+      <tr class="{row_class}">
+        <td class="lbl-col lbl">{label}{sub}</td>
+        <td class="v{oa_cls}">{f'{oa}%' if oa is not None else '—'}</td>
+        <td class="v">{f'{ep}%' if ep is not None else '—'}</td>
+        <td class="v blue">{f'{avs}/100' if avs is not None else '—'}</td>
+        <td class="v">{wp}/{tp}</td>
+      </tr>"""
+
+
+def perf_table_html() -> str:
+    """Per-stage accuracy table with a plain-English key to every column."""
+    rows = _perf_row(_acc, "Overall", "group + knockouts", "overall")
+    for r in D.accuracy_by_matchday(fixtures, results, predictions):
+        rows += _perf_row(r, f"MD{r['md']}", "group stage")
+    for r in D.accuracy_by_round(fixtures, results, predictions):
+        rows += _perf_row(r, r["round"], r["label"])
+    return f"""
+    <div class="perf-card">
+      <div class="title">📊&nbsp; Performance by stage</div>
+      <div class="perf-scroll">
+      <table class="perf-table">
+        <thead><tr>
+          <th class="lbl-col">Stage</th><th>Outcome</th><th>Exact score</th>
+          <th>Avg score</th><th>Predicted</th>
+        </tr></thead>
+        <tbody>{rows}</tbody>
+      </table>
+      </div>
+      <div class="perf-legend">
+        <b>Outcome</b> &mdash; the model's pick came true (group games: home win, draw
+        or away win; knockouts: who went through). <b>Exact score</b> &mdash; the
+        predicted scoreline was the final score. <b>Avg score</b> &mdash;
+        100&nbsp;&times;&nbsp;&radic;(p<sub>actual</sub>&nbsp;&divide;&nbsp;p<sub>top</sub>):
+        how likely the real scoreline was on the model's grid compared with its top
+        pick (100 = it was the top pick). <b>Predicted</b> &mdash; matches with a
+        prediction / matches played.
+      </div>
+    </div>"""
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  RENDER HELPERS
@@ -964,11 +1091,11 @@ def standings_html(rows: list[dict], predicted: bool = False) -> str:
     return f"<table class='stand'>{head}{body}</table>"
 
 
-def standings_card(rows, kind: str, focused: bool, status=None) -> None:
-    label     = "Current Table" if kind == "current" else "Predicted Table"
+def standings_card(rows, kind: str, focused: bool, status=None, extra: str = "") -> None:
+    label     = "Final Table" if kind == "current" else "Model's Table"
     lbl_cls   = "lbl" if kind == "current" else "lbl pred"
     badge_cls = "badge" if kind == "current" else "badge pred"
-    badge     = "LIVE" if kind == "current" else "PROJECTED"
+    badge     = "ACTUAL" if kind == "current" else "PREDICTED"
     dim       = "" if focused else "dim"
     inner     = standings_html(rows, predicted=(kind == "predicted"))
 
@@ -980,7 +1107,9 @@ def standings_card(rows, kind: str, focused: bool, status=None) -> None:
         elif not status["fully_projected"]:
             done = status["played"] + status["predicted"]
             note = (f"<div class='proj-note'>Partial · {done}/{status['total']} "
-                    f"fixtures covered. Remaining assume current standing.</div>")
+                    f"fixtures covered.</div>")
+    if extra:
+        note += f"<div class='tbl-note'>{extra}</div>"
 
     st.markdown(
         f"<div class='tbl-card {dim}'>"
@@ -1014,6 +1143,31 @@ def _build_card_cached(fid, home, away, group, md, pa, pd, pb,
         pa=pa, pd=pd, pb=pb, scoreline=scoreline, headline=headline,
         home_code=hc, away_code=ac, accuracy=accuracy,
     )
+
+
+def result_line_html(m: dict) -> str:
+    """'FULL TIME Mexico 2-0 South Africa · ✓ Exact score' once a match is played."""
+    actual = m.get("actual_score")
+    if not actual or actual == "—" or "-" not in str(actual):
+        return ""
+    hs, as_ = str(actual).split("-", 1)
+    note = ""
+    if m.get("decided") == "pens" and m.get("penalties") and m.get("winner"):
+        a, b = (int(x) for x in m["penalties"].split("-"))
+        note = (f"<span class='ft-note'>{m['winner']} won {max(a, b)}-{min(a, b)} "
+                f"on penalties</span>")
+    elif m.get("decided") == "aet":
+        note = "<span class='ft-note'>after extra time</span>"
+    knockout = bool(m.get("round"))
+    chip = {
+        "Bullseye": ("exact", "✓ Exact score"),
+        "On Target": ("hit", "✓ Winner called" if knockout else "✓ Result called"),
+        "Off Target": ("miss", "✗ Missed"),
+    }.get(m.get("outcome_call"))
+    chip_html = f"<span class='chip {chip[0]}'>{chip[1]}</span>" if chip else ""
+    return (f"<div class='ft'><span class='ft-tag'>FULL TIME</span>"
+            f"<span class='ft-score'>{m['home']} {hs}-{as_} {m['away']}</span>"
+            f"{note}{chip_html}</div>")
 
 
 def match_block(m: dict, meta_html: str = "") -> None:
@@ -1067,6 +1221,11 @@ def match_block(m: dict, meta_html: str = "") -> None:
             "<div class='prob-pending'>Prediction pending — run the pipeline</div>",
             unsafe_allow_html=True,
         )
+
+    # ── Full-time result and the verdict on the model's call ──
+    ft = result_line_html(m)
+    if ft:
+        st.markdown(ft, unsafe_allow_html=True)
 
     # ── Match details expander ──
     with st.expander("Match details", expanded=False):
@@ -1195,37 +1354,32 @@ def render_group(letter: str) -> None:
     matches = D.match_predictions(fixtures, predictions, results, letter)
     status  = D.group_prediction_status(fixtures, results, predictions, letter)
 
+    views = {"LIVE": "● Final table", "PROJECTED": "◆ Model's table"}
     state_key = f"focus_{letter}"
-    if state_key not in st.session_state:
-        st.session_state[state_key] = "LIVE"
-    focus = st.session_state[state_key]
-
-    _, tc, _ = st.columns([1.4, 2, 1.4])
-    with tc:
-        bl, bp = st.columns(2, gap="small")
-        with bl:
-            if st.button(
-                "● LIVE", key=f"live_{letter}", width="stretch",
-                type="primary" if focus == "LIVE" else "secondary",
-            ):
-                st.session_state[state_key] = "LIVE"
-                st.rerun()
-        with bp:
-            if st.button(
-                "◆ PROJECTED", key=f"proj_{letter}", width="stretch",
-                type="primary" if focus == "PROJECTED" else "secondary",
-            ):
-                st.session_state[state_key] = "PROJECTED"
-                st.rerun()
+    focus = st.session_state.get(state_key) or "LIVE"
+    picked = st.segmented_control(
+        "Table view", list(views), default=focus, key=f"view_{letter}",
+        format_func=views.get, label_visibility="collapsed",
+    )
+    if picked:
+        focus = st.session_state[state_key] = picked
 
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
+    # how closely the model's table matched the real one
+    extra = ""
+    if cur and pred and all(r["P"] for r in cur):
+        same = sum(1 for a, b in zip(cur, pred) if a["team"] == b["team"])
+        top2 = {r["team"] for r in cur[:2]} == {r["team"] for r in pred[:2]}
+        extra = (f"Matches the final table in <b>{same} of {len(cur)}</b> places"
+                 + (" &middot; top two right" if top2 else ""))
 
     c1, c2 = st.columns(2, gap="medium")
     with c1:
         standings_card(cur,  "current",   focused=(focus == "LIVE"))
     with c2:
         standings_card(pred, "predicted", focused=(focus == "PROJECTED"),
-                       status=status)
+                       status=status, extra=extra)
 
     st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
     st.markdown(
@@ -1233,7 +1387,7 @@ def render_group(letter: str) -> None:
         f"margin-bottom:2px'>Match Probabilities</div>",
         unsafe_allow_html=True,
     )
-    st.caption("Win · Draw · Loss projection per group fixture")
+    st.caption("The model's win · draw · loss probabilities for each match, and the final score")
     st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
     by_md    = status["by_md"]
@@ -1266,7 +1420,7 @@ def _lb_row(rank: int, i: dict, val_html: str) -> str:
         f"<span class='vs'>v</span>"
         f"{flag_img(i['away'], 11)}{i['away']}"
     )
-    meta = f"Group {i['group']} &middot; MD{i['md']}"
+    meta = i["stage"].replace(" · ", " &middot; ")
     return (
         f"<div class='lb-row'><div class='lb-rank'>{rank}</div>"
         f"<div class='lb-match'><div class='lb-teams'>{teams}</div>"
@@ -1351,8 +1505,8 @@ def render_tournament_insights() -> None:
         <div class="how-hero" style="padding:30px 20px 14px">
           <div class="hw-title" style="font-size:26px">Tournament Pulse</div>
           <div class="hw-sub">
-            The model's sharpest reads across all 12 groups &mdash; where it sees
-            value, goals, chaos, and the safest bankers.
+            The model's boldest reads across all {ti['total']} matches &mdash; where it
+            saw value, goals, open contests and the safest bankers.
           </div>
         </div>
         <div class="pulse-stats">
@@ -1407,7 +1561,12 @@ def render_knockout_bracket() -> None:
             a_sc, b_sc = (hi if a == w else lo), (hi if b == w else lo)
             a_cls = " win" if a == w else ""
             b_cls = " win" if b == w else ""
-            aet = "<div class='bk-aet'>AET</div>" if t["aet"] else ""
+            if t.get("pens"):
+                aet = f"<div class='bk-aet'>PENS {t['pens']}</div>"
+            elif t["aet"]:
+                aet = "<div class='bk-aet'>AET</div>"
+            else:
+                aet = ""
             # provenance of this tie: real result, model prediction, or projection
             src = t.get("source", "proj")
             src_cls = f" bk-{src}"
@@ -1430,23 +1589,36 @@ def render_knockout_bracket() -> None:
             f"<div class='bk-col-body'>{ties_html}</div></div>"
         )
 
-    # provenance banner: how much of the tree is real vs predicted vs projected
-    banner = (
-        f"<div class='bk-banner'>"
-        f"<b style='color:{TEXT}'>{bk['actual']}</b> decided by result &middot; "
-        f"<b style='color:{BLUE}'>{bk['pred']}</b> from model prediction &middot; "
-        f"<b>{bk['projected']}</b> projected from form"
-        + ("" if bk["partial"] else " &mdash; bracket complete")
-        + "</div>"
-    )
+    # provenance banner — only while part of the tree is predicted or projected
+    banner = ""
+    if bk["pred"] or bk["projected"]:
+        banner = (
+            f"<div class='bk-banner'>"
+            f"<b style='color:{TEXT}'>{bk['actual']}</b> decided by result &middot; "
+            f"<b style='color:{BLUE}'>{bk['pred']}</b> from model prediction &middot; "
+            f"<b>{bk['projected']}</b> projected from form</div>"
+        )
 
     ct = "Champion" if bk["champion_source"] == "actual" else "Projected Champion"
+    final_line = ""
+    if _report and bk["champion_source"] == "actual":
+        aet = " a.e.t." if _report["final_aet"] else ""
+        final_line = (f"<div style='font-size:12.5px;color:{MUTED};margin-top:6px'>Final &middot; "
+                      f"{_report['final_home']} <b style='color:{TEXT}'>{_report['final_score']}</b> "
+                      f"{_report['final_away']}{aet}</div>")
     champ_block = (
         f"<div class='champ'><div class='ct'>{ct}</div>"
         f"<div class='ctrophy'>&#127942;</div>"
-        f"<div class='cname'>{flag_img(champ, 30)}{champ}</div></div>"
+        f"<div class='cname'>{flag_img(champ, 30)}{champ}</div>{final_line}</div>"
     )
-    st.html(champ_block + banner + f"<div class='bracket'>{cols_html}</div>")
+    third = ""
+    tp = bk.get("third_place")
+    if tp and tp.get("source") == "actual":
+        hi, lo = tp["score"].split("-")
+        third = (f"<div style='text-align:center;font-size:12.5px;color:{MUTED};margin-top:6px'>"
+                 f"Third place &middot; {flag_img(tp['winner'], 11)}<b style='color:{TEXT}'>"
+                 f"{tp['winner']}</b> {hi}-{lo} {flag_img(tp['loser'], 11)}{tp['loser']}</div>")
+    st.html(champ_block + banner + f"<div class='bracket'>{cols_html}</div>" + third)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1470,25 +1642,20 @@ def _ko_meta_html(m: dict) -> str:
 
     adv = ""
     if m.get("winner"):
-        tail = " (pens)" if m.get("decided") == "pens" else ""
+        tail = {"pens": " (pens)", "aet": " (a.e.t.)"}.get(m.get("decided"), "")
         adv = (f"<span class='ko-advance'>{flag_img(m['winner'], 10)}"
                f"{m['winner']} advances{tail}</span>")
     return f"<div class='ko-meta'>{''.join(bits)}{adv}</div>"
 
 
 def _ko_advance_html(m: dict) -> str:
-    """The model's two-way 'who advances' call (no draws in a knockout), plus a
-    ✓/✗ verdict once the tie has been played."""
+    """The model's two-way 'who advances' call (no draws in a knockout). The
+    verdict on it sits in the card's full-time line."""
     if not m.get("adv_team"):
         return ""
     pick = f"{flag_img(m['adv_team'], 10)}{m['adv_team']}"
-    verdict = ""
-    if m.get("winner"):
-        hit = m["adv_team"] == m["winner"]
-        verdict = (f"<span class='{'ko-hit' if hit else 'ko-miss'}'>"
-                   f"{'✓ called it' if hit else '✗ missed'}</span>")
-    return (f"<div class='ko-adv'><span class='ko-model'>Model backs {pick} "
-            f"to advance &middot; <b>{m['adv_prob']}%</b></span>{verdict}</div>")
+    return (f"<div class='ko-adv'><span class='ko-model'>Model backed {pick} "
+            f"to go through &middot; <b>{m['adv_prob']}%</b></span></div>")
 
 
 def render_knockout_matches() -> None:
@@ -1525,9 +1692,10 @@ def render_knockout_matches() -> None:
         with tab:
             cards = D.knockout_match_predictions(fixtures, predictions, results, rcode)
             done = sum(1 for c in cards if c["has_prediction"] or c["actual_score"] != "—")
+            count = (f" <span style='opacity:0.7'>· {done}/{len(cards)} with data</span>"
+                     if done < len(cards) else "")
             st.markdown(
-                f"<div class='ko-round-intro'>{intro.get(rcode, '')} "
-                f"<span style='opacity:0.7'>· {done}/{len(cards)} with data</span></div>",
+                f"<div class='ko-round-intro'>{intro.get(rcode, '')}{count}</div>",
                 unsafe_allow_html=True,
             )
             for m in cards:
@@ -1583,49 +1751,52 @@ def render_report_card() -> None:
         f"{pod('THIRD', rc['third'] or '—', '#b06a2c', '#5c3a1a', '🥉')}"
         f"{pod('FOURTH', rc['fourth'] or '—', MUTED, BORDER, '4️⃣')}</div>"
         f"<div style='text-align:center;font-size:12px;color:{MUTED};margin-bottom:22px'>"
-        f"Final &middot; {rc['final_home']} <b style='color:{TEXT}'>{rc['final_score']}</b> {rc['final_away']}</div>"
+        f"Final &middot; {rc['final_home']} <b style='color:{TEXT}'>{rc['final_score']}</b> {rc['final_away']}"
+        f"{' a.e.t.' if rc['final_aet'] else ''}</div>"
     )
 
-    # Model's champion call
-    hit = rc["champion_hit"]
-    mc, ch = rc["model_champion"], rc["champion"]
-    reached_final = (mc == rc["runner_up"])
-    if hit:
-        verdict = f"<span style='color:{ACCENT};font-weight:800'>✓ called the champion</span>"
-    elif reached_final:
-        verdict = (f"<span style='color:{GOLD};font-weight:800'>its pick reached the final</span> "
-                   f"&mdash; but {ch} lifted the trophy")
-    else:
-        verdict = f"<span style='color:{RED};font-weight:800'>✗ {ch} won it instead</span>"
-    mc_card = (
-        f"<div style='background:{SURFACE2};border:1px solid {BORDER};border-radius:12px;"
-        f"padding:18px 20px;margin-bottom:22px;text-align:center'>"
-        f"<div style='font-size:10px;font-weight:800;letter-spacing:1px;color:{MUTED};"
-        f"text-transform:uppercase;margin-bottom:8px'>The model's call</div>"
-        f"<div style='font-size:16px;color:{TEXT}'>The bracket crowned "
-        f"{flag_img(mc,15)}<b>{mc}</b></div>"
-        f"<div style='font-size:13px;color:{MUTED};margin-top:6px'>{verdict}</div></div>"
-    )
+    # The model's pick in the Final
+    mc_card = ""
+    pick, ch = rc["final_pick"], rc["champion"]
+    if pick:
+        aet = " after extra time" if rc["final_aet"] else ""
+        if rc["champion_hit"]:
+            verdict = f"<span style='color:{ACCENT};font-weight:800'>✓ called the champion</span>"
+        else:
+            verdict = (f"<span style='color:{GOLD};font-weight:800'>close, but not this time</span>"
+                       f" &mdash; {ch} won {rc['final_score']}{aet}")
+        mc_card = (
+            f"<div style='background:{SURFACE2};border:1px solid {BORDER};border-radius:12px;"
+            f"padding:18px 20px;margin-bottom:22px;text-align:center'>"
+            f"<div style='font-size:10px;font-weight:800;letter-spacing:1px;color:{MUTED};"
+            f"text-transform:uppercase;margin-bottom:8px'>The model's call in the Final</div>"
+            f"<div style='font-size:16px;color:{TEXT}'>It backed {flag_img(pick, 15)}<b>{pick}</b>"
+            f" to win the trophy &middot; <b>{rc['final_pick_prob']}%</b></div>"
+            f"<div style='font-size:13px;color:{MUTED};margin-top:6px'>{verdict}</div></div>"
+        )
 
     # Accuracy by round — compact bars (outcome accuracy)
     ov = rc["overall"]
     rows = ""
-    for r in [{"round": "All", "outcome_accuracy": ov["outcome_accuracy"],
-               "with_prediction": ov["with_prediction"], "total_played": ov["total_played"]}] + rc["by_round"]:
+    gs = rc["group_stage"]
+    for r in ([{"round": "All", **ov}, {"round": "Groups", **gs}] + rc["by_round"]):
         oa = r["outcome_accuracy"] or 0
         col = ACCENT if oa >= 50 else (GOLD if oa >= 34 else RED)
+        hits = r["bullseye"] + r["on_target"]
         rows += (
             f"<div style='display:flex;align-items:center;gap:10px;margin-bottom:7px'>"
-            f"<div style='width:42px;font-size:11px;font-weight:700;color:{MUTED}'>{r['round']}</div>"
+            f"<div style='width:50px;font-size:11px;font-weight:700;color:{MUTED}'>{r['round']}</div>"
             f"<div style='flex:1;height:16px;background:{SURFACE3};border-radius:5px;overflow:hidden'>"
             f"<div style='width:{oa}%;height:100%;background:{col}'></div></div>"
             f"<div style='width:78px;text-align:right;font-size:11.5px;font-weight:700;color:{TEXT}'>"
-            f"{oa}% <span style='color:{MUTED};font-weight:500'>({r['with_prediction']}/{r['total_played']})</span></div></div>"
+            f"{oa}% <span style='color:{MUTED};font-weight:500'>({hits}/{r['with_prediction']})</span></div></div>"
         )
     acc_card = (
         f"<div style='background:{SURFACE};border:1px solid {BORDER};border-radius:12px;padding:16px 18px;margin-bottom:22px'>"
         f"<div style='font-size:11px;font-weight:700;letter-spacing:1px;color:{MUTED};"
-        f"text-transform:uppercase;margin-bottom:12px'>Outcome accuracy by stage</div>{rows}</div>"
+        f"text-transform:uppercase;margin-bottom:4px'>Results called, by stage</div>"
+        f"<div style='font-size:11.5px;color:{MUTED};margin-bottom:12px'>Group games are graded "
+        f"on home win / draw / away win; knockouts on who went through.</div>{rows}</div>"
     )
 
     # Best calls / biggest misses
@@ -1634,8 +1805,16 @@ def render_report_card() -> None:
         for c in items:
             chip_col, chip_bg, chip_bd = ((ACCENT, ACCENT_SOFT, ACCENT_BORDER) if hit
                                           else (RED, "#1f0a0a", "#5c1a1a"))
-            detail = (f"beat {c['away'] if c['pick']==c['home'] else c['home']} {c['score']}" if hit
-                      else f"{c['winner']} won {c['score']}")
+            hs, as_ = (int(x) for x in c["score"].split("-"))
+            wscore = f"{max(hs, as_)}-{min(hs, as_)}"
+            if hit:
+                detail = f"beat {c['away'] if c['pick'] == c['home'] else c['home']} {wscore}"
+            elif c.get("decided") == "pens" and c.get("penalties"):
+                a, b = (int(x) for x in c["penalties"].split("-"))
+                detail = f"{c['winner']} won on penalties ({wscore}, {max(a, b)}-{min(a, b)})"
+            else:
+                after = " after extra time" if c.get("decided") == "aet" else ""
+                detail = f"{c['winner']} won {wscore}{after}"
             out += (
                 f"<div style='display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid {SURFACE3}'>"
                 f"<div style='flex:1;min-width:0'>"
@@ -1658,10 +1837,96 @@ def render_report_card() -> None:
     st.html(
         f"<div class='how-hero' style='padding:30px 20px 10px'>"
         f"<div class='hw-title'>Model Report Card</div>"
-        f"<div class='hw-sub'>How the Siuuumulator's forecasts held up across all "
-        f"{ov['total_played']} matches — and how far its bracket call survived.</div></div>"
-        f"{podium}{mc_card}{acc_card}{calls}<div style='height:18px'></div>"
+        f"<div class='hw-sub'>How the Siuuumulator's predictions held up across all "
+        f"{ov['total_played']} matches.</div></div>"
+        f"{podium}{mc_card}{acc_card}"
     )
+    calib = calibration_html()
+    if calib:
+        st.markdown(calib, unsafe_allow_html=True)
+    st.html(f"{calls}<div style='height:22px'></div>{perf_table_html()}"
+            f"<div style='height:18px'></div>")
+
+
+def _calibration_svg(bins: list) -> str:
+    """Reliability diagram: forecast probability (x) vs how often it happened (y)."""
+    W, H, L, B, T, R = 420, 270, 44, 36, 12, 12
+    pw, ph = W - L - R, H - B - T
+
+    def x(v): return L + pw * v / 100
+    def y(v): return T + ph * (1 - v / 100)
+
+    grid = "".join(
+        f"<line x1='{x(v)}' y1='{y(0)}' x2='{x(v)}' y2='{y(100)}' stroke='{SURFACE3}'/>"
+        f"<line x1='{x(0)}' y1='{y(v)}' x2='{x(100)}' y2='{y(v)}' stroke='{SURFACE3}'/>"
+        f"<text x='{x(v)}' y='{H - 18}' fill='{MUTED}' font-size='10' text-anchor='middle'>{v}%</text>"
+        f"<text x='{L - 8}' y='{y(v) + 3}' fill='{MUTED}' font-size='10' text-anchor='end'>{v}%</text>"
+        for v in (0, 20, 40, 60, 80, 100))
+    pts = " ".join(f"{x(b['forecast'])},{y(b['actual'])}" for b in bins)
+    dots = "".join(
+        f"<circle cx='{x(b['forecast'])}' cy='{y(b['actual'])}' r='{4 + min(6, b['n'] / 15):.1f}' "
+        f"fill='{ACCENT}' stroke='{BG}' stroke-width='1.5'><title>Forecast {b['forecast']}% · "
+        f"happened {b['actual']}% · {b['n']} outcomes</title></circle>"
+        for b in bins)
+    return (
+        f"<svg viewBox='0 0 {W} {H}' style='width:100%;max-width:{W}px;display:block;margin:0 auto'>"
+        f"{grid}"
+        f"<line x1='{x(0)}' y1='{y(0)}' x2='{x(100)}' y2='{y(100)}' stroke='{MUTED}' "
+        f"stroke-dasharray='4 4' stroke-width='1.2'/>"
+        f"<polyline points='{pts}' fill='none' stroke='{ACCENT}' stroke-width='2'/>{dots}"
+        f"<text x='{x(50)}' y='{H - 3}' fill='{MUTED}' font-size='10.5' text-anchor='middle'>"
+        f"model's forecast</text>"
+        f"<text x='11' y='{y(50)}' fill='{MUTED}' font-size='10.5' text-anchor='middle' "
+        f"transform='rotate(-90 11 {y(50)})'>how often it happened</text></svg>"
+    )
+
+
+def calibration_html() -> str:
+    """Calibration chart + the head-to-head with the bookmakers."""
+    sc = _scorecard
+    if not sc or not sc["bins"]:
+        return ""
+    rows = "".join(
+        f"<tr><td style='padding:3px 8px;color:{MUTED}'>{b['lo']}&ndash;{b['hi']}%</td>"
+        f"<td style='padding:3px 8px;text-align:right;color:{TEXT};font-weight:700'>{b['forecast']}%</td>"
+        f"<td style='padding:3px 8px;text-align:right;color:{ACCENT};font-weight:700'>{b['actual']}%</td>"
+        f"<td style='padding:3px 8px;text-align:right;color:{MUTED}'>{b['n']}</td></tr>"
+        for b in sc["bins"])
+    calib = (
+        f"<div class='rc-card'><div class='rc-title'>Were its probabilities honest?</div>"
+        f"<div class='rc-sub'>Every outcome the model put a number on, grouped by that number. "
+        f"Points on the dashed line mean things it called <b>X%</b> likely happened about "
+        f"<b>X%</b> of the time ({sc['n_forecasts']} outcomes).</div>"
+        f"{_calibration_svg(sc['bins'])}"
+        f"<table style='margin:10px auto 0;font-size:11.5px;border-collapse:collapse'>"
+        f"<tr><th style='padding:3px 8px;color:{MUTED};font-weight:600;text-align:left'>Band</th>"
+        f"<th style='padding:3px 8px;color:{MUTED};font-weight:600'>Forecast</th>"
+        f"<th style='padding:3px 8px;color:{MUTED};font-weight:600'>Happened</th>"
+        f"<th style='padding:3px 8px;color:{MUTED};font-weight:600'>Outcomes</th></tr>{rows}</table></div>"
+    )
+    mk = sc.get("market")
+    market = ""
+    if mk:
+        market = (
+            f"<div class='rc-card'><div class='rc-title'>Against the bookmakers</div>"
+            f"<div class='rc-sub'>The {mk['n']} group games with recorded betting odds, "
+            f"model vs market, side by side.</div>"
+            f"<div class='vs-grid'>"
+            f"<div class='vs-cell'><div class='vk'>Model favourite won</div>"
+            f"<div class='vv' style='color:{ACCENT}'>{mk['model_fav']}</div>"
+            f"<div class='vs'>of {mk['n']}</div></div>"
+            f"<div class='vs-cell'><div class='vk'>Market favourite won</div>"
+            f"<div class='vv'>{mk['market_fav']}</div><div class='vs'>of {mk['n']}</div></div>"
+            f"<div class='vs-cell'><div class='vk'>Model Brier score</div>"
+            f"<div class='vv' style='color:{ACCENT}'>{mk['model_brier']:.3f}</div>"
+            f"<div class='vs'>lower is better</div></div>"
+            f"<div class='vs-cell'><div class='vk'>Market Brier score</div>"
+            f"<div class='vv'>{mk['market_brier']:.3f}</div><div class='vs'>lower is better</div></div>"
+            f"</div><div class='rc-sub' style='margin:12px 0 0'>The Brier score is the mean "
+            f"squared error of the win / draw / loss probabilities against what happened: "
+            f"0 is perfect, and always saying a third each scores 0.667.</div></div>"
+        )
+    return f"<div class='rc-two'>{calib}{market}</div>" if market else calib
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1669,7 +1934,7 @@ def render_report_card() -> None:
 # ═══════════════════════════════════════════════════════════════════════════════
 def render_how_it_works() -> None:
     st.html(
-        f"""
+        """
         <div class="how-hero">
           <div class="hw-title">How Siuuumulator Works</div>
           <div class="hw-sub">
@@ -1753,6 +2018,17 @@ def render_how_it_works() -> None:
           </div>
 
           <div class="how-step">
+            <div class="hs-icon">&#128202;</div>
+            <div class="hs-num">Alongside steps 2&ndash;5</div>
+            <div class="hs-title">The Bookmaker</div>
+            <div class="hs-desc">
+              Reads current betting market odds as an independent reference. The model
+              knows what the market thinks before the Judge makes its call &mdash; useful for
+              spotting where our predictions diverge from public consensus.
+            </div>
+          </div>
+
+          <div class="how-step">
             <div class="hs-icon">&#9917;</div>
             <div class="hs-num">Step 6</div>
             <div class="hs-title">The Pitch Simulator</div>
@@ -1777,25 +2053,14 @@ def render_how_it_works() -> None:
           </div>
 
           <div class="how-step">
-            <div class="hs-icon">&#128202;</div>
-            <div class="hs-num">Step 8</div>
-            <div class="hs-title">The Bookmaker</div>
-            <div class="hs-desc">
-              Reads current betting market odds as an independent reference. The model
-              knows what the market thinks before the Judge makes its call &mdash; useful for
-              spotting where our predictions diverge from public consensus.
-            </div>
-          </div>
-
-          <div class="how-step">
             <div class="hs-icon">&#9878;</div>
-            <div class="hs-num">Step 9</div>
+            <div class="hs-num">Step 8</div>
             <div class="hs-title">The Judge</div>
             <div class="hs-desc">
               Combines all probability-weighted scenarios into one precise mathematical
               mixture. Compares model versus market. Writes the final report:
               win/draw/loss odds, most-likely scorelines, a full narrative, and a
-              confidence rating. Everything you see on this page comes from here.
+              confidence rating. The numbers on every match card come from here.
             </div>
           </div>
 
@@ -1857,12 +2122,6 @@ def render_how_it_works() -> None:
 
         </div>
 
-        <div style="text-align:center;padding:20px 0 32px;font-size:12px;color:{MUTED};
-                    line-height:1.8;border-top:1px solid {BORDER};margin-top:8px">
-          Built with <strong style="color:{TEXT}">LangGraph</strong>
-          &nbsp;&middot;&nbsp; Powered by <strong style="color:{TEXT}">Google Gemini</strong>
-          &nbsp;&middot;&nbsp; <span style="color:{ACCENT}">Siuuumulator</span> &copy; 2026
-        </div>
         """
     )
 
@@ -1892,18 +2151,12 @@ with tab_groups:
             f"Select Group</div>",
             unsafe_allow_html=True,
         )
-        per_row = 6
-        for start in range(0, len(GROUPS), per_row):
-            chunk = GROUPS[start:start + per_row]
-            cols = st.columns(per_row, gap="small")
-            for i, g in enumerate(chunk):
-                with cols[i]:
-                    if st.button(
-                        f"Group {g}", key=f"gbtn_{g}", width="stretch",
-                        type="primary" if g == active_group else "secondary",
-                    ):
-                        st.session_state["active_group"] = g
-                        st.rerun()
+        picked = st.pills(
+            "Select group", GROUPS, default=active_group, key="group_pills",
+            format_func=lambda g: f"Group {g}", label_visibility="collapsed",
+        )
+        if picked and picked != active_group:
+            st.session_state["active_group"] = active_group = picked
 
         st.markdown("<div style='height:18px'></div>", unsafe_allow_html=True)
         render_group(active_group)
@@ -1922,3 +2175,16 @@ with tab_report:
 
 with tab_how:
     render_how_it_works()
+
+st.markdown(
+    f"""
+    <div class="site-footer">
+      <span class="brand">Siuuumulator</span> &nbsp;&middot;&nbsp; built by
+      <a href="https://github.com/Ar-i-yans-Om" target="_blank">Om Mittal</a><br>
+      <a href="{ENGINE_REPO}" target="_blank">Prediction engine</a> &nbsp;&middot;&nbsp;
+      <a href="{DASHBOARD_REPO}" target="_blank">Dashboard</a> &nbsp;&middot;&nbsp;
+      LangGraph &middot; Google Gemini &middot; Streamlit
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
