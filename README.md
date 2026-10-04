@@ -1,47 +1,57 @@
 # Siuuumulator — FIFA World Cup 2026 AI Predictor
 
-A read-only Streamlit dashboard that visualises a multi-agent AI's match-by-match
-predictions for the **2026 FIFA World Cup** — full scoreline distributions, group
-tables, a live knockout bracket, and an end-of-tournament model **report card**.
+An AI "coaching staff" that predicted all 104 matches of the 2026 FIFA World Cup —
+every group game and the whole knockout bracket — with a probability for every
+possible scoreline, not just a winner.
 
 🔗 **Live app:** https://wc-agentic-simulator.streamlit.app/
-
-> The predictions come from a separate engine — the
-> [WC_Simulator](https://github.com/Ar-i-yans-Om/WC_Simulator) multi-agent pipeline.
-> This repo is the **dashboard only**: it reads the engine's JSON output and never
-> calls the model. One-way data flow, so the UI stays fast.
 
 ---
 
 ## How it turned out
 
-The tournament is complete — **Spain beat Argentina 1-0 (a.e.t.) in the final**.
-The model's own bracket had crowned **Argentina**, who reached the final and lost,
-so the champion call came agonisingly close. Across all **104 matches** the model
-hit **~71% outcome accuracy**, peaking at **100% in the quarter-finals**. See the
-**Report Card** tab for the full grade — accuracy by stage, sharpest reads, and
-biggest misses (backing Germany over Paraguay was the costliest).
+**Spain won the World Cup**, beating Argentina 1-0 after extra time. The model's
+bracket had crowned **Argentina**, who reached the final and lost, so the
+champion call came agonisingly close.
 
-## What's in the dashboard
+Across all 104 matches the model called **71% of outcomes**, including all four
+quarter-finals. Its costliest miss was backing Germany against Paraguay, who went
+through on penalties. The **Report Card** tab has the full grade.
 
-| Tab | What it shows |
+## What's in the app
+
+| Tab | What you'll see |
 |---|---|
-| **Groups** | Live vs projected group tables, and a rich card per fixture — win/draw/loss bar, xG, predicted scoreline, the full Poisson scoreline heatmap, grid-derived betting markets, model-vs-market divergence, and a shareable PNG card. |
-| **Tournament Pulse** | Cross-group storylines: biggest market gaps, goal-fests, coin-flips, safest bankers. |
-| **Knockout Matches** | The same rich cards for every knockout tie (R32 → Final), grouped into per-round sub-tabs, with the model's two-way "who advances" call and a ✓/✗ verdict. |
-| **Knockout Bracket** | The live bracket, driven by the real feeder tree — real results where played, model prediction otherwise, form projection as a fallback, all the way to the champion. |
-| **Report Card** | The end-of-tournament grade: final four, the model's champion call vs reality, outcome accuracy by stage, and its best calls / biggest misses. |
-| **How It Works** | The multi-agent pipeline explained. |
+| **Groups** | Live and projected tables for all 12 groups, plus a card for every match: win/draw/loss odds, expected goals, the predicted score, a heatmap of every possible scoreline, betting-style markets (over/under, both teams to score), how the model compared with the bookmakers, and a shareable image. |
+| **Tournament Pulse** | Storylines across the groups: the biggest gaps between model and market, the likeliest goal-fests, the true coin-flips and the safest bets. |
+| **Knockout Matches** | The same rich cards for every knockout tie, Round of 32 to the Final, with the model's pick to advance and a ✓ / ✗ once the result was in. |
+| **Knockout Bracket** | The full bracket, from the Round of 32 to the champion. |
+| **Report Card** | The final four, the model's champion call against reality, accuracy round by round, and its sharpest calls and biggest misses. |
+| **How It Works** | The pipeline, explained step by step. |
 
-## How the predictions are made
+## How it works
 
-The engine models each match as two isolated team analyses (chemistry, game
-theory, scouting, tactics) that collide in a Pitch Simulator, then weights in
-black-swan scenarios and folds everything into a Poisson **mixture**
-distribution. See the engine repo for the full architecture.
+Think of it as a national team's backroom staff, rebuilt as AI agents:
 
-Knockouts are graded on **advancement** (who went through), not the draw-inclusive
-scoreline — a knockout has no draws.
+- **The Researcher** reads the latest team news (injuries, suspensions, likely
+  line-ups) and works out each squad's fitness from real travel distances, rest
+  days, altitude and climate.
+- **Two isolated team rooms.** Each side gets its own chemistry analyst,
+  tournament strategist, opposition scout and head coach. Neither room ever sees
+  the other's thinking, just like two rival camps.
+- **The Pitch Simulator** is the only place the two game plans meet. It sets how
+  many goals each team should expect.
+- **The Chaos Agent** accounts for red cards, VAR penalties and injuries, each
+  weighted by how likely it is rather than rolled like a dice.
+- **The Bookmaker** brings in the betting market as an outside reference.
+- **The Judge** turns it all into a probability for every scoreline, and from
+  there the win / draw / loss odds.
+
+Knockout ties are graded on **who went through**, since a knockout can't end in a
+draw.
+
+Curious about the engine underneath? It's open source:
+[WC_Simulator](https://github.com/Ar-i-yans-Om/WC_Simulator).
 
 ## Run it locally
 
@@ -50,17 +60,8 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Data contract
+The app only reads the prediction files in `data/`, so it needs no API keys.
 
-The dashboard reads three files from `data/` (written by the engine):
+---
 
-- `fixtures.json` — 104 fixtures (72 group + 32 knockout `M73`–`M104`). Knockout
-  ties carry a `round` and slot-reference `home`/`away` (`1A`/`2B`/`3E` group slots,
-  `W77`/`L101` match slots) that resolve from results.
-- `results.json` — scores as `{id, home_score, away_score, played}`; a level knockout
-  tie decided on penalties adds `"winner": "<team>"`.
-- `predictions.json` — per-fixture model output (probabilities, expected goals,
-  scoreline grid, narrative, market anchor).
-
-`ui_data.py` is the data layer (loading, standings, bracket resolution, accuracy);
-`app.py` is the render layer; `share_card.py` builds the shareable PNGs.
+Built with LangGraph, Google Gemini and Streamlit.

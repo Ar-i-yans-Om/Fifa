@@ -4,9 +4,10 @@ ui_data.py — data layer for the FIFA WC 2026 dashboard.
 Keeps all file I/O and standings math out of app.py so the UI stays a thin
 render layer. Reads three files from data/:
 
-    fixtures.json     static  — 72 fixtures (id/group/md/home/away/date/venue/city)
-    results.json      live    — played scores (home_score/away_score/played)
-    predictions.json  NEW     — pipeline output, keyed by fixture_id (see CONTRACT)
+    fixtures.json     static  — 104 fixtures: 72 group (id/group/md/...) + 32 knockout
+                                (id/round/match_no/slot refs/date/venue/city)
+    results.json      live    — played scores (home_score/away_score/played[/winner])
+    predictions.json  engine  — pipeline output, keyed by fixture_id (see CONTRACT)
 
 The pipeline writes predictions.json; the UI only ever READS. Current table is
 computed here from fixtures+results; predicted table is derived from the
@@ -19,11 +20,10 @@ import json
 import math
 import re
 from pathlib import Path
-from collections import defaultdict
 
 # --------------------------------------------------------------------------- #
 #  PATHS
-#  app.py lives at project root (beside match_runner.py); data/ sits alongside.
+#  app.py lives at the repository root; data/ sits beside it.
 # --------------------------------------------------------------------------- #
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
@@ -39,11 +39,11 @@ PREDICTIONS_FILE = DATA_DIR / "predictions.json"
 #   {
 #     "A1": {
 #       "fixture_id": "A1", "group": "A",
-#       "home": "Mexico", "away": "Curaçao",
-#       "prob_home_win": 62, "prob_draw": 24, "prob_away_win": 14,
-#       "expected_goals": {"home": 1.9, "away": 0.7},
-#       "predicted_scoreline": "2-0",
-#       "top_scorelines": [ {"score": "2-0", "prob": 18}, ... ]
+#       "home": "Mexico", "away": "South Africa",
+#       "prob_home_win": 67, "prob_draw": 20, "prob_away_win": 13,
+#       "expected_goals": {"home": 2.05, "away": 0.75},
+#       "predicted_scoreline": "Mexico 2-0 South Africa",
+#       "top_scorelines": [ {"score": "2-0", "prob": 13}, ... ]
 #     }, ...
 #   }
 # Probabilities are percentages (ints summing to ~100). Extra fields are fine —
@@ -133,12 +133,6 @@ def fixtures_in_group(fixtures: list[dict], group: str) -> list[dict]:
     return rows
 
 
-def matchdays_in_group(fixtures: list[dict], group: str) -> list[int]:
-    """Distinct matchday numbers present in a group, sorted."""
-    mds = {f.get("md") for f in fixtures_in_group(fixtures, group) if f.get("md")}
-    return sorted(mds)
-
-
 def group_prediction_status(fixtures: list[dict], results: dict,
                             predictions: dict, group: str) -> dict:
     """
@@ -206,45 +200,45 @@ def _h2h_table(teams: set, matches: list[tuple]) -> dict:
 
 def _sort_table(rows: list[dict], matches: list[tuple]) -> list[dict]:
     """
-    Rank a group per the official FIFA World Cup 2026 tie-break order.
+    Rank a group table per FIFA World Cup 26 Regulations, Article 13.
 
-    Overall criteria (all group matches):
-      1. points  2. goal difference  3. goals for
-    Then, for teams still level on all three, the same measures applied to ONLY
-    the matches played between those tied teams (head-to-head):
-      4. h2h points  5. h2h goal difference  6. h2h goals for
-
-    (The remaining FIFA criteria — fair-play conduct points and the drawing of
-    lots — need disciplinary data we don't track, so ties surviving the
-    head-to-head stage keep their overall order.)
+    Teams level on points are separated by head-to-head points, goal difference
+    and goals scored among the teams concerned (re-applied to any subset still
+    level), then by overall goal difference and goals scored. FIFA's last
+    criteria — team conduct (cards) and the world ranking — aren't in the
+    dashboard's data, so teams level on everything above keep their listed order.
 
     `matches` is a list of (home, home_goals, away, away_goals) tuples for the
     group's played/projected fixtures, used to build the head-to-head tables.
     """
-    def overall_key(r):
-        return (r["Pts"], r["GF"] - r["GA"], r["GF"])
+    by_team = {r["team"]: r for r in rows}
+    listed = {r["team"]: i for i, r in enumerate(rows)}
 
-    rows = sorted(rows, key=overall_key, reverse=True)
+    def settle(level: list) -> list:
+        if len(level) == 1:
+            return level
+        rec = _h2h_table(set(level), matches)
 
-    # Resolve each block of teams that are level on all three overall criteria.
-    out, i = [], 0
-    while i < len(rows):
-        j = i + 1
-        while j < len(rows) and overall_key(rows[j]) == overall_key(rows[i]):
-            j += 1
-        block = rows[i:j]
-        if len(block) > 1:
-            rec = _h2h_table({r["team"] for r in block}, matches)
-            block = sorted(
-                block,
-                key=lambda r: (rec[r["team"]]["Pts"],
-                               rec[r["team"]]["GF"] - rec[r["team"]]["GA"],
-                               rec[r["team"]]["GF"]),
-                reverse=True,
-            )
-        out.extend(block)
-        i = j
-    return out
+        def h2h(t):
+            return (rec[t]["Pts"], rec[t]["GF"] - rec[t]["GA"], rec[t]["GF"])
+
+        ordered = []
+        for key in sorted({h2h(t) for t in level}, reverse=True):
+            tied = [t for t in level if h2h(t) == key]
+            if len(tied) == 1:
+                ordered += tied
+            elif len(tied) < len(level):
+                ordered += settle(tied)         # re-apply head-to-head to this subset
+            else:                               # head-to-head can't separate them
+                ordered += sorted(tied, key=lambda t: (
+                    -(by_team[t]["GF"] - by_team[t]["GA"]), -by_team[t]["GF"], listed[t]))
+        return ordered
+
+    teams = [r["team"] for r in rows]
+    ranking = []
+    for pts in sorted({by_team[t]["Pts"] for t in teams}, reverse=True):
+        ranking += settle([t for t in teams if by_team[t]["Pts"] == pts])
+    return [by_team[t] for t in ranking]
 
 
 def current_standings(fixtures: list[dict], results: dict, group: str) -> list[dict]:
@@ -1142,9 +1136,13 @@ def _ko_winner_loser(home: str, away: str, res: dict):
 
 
 def _group_rank_slots(fixtures: list[dict], results: dict) -> dict:
-    """Map 1A/2A/3A… → team, from the actual (played) group tables."""
+    """Map 1A/2A/3A… → team from the final group tables. A group's slots stay
+    empty until every one of its matches has been played."""
     slot: dict[str, str] = {}
     for g in groups_in_order(fixtures):
+        games = fixtures_in_group(fixtures, g)
+        if not games or not all(results.get(f.get("id"), {}).get("played") for f in games):
+            continue
         for i, r in enumerate(current_standings(fixtures, results, g)):
             slot[f"{i + 1}{g}"] = r["team"]
     return slot

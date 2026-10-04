@@ -19,13 +19,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 # ── palette (mirrors the dashboard dark theme) ──────────────────────────────
 BG       = (13, 17, 23)
-PANEL    = (22, 27, 34)
-PANEL2   = (28, 33, 40)
 BORDER   = (48, 54, 61)
 TEXT     = (240, 246, 252)
 MUTED    = (139, 148, 158)
 ACCENT   = (0, 201, 110)
-ACCENT_D = (10, 35, 24)
 BLUE     = (56, 139, 253)
 DRAW     = (110, 118, 129)
 LOSS     = (245, 158, 11)

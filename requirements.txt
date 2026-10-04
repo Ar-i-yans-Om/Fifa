@@ -1,7 +1,2 @@
-# Real public-data scrapers (optional structured path; web_search works without these)
-requests>=2.31
-pandas>=2.0         
-
-# Convenience
 streamlit
 Pillow>=10.0        # shareable match-card PNG rendering (share_card.py)

@@ -287,21 +287,6 @@ table.stand td.pts {{ font-weight: 800; color: {ACCENT}; }}
     font-weight: 600; border: 1px solid #4d3600;
 }}
 
-/* ── AI NARRATIVE ── */
-.narrative-wrap {{
-    background: {SURFACE2}; border: 1px solid {BORDER};
-    border-radius: 8px; padding: 14px 16px; margin-top: 14px;
-}}
-.narrative-headline {{
-    font-size: 13.5px; font-weight: 700; color: {TEXT}; margin-bottom: 8px; line-height: 1.4;
-}}
-.narrative-body {{
-    font-size: 12.5px; color: {MUTED}; line-height: 1.65;
-}}
-.narrative-market {{
-    font-size: 11.5px; color: {MUTED}; font-style: italic;
-    padding-top: 8px; margin-top: 8px; border-top: 1px solid {BORDER};
-}}
 /* ── SCORELINE HEATMAP ── */
 .hmap-wrap {{ margin-top: 16px; }}
 .hmap-label {{
@@ -371,7 +356,6 @@ table.stand td.pts {{ font-weight: 800; color: {ACCENT}; }}
              white-space: nowrap; border: 1px solid transparent; text-align: center;
              line-height: 1.25; }}
 .mvm-edge .es {{ font-size: 15px; display: block; }}
-.mvm-note {{ font-size: 11px; color: {MUTED}; line-height: 1.5; margin-top: 4px; }}
 
 /* ── TOURNAMENT PULSE ── */
 .pulse-stats {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 4px 0 24px; }}
@@ -1747,10 +1731,10 @@ def render_how_it_works() -> None:
             <div class="hs-num">Step 1</div>
             <div class="hs-title">The Researcher</div>
             <div class="hs-desc">
-              Goes online before every prediction. Reads injury bulletins, squad news,
+              Goes online for the latest team news &mdash; injury bulletins, squad news,
               recent match reports. Then calculates each squad&rsquo;s fitness score using
               real travel distances, altitude differences between cities, and the number
-              of days since their last game. No stale data.
+              of days since their last game.
             </div>
           </div>
 
@@ -1851,8 +1835,8 @@ def render_how_it_works() -> None:
             <div class="di-body">
               <div class="di-title">Live data, not a spreadsheet</div>
               <div class="di-desc">
-                The Researcher calls the internet before every prediction. Real injury
-                news, actual travel logistics, real venue altitudes. The model knows
+                The Researcher searches the web for live team news: real injury
+                reports, actual travel logistics, real venue altitudes. The model knows
                 if your striker trained this morning &mdash; or didn&rsquo;t.
               </div>
             </div>
