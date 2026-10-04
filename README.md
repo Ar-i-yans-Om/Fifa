@@ -25,10 +25,11 @@ miss was backing Germany against Paraguay, who went through on penalties. The
 | Tab | What you'll see |
 |---|---|
 | **Groups** | The final table and the model's own table for all 12 groups, side by side, plus a card for every match: win/draw/loss odds, the final score and whether the model called it, expected goals, the predicted score, a heatmap of every possible scoreline, betting-style markets (over/under, both teams to score), how the model compared with the bookmakers, and a shareable image. |
-| **Tournament Pulse** | Storylines across all 104 matches: the biggest gaps between model and market, the likeliest goal-fests, the true coin-flips and the safest bets. |
+| **Tournament Pulse** | Storylines across all 104 matches: the biggest gaps between model and market, the likeliest goal-fests, the true coin-flips and the safest bets, each with what actually happened. |
 | **Knockout Matches** | The same rich cards for every knockout tie, Round of 32 to the Final, with the model's pick to go through and whether it was right. |
 | **Knockout Bracket** | The full bracket, from the Round of 32 to the champion, with extra-time and penalty results marked. |
-| **Report Card** | The final four, the model's call in the final, accuracy stage by stage, a calibration chart (did its 70% calls happen 70% of the time?), a head-to-head with the bookmakers, and its sharpest calls and biggest misses. |
+| **Teams** | Pick any of the 48 countries and follow its tournament match by match: what the model expected, what happened, and whether it called it. |
+| **Report Card** | The final four, the model's call in the final, accuracy stage by stage, how its own group tables compared with the real ones, the biggest upsets, a calibration chart (did its 70% calls happen 70% of the time?), a head-to-head with the bookmakers, and its sharpest calls and biggest misses. |
 | **How It Works** | The pipeline, explained step by step. |
 
 ## How it works

@@ -625,6 +625,34 @@ div[data-testid="stExpander"] summary svg {{
 .perf-legend {{ font-size: 11px; color: {MUTED}; line-height: 1.65; margin-top: 10px; }}
 .perf-legend b {{ color: {TEXT}; }}
 
+/* ── TEAM JOURNEY ── */
+.tj-head {{ display: flex; align-items: center; gap: 14px; flex-wrap: wrap; background: {SURFACE};
+            border: 1px solid {BORDER}; border-radius: 12px; padding: 16px 18px; margin: 6px 0 16px; }}
+.tj-head .tj-name {{ font-size: 22px; font-weight: 900; color: {TEXT}; }}
+.tj-head .tj-name img {{ height: 20px !important; margin-right: 8px !important; }}
+.tj-head .tj-run {{ font-size: 12px; font-weight: 800; color: {GOLD}; background: rgba(217,119,6,0.10);
+                    border: 1px solid #4d3600; padding: 3px 10px; border-radius: 20px; }}
+.tj-head .tj-run.champ {{ color: #fbbf24; }}
+.tj-head .tj-meta {{ font-size: 12px; color: {MUTED}; margin-left: auto; text-align: right; line-height: 1.6; }}
+.tj-head .tj-meta b {{ color: {TEXT}; }}
+.tj-row {{ display: grid; grid-template-columns: 150px 1fr 230px 150px; gap: 14px; align-items: center;
+           background: {SURFACE}; border: 1px solid {BORDER}; border-radius: 10px; padding: 11px 14px; margin-bottom: 8px; }}
+.tj-stage {{ font-size: 11px; color: {MUTED}; line-height: 1.45; }}
+.tj-stage b {{ color: {TEXT}; font-size: 12px; }}
+.tj-opp {{ font-size: 13.5px; font-weight: 700; color: {TEXT}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+.tj-opp .vs {{ color: {MUTED}; font-weight: 500; font-size: 11px; margin-right: 6px; }}
+.tj-bar {{ display: flex; height: 20px; border-radius: 5px; overflow: hidden; border: 1px solid {BORDER}; }}
+.tj-bar div {{ display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }}
+.tj-sub {{ font-size: 10px; color: {MUTED}; margin-top: 3px; }}
+.tj-res {{ display: flex; align-items: center; gap: 7px; justify-content: flex-end; flex-wrap: wrap; }}
+.tj-res .rl {{ width: 22px; height: 22px; border-radius: 6px; display: inline-flex; align-items: center;
+               justify-content: center; font-size: 11px; font-weight: 900; }}
+.tj-res .sc {{ font-size: 14px; font-weight: 800; color: {TEXT}; }}
+.tj-res .nt {{ font-size: 10px; color: {MUTED}; }}
+.lb-verdict {{ font-weight: 800; margin-left: 4px; }}
+.lb-tally {{ margin-left: auto; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 20px;
+             color: {ACCENT}; background: {ACCENT_SOFT}; border: 1px solid {ACCENT_BORDER}; white-space: nowrap; }}
+
 /* ── SITE FOOTER ── */
 .site-footer {{ text-align: center; padding: 24px 0 34px; margin-top: 34px; border-top: 1px solid {BORDER};
                 font-size: 12px; color: {MUTED}; line-height: 1.9; }}
@@ -652,6 +680,8 @@ div[data-testid="stExpander"] summary svg {{
   .flow .cols {{ gap: 6px; }}
   .diff-card {{ padding: 18px; }}
   table.stand {{ font-size: 12px; }}
+  .tj-row {{ grid-template-columns: 1fr 1fr; gap: 8px 12px; }}
+  .tj-head .tj-meta {{ margin-left: 0; text-align: left; }}
 }}
 
 /* ── GENERIC ── */
@@ -782,7 +812,7 @@ def _hero_html() -> str:
             ko_hits = ko["bullseye"] + ko["on_target"]
             tiles.append(("", f"{ko['outcome_accuracy']}%", "Knockout winners called",
                           f"{ko_hits} of {ko['with_prediction']} ties"))
-        tiles.append(("", f"{_acc['bullseye']}", "Exact scorelines", f"out of {wp} matches"))
+        tiles.append(("", f"{_acc['exact']}", "Exact scorelines", f"out of {wp} matches"))
         top = next((b for b in (_scorecard or {}).get("bins", []) if b["lo"] == 80), None)
         if top:
             tiles.append(("", f"{top['actual']}%", "Confident calls landed",
@@ -1164,6 +1194,10 @@ def result_line_html(m: dict) -> str:
         "On Target": ("hit", "✓ Winner called" if knockout else "✓ Result called"),
         "Off Target": ("miss", "✗ Missed"),
     }.get(m.get("outcome_call"))
+    pg = re.search(r"(\d+)\s*-\s*(\d+)", str(m.get("predicted_scoreline") or ""))
+    if (m.get("outcome_call") == "Off Target" and pg
+            and (pg.group(1), pg.group(2)) == (hs.strip(), as_.strip())):
+        chip = ("miss", "✗ Wrong side through · exact score")
     chip_html = f"<span class='chip {chip[0]}'>{chip[1]}</span>" if chip else ""
     return (f"<div class='ft'><span class='ft-tag'>FULL TIME</span>"
             f"<span class='ft-score'>{m['home']} {hs}-{as_} {m['away']}</span>"
@@ -1414,13 +1448,19 @@ def render_group(letter: str) -> None:
 # ═══════════════════════════════════════════════════════════════════════════════
 #  TOURNAMENT PULSE
 # ═══════════════════════════════════════════════════════════════════════════════
-def _lb_row(rank: int, i: dict, val_html: str) -> str:
+def _lb_row(rank: int, i: dict, val_html: str, hit=None) -> str:
     teams = (
         f"{flag_img(i['home'], 11)}{i['home']}"
         f"<span class='vs'>v</span>"
         f"{flag_img(i['away'], 11)}{i['away']}"
     )
     meta = i["stage"].replace(" · ", " &middot; ")
+    if i.get("actual"):
+        mark = ""
+        if hit is not None:
+            mark = (f"<span class='lb-verdict' style='color:{ACCENT if hit else RED}'>"
+                    f"{'✓' if hit else '✗'}</span>")
+        meta += f" &middot; FT <b style='color:{TEXT}'>{i['actual']}</b>{mark}"
     return (
         f"<div class='lb-row'><div class='lb-rank'>{rank}</div>"
         f"<div class='lb-match'><div class='lb-teams'>{teams}</div>"
@@ -1429,12 +1469,19 @@ def _lb_row(rank: int, i: dict, val_html: str) -> str:
     )
 
 
-def _lb_card(title: str, icon: str, sub: str, rows: str) -> str:
+def _lb_card(title: str, icon: str, sub: str, rows: str, tally: str = "") -> str:
+    tally_html = f"<span class='lb-tally'>{tally}</span>" if tally else ""
     return (
         f"<div class='lb-card'><div class='lb-head'>"
         f"<span class='lb-title'>{icon} {title}</span>"
-        f"<span class='lb-sub'>{sub}</span></div>{rows}</div>"
+        f"<span class='lb-sub'>{sub}</span>{tally_html}</div>{rows}</div>"
     )
+
+
+def _tally(items: list, key: str, label: str) -> str:
+    """'4/5 landed' over the rows that have a verdict."""
+    done = [i[key] for i in items if i.get(key) is not None]
+    return f"{sum(done)}/{len(done)} {label}" if done else ""
 
 
 def render_tournament_insights() -> None:
@@ -1471,7 +1518,7 @@ def render_tournament_insights() -> None:
             f"<span class='lb-chip' style='background:{bg};color:{col}'>"
             f"{flag_img(i['edge_team'], 10)}{sign}%</span>"
         )
-        vp_rows += _lb_row(n, i, chip)
+        vp_rows += _lb_row(n, i, chip, i.get("model_right"))
 
     # ── goal fests: P(over 2.5) ──
     gf_rows = ""
@@ -1480,7 +1527,8 @@ def render_tournament_insights() -> None:
             f"<span style='color:{ACCENT}'>{i['over25']}%</span>"
             f"<span style='color:{MUTED};font-size:10px;font-weight:600'>o2.5</span>"
         )
-        gf_rows += _lb_row(n, i, val)
+        over = None if i.get("total_goals") is None else i["total_goals"] >= 3
+        gf_rows += _lb_row(n, i, val, over)
 
     # ── coin flips: how low the strongest single outcome is ──
     cf_rows = ""
@@ -1489,7 +1537,7 @@ def render_tournament_insights() -> None:
             f"<span style='color:{TEXT}'>{i['max3']}%</span>"
             f"<span style='color:{MUTED};font-size:10px;font-weight:600'>top pick</span>"
         )
-        cf_rows += _lb_row(n, i, val)
+        cf_rows += _lb_row(n, i, val, i.get("top_hit"))
 
     # ── one-sided: biggest favourite ──
     os_rows = ""
@@ -1498,7 +1546,7 @@ def render_tournament_insights() -> None:
             f"{flag_img(i['fav_team'], 10)}"
             f"<span style='color:{ACCENT}'>{i['fav_prob']}%</span>"
         )
-        os_rows += _lb_row(n, i, val)
+        os_rows += _lb_row(n, i, val, i.get("fav_won"))
 
     st.html(
         f"""
@@ -1516,10 +1564,15 @@ def render_tournament_insights() -> None:
           <div class="pstat"><div class="pv">{ti['high_conf']}</div><div class="pk">High-confidence calls</div></div>
         </div>
         <div class="lb-grid">
-          {_lb_card("Biggest market gaps", "&#128176;", "model vs market &middot; signed edge", vp_rows)}
-          {_lb_card("Goal-fests", "&#128293;", "likeliest to go over 2.5", gf_rows)}
-          {_lb_card("Coin-flips", "&#9878;", "lower top pick = more open", cf_rows)}
-          {_lb_card("Safest bankers", "&#127919;", "biggest single favourite", os_rows)}
+          {_lb_card("Biggest market gaps", "&#128176;", "vs market &middot; ✓ = model right", vp_rows,
+                    _tally(ti["value_picks"], "model_right", "model right"))}
+          {_lb_card("Goal-fests", "&#128293;", "likeliest to go over 2.5 &middot; ✓ = 3+ goals", gf_rows,
+                    _tally([dict(i, over=(None if i.get("total_goals") is None else i["total_goals"] >= 3))
+                            for i in ti["goal_fests"]], "over", "went over"))}
+          {_lb_card("Coin-flips", "&#9878;", "lower top pick = more open &middot; ✓ = top pick happened", cf_rows,
+                    _tally(ti["coin_flips"], "top_hit", "top pick"))}
+          {_lb_card("Safest bankers", "&#127919;", "biggest single favourite &middot; ✓ = it won", os_rows,
+                    _tally(ti["one_sided"], "fav_won", "won"))}
         </div>
         <div style="height:18px"></div>
         """
@@ -1834,12 +1887,65 @@ def render_report_card() -> None:
         f"<span class='lb-sub'>backed the wrong side</span></div>{call_rows(rc['misses'], False)}</div></div>"
     )
 
+    # the model's group tables vs the real ones
+    gt = D.group_table_scorecard(fixtures, results, predictions)
+    groups_card = ""
+    if gt:
+        cell = lambda k, v, sub: (f"<div class='vs-cell'><div class='vk'>{k}</div>"
+                                  f"<div class='vv' style='color:{ACCENT}'>{v}</div>"
+                                  f"<div class='vs'>{sub}</div></div>")
+        groups_card = (
+            "<div class='rc-card'><div class='rc-title'>The model's group tables</div>"
+            "<div class='rc-sub'>The group tables as the model's predicted scores would have "
+            "finished them, against the final tables.</div>"
+            "<div class='vs-grid' style='grid-template-columns:1fr 1fr 1fr'>"
+            + cell("Group winners", f"{gt['winners']}/{gt['groups']}", "right team top")
+            + cell("Top-two teams", f"{gt['top2']}/{gt['top2_total']}", "in the right pair")
+            + cell("Exact positions", f"{gt['positions']}/{gt['positions_total']}",
+                   "team in the right place")
+            + "</div>"
+            + "".join(
+                f"<div style='display:flex;align-items:center;gap:8px;padding:9px 0 0;margin-top:9px;"
+                f"border-top:1px solid {SURFACE3};font-size:12px;color:{MUTED}'>"
+                f"<b style='color:{TEXT};width:62px'>Group {mw['group']}</b>"
+                f"won by {flag_img(mw['actual'], 11)}<b style='color:{TEXT}'>{mw['actual']}</b>"
+                f"&nbsp;&middot; model had {flag_img(mw['model'], 11)}{mw['model']} top</div>"
+                for mw in gt["missed_winners"])
+            + "</div>"
+        )
+
+    # the results it saw coming least
+    up_rows = ""
+    for u in D.biggest_upsets(fixtures, results, predictions):
+        how = ""
+        if u["penalties"]:
+            a, b = (int(x) for x in u["penalties"].split("-"))
+            how = f" on penalties ({max(a, b)}-{min(a, b)})"
+        elif u["aet"]:
+            how = " after extra time"
+        up_rows += (
+            f"<div style='display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid {SURFACE3}'>"
+            f"<div style='flex:1;min-width:0'>"
+            f"<div style='font-size:12.5px;font-weight:600;color:{TEXT};white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>"
+            f"{flag_img(u['home'], 11)}{u['home']} <b>{u['score']}</b> {flag_img(u['away'], 11)}{u['away']}</div>"
+            f"<div style='font-size:10px;color:{MUTED};margin-top:1px'>{u['stage'].replace(' · ', ' &middot; ')}"
+            f" &middot; {u['what']}{how}</div></div>"
+            f"<div style='font-size:11.5px;font-weight:800;color:{GOLD};background:rgba(217,119,6,0.10);"
+            f"border:1px solid #4d3600;padding:3px 9px;border-radius:20px'>{u['prob']}%</div></div>"
+        )
+    upsets_card = (
+        f"<div class='rc-card'><div class='rc-title'>Biggest upsets</div>"
+        f"<div class='rc-sub'>The results the model rated least likely &mdash; the chance it "
+        f"gave to what actually happened.</div>{up_rows}</div>"
+    ) if up_rows else ""
+
     st.html(
         f"<div class='how-hero' style='padding:30px 20px 10px'>"
         f"<div class='hw-title'>Model Report Card</div>"
         f"<div class='hw-sub'>How the Siuuumulator's predictions held up across all "
         f"{ov['total_played']} matches.</div></div>"
         f"{podium}{mc_card}{acc_card}"
+        f"<div class='rc-two'>{groups_card}{upsets_card}</div>"
     )
     calib = calibration_html()
     if calib:
@@ -1927,6 +2033,76 @@ def calibration_html() -> str:
             f"0 is perfect, and always saying a third each scores 0.667.</div></div>"
         )
     return f"<div class='rc-two'>{calib}{market}</div>" if market else calib
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  TEAM JOURNEY  (one country's tournament, match by match, against the model)
+# ═══════════════════════════════════════════════════════════════════════════════
+def render_team_journey() -> None:
+    teams = D.teams_in_tournament(fixtures)
+    if not teams:
+        return
+    st.html(
+        "<div class='how-hero' style='padding:24px 20px 6px'>"
+        "<div class='hw-title' style='font-size:26px'>Team journeys</div>"
+        "<div class='hw-sub'>Pick a country to follow its tournament match by match: what "
+        "the model expected, what happened, and whether it called it.</div></div>"
+    )
+    default = (_report or {}).get("champion")
+    team = st.selectbox(
+        "Choose a team", teams, index=teams.index(default) if default in teams else 0,
+        key="journey_team",
+    )
+    j = D.team_journey(team, fixtures, results, predictions)
+    run_cls = "tj-run champ" if j["run"] == "Champions" else "tj-run"
+    ordinal = {1: "1st", 2: "2nd", 3: "3rd", 4: "4th"}.get(j["group_finish"], "")
+    meta = []
+    if j["group"]:
+        meta.append(f"Group {j['group']}" + (f" &middot; finished <b>{ordinal}</b>" if ordinal else ""))
+    if j["graded"]:
+        meta.append(f"Model called <b>{j['called']} of {j['graded']}</b> of their matches")
+    head = (
+        f"<div class='tj-head'><div class='tj-name'>{flag_img(team, 20)}{team}</div>"
+        f"<span class='{run_cls}'>{'🏆 ' if j['run'] == 'Champions' else ''}{j['run']}</span>"
+        f"<div class='tj-meta'>{'<br>'.join(meta)}</div></div>"
+    )
+
+    rows = ""
+    for m in j["matches"]:
+        stage, sub = m["stage"].split(" · ")
+        bar = ""
+        if m["win"] is not None:
+            w, d, l = m["win"], m["draw"], m["loss"]
+            seg = lambda pct, bg, fg: (f"<div style='width:{pct}%;background:{bg};color:{fg}'>"
+                                       f"{pct if pct >= 12 else ''}</div>")
+            bar = (f"<div class='tj-bar'>{seg(w, WIN, '#fff')}{seg(d, DRAW, TEXT)}{seg(l, LOSS, '#000')}</div>"
+                   f"<div class='tj-sub'>model: win {w}% &middot; draw {d}% &middot; loss {l}%"
+                   + (f" &middot; through {m['through']}%" if m["through"] is not None else "")
+                   + "</div>")
+        res = "<span class='nt'>not played</span>"
+        if m["score"]:
+            col = {"W": (ACCENT, "#04130b"), "D": (DRAW, TEXT), "L": (RED, "#fff")}[m["result"]]
+            note = ""
+            if m["decided"] == "pens" and m["penalties"]:
+                a, b = (int(x) for x in m["penalties"].split("-"))
+                note = f"<span class='nt'>{'won' if m['result'] == 'W' else 'lost'} on pens</span>"
+            elif m["decided"] == "aet":
+                note = "<span class='nt'>a.e.t.</span>"
+            called = m["call"] in ("Bullseye", "On Target")
+            mark = ""
+            if m["call"]:
+                mark = (f"<span style='font-size:10.5px;font-weight:800;color:{ACCENT if called else RED}'>"
+                        f"{'✓ called' if called else '✗ missed'}</span>")
+            res = (f"<span class='rl' style='background:{col[0]};color:{col[1]}'>{m['result']}</span>"
+                   f"<span class='sc'>{m['score']}</span>{note}{mark}")
+        rows += (
+            f"<div class='tj-row'>"
+            f"<div class='tj-stage'><b>{stage}</b><br>{sub} &middot; {m['date'] or ''}</div>"
+            f"<div class='tj-opp'><span class='vs'>vs</span>{flag_img(m['opponent'], 13)}{m['opponent']}</div>"
+            f"<div>{bar}</div>"
+            f"<div class='tj-res'>{res}</div></div>"
+        )
+    st.html(f"{head}{rows}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2130,9 +2306,9 @@ def render_how_it_works() -> None:
 # ═══════════════════════════════════════════════════════════════════════════════
 #  TOP-LEVEL TABS
 # ═══════════════════════════════════════════════════════════════════════════════
-tab_groups, tab_pulse, tab_ko, tab_bracket, tab_report, tab_how = st.tabs(
+tab_groups, tab_pulse, tab_ko, tab_bracket, tab_teams, tab_report, tab_how = st.tabs(
     ["Groups", "Tournament Pulse", "Knockout Matches", "Knockout Bracket",
-     "Report Card", "How It Works"]
+     "Teams", "Report Card", "How It Works"]
 )
 
 with tab_groups:
@@ -2170,6 +2346,9 @@ with tab_ko:
 with tab_bracket:
     render_knockout_bracket()
 
+with tab_teams:
+    render_team_journey()
+
 with tab_report:
     render_report_card()
 
@@ -2180,7 +2359,7 @@ st.markdown(
     f"""
     <div class="site-footer">
       <span class="brand">Siuuumulator</span> &nbsp;&middot;&nbsp; built by
-      <a href="https://github.com/Ar-i-yans-Om" target="_blank">Om Mittal</a><br>
+      <b style="color:{TEXT}">Om Mittal</b> and <b style="color:{TEXT}">Ariyan Bhaumik</b><br>
       <a href="{ENGINE_REPO}" target="_blank">Prediction engine</a> &nbsp;&middot;&nbsp;
       <a href="{DASHBOARD_REPO}" target="_blank">Dashboard</a> &nbsp;&middot;&nbsp;
       LangGraph &middot; Google Gemini &middot; Streamlit
